@@ -16,7 +16,8 @@ Output a multidimensional array.
 class EDIParser
 {
 	public $parsedfile;
-	private $errors;
+	private $obj;
+	public $errors;
 
 	public function __construct($url=null)
 	{
@@ -41,61 +42,43 @@ class EDIParser
 			}
 		}
 		else $file2=$file;
-		
 		$i=0;
 		foreach ($file2 as $x=>&$line)
 		{
 			$i++;
-			$line = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $line); //basic sanitization, remove non printable chars
-			
+			$line = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $line); //basic sanitization, remove non printable chars			
 			$line = preg_replace('#[\r\n]#', '', $line); //carriage return removal (CR+LF)
 			if (strlen($line)==0) {
 			unset($file2[$x]);
 			continue;
 			}
 			if (strrpos($line,"'")!=strlen($line)-1) 
-					$this->errors[]='Segment not ended correctly at line '.$i. " => ". $line;
+					$this->errors[]='Segment not ended correctly at line '.$i. "=>". $line;
 			$line=$this->splitSegment($line);
 		}
 		$this->parsedfile=$file2;
 		return $file2;
 	}
 	
-	private function splitSegment($str) //segment
+	function splitSegment($str) //segment
 	{
-		$str = strrev(str_replace("'","",strrev($str)));//remove ending " ' "
-		$matches=preg_split("~\?[:'\+\?]{1}(*SKIP)(*FAIL)|\+~s", $str); //split except release character
+		$str = strrev(preg_replace("/'/", "", strrev($str), 1));//remove ending " ' "
+		$matches=preg_split("/(?<!\?)\+/", $str); //split on + if not escaped (negative lookbehind)
 		foreach ($matches as &$value)
 		{ 
-			if (preg_match("~\?[:'\+\?]{1}(*SKIP)(*FAIL)|['\+\?]~s",$value)) $this->errors[]="There's a not escaped character in the data; string ". $str; //no char except : without release character
-			$value=str_replace("?","",$value); //delete release char
-			$value=$this->splitData($value);
+			if (preg_match("/(?<!\?)'/",$value)) $this->errors[]="There's a ' not escaped in the data; string ". $str;
+			if (preg_match("/(?<!\?)\?(?!\?)(?!\+)(?!:)(?!')/",$value)) $this->errors[]="There's a ? not escaped in the data; string ". $value;
+			$value=$this->splitData($value); //split on :
 		}
 		return $matches;
 	}
 
-	private function splitData($str) //composite data element
+	function splitData($str) //composite data element
 	{
-		$arr=explode(":",$str);
+		$arr=preg_split("/(?<!\?):/", $str); //split on : if not escaped (negative lookbehind)
 		if (count($arr)==1) return $str;
+		foreach ($arr as &$value) $value=str_replace("?","",$value);
 		return $arr;
-	}
-
-	//export
-	public function errors()
-	{
-		if(count($this->errors)==0)	return false;
-		return $this->errors;
-	}
-	
-	public function get()
-	{
-		return $this->parsedfile;
-	}
-
-	public function getJson()
-	{
-		return json_encode($this->parsedfile);
-	}
+	} 
 }
 ?>
