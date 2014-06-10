@@ -13,3 +13,9 @@ Given an edi message checks the syntax, outputs errors and returns the message a
 Syntax data
 ----------
 Comes from [https://code.google.com/p/izi-sandbox/source/browse/trunk/php/php_edi/ IZISandbox].
+
+
+Notes
+------
+
+Valid characters are: A-Za-z0-9.,-()/'+:=?!"%&*;<> ([http://www.unece.org/trade/untdid/texts/d422_d.htm#p5.1 UNECE])

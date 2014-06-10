@@ -53,8 +53,9 @@ class EDIParser
 		foreach ($file2 as $x=>&$line)
 		{
 			$i++;
-			$line = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $line); //basic sanitization, remove non printable chars			
 			$line = preg_replace('#[\r\n]#', '', $line); //carriage return removal (CR+LF)
+			if (preg_match("/[\x01-\x1F\x80-\xFF]/",$line)) $this->errors[]="There's a not printable character on line ".($x+1).": ". $line;
+			$line = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $line); //basic sanitization, remove non printable chars	
 			if (strlen($line)==0) {
 			unset($file2[$x]);
 			continue;
