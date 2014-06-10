@@ -1,47 +1,54 @@
 <?php
 /*
-EDIFACT messages parser
+EDIFACT Messages Parser
+(c)2014 Stefano Sabatini
 
-Input a valid path to an edi file
-	$c=new EDIParser('name.edi');
+INPUT
+	$c=new EDIParser(X);
+		Where X could be:
+		-an url
+		-a string (wrapped message)
+		-an array of strings (a segment per entry)
 	or
 	$c=new EDIParser();
-	$c->parse('name.edi');
-Output a multidimensional array.
+	followed by parse, load and/or unwrap
+	
+OUTPUT
 	Errors $c->errors()
 	Array  $c->get()
-	Json $c->getJson()
 */
 
 class EDIParser
 {
-	public $parsedfile;
+	private $parsedfile;
 	private $obj;
-	public $errors;
+	private $errors;
 
 	public function __construct($url=null)
 	{
-		if ($url!==null) $this->parse($url);
 		$errors=array();
+		if($url===null) return;
+		
+		if (is_array($url)) //ARRAY
+		{
+		$tmparr=$url;
+		if (count($url)==1) //containing only one row
+		{
+			$tmparr=$this->unwrap($url[0]);
+		}
+		$this->parse($tmparr);
+		}
+		else
+		if (file_exists($url)) $this->load($url); //FILE URL
+		else
+		{
+		$this->parse($this->unwrap($url)); //STRING
+		}
 	}
 	
-	public function parse($url)
+	//Parse edi array
+	function parse($file2)
 	{
-		$file=file($url);
-		$file2=array();
-
-		//split if oneliner and remove whitespace (UNWRAP)
-		if (count($file)==1)
-		{
-			$file=preg_split("/\'/i", $file[0]);
-			foreach($file as &$line) 
-			{
-			$temp=trim($line)."'";
-			if($temp!="'")
-				$file2[]=$temp;
-			}
-		}
-		else $file2=$file;
 		$i=0;
 		foreach ($file2 as $x=>&$line)
 		{
@@ -60,7 +67,22 @@ class EDIParser
 		return $file2;
 	}
 	
-	function splitSegment($str) //segment
+	//unwrap string splitting rows on terminator (if not escaped)
+	function unwrap($string)
+	{
+		$file2=array();
+		$file=preg_split("/(?<!\?)'/i", $string);
+		foreach($file as &$line) 
+		{
+		$temp=trim($line)."'";
+		if($temp!="'")
+			$file2[]=$temp;
+		}
+		return $file2;
+	}
+	
+	//Segments
+	function splitSegment($str)
 	{
 		$str = strrev(preg_replace("/'/", "", strrev($str), 1));//remove ending " ' "
 		$matches=preg_split("/(?<!\?)\+/", $str); //split on + if not escaped (negative lookbehind)
@@ -73,12 +95,35 @@ class EDIParser
 		return $matches;
 	}
 
-	function splitData($str) //composite data element
+	//Composite data element
+	function splitData($str)
 	{
 		$arr=preg_split("/(?<!\?):/", $str); //split on : if not escaped (negative lookbehind)
 		if (count($arr)==1) return $str;
 		foreach ($arr as &$value) $value=str_replace("?","",$value);
 		return $arr;
-	} 
+	}
+	
+	//Get errors
+	function errors()
+	{
+		return $this->errors;
+	}
+	
+	//Get result
+	function get()
+	{
+		return $this->parsedfile;
+	}
+	
+	function load($url)
+	{
+		$file=file($url);
+		if (count($file)==1) //containing only one row
+		{
+			return $this->parse($this->unwrap($file[0]));
+		}
+		return $this->parse($file);
+	}
 }
 ?>
