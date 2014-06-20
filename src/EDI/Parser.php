@@ -4,13 +4,13 @@ EDIFACT Messages Parser
 (c)2014 Stefano Sabatini
 
 INPUT
-	$c=new EDIParser(X);
+	$c=new Parser(X);
 		Where X could be:
 		-an url
 		-a string (wrapped message)
 		-an array of strings (a segment per entry)
 	or
-	$c=new EDIParser();
+	$c=new Parser();
 	followed by parse, load and/or unwrap
 	
 OUTPUT
@@ -18,7 +18,7 @@ OUTPUT
 	Array  $c->get()
 */
 
-class EDIParser
+class Parser
 {
 	private $parsedfile;
 	private $obj;

@@ -1,0 +1,30 @@
+{
+    "name": "sabas/edifact",
+    "description": "Tools in PHP for UN/EDIFACT",
+    "keywords": ["EDI", "EDIFACT", "message", "container"],
+    "homepage": "https://github.com/sabas/edifact",
+    "license": "LGPL-3.0+",
+    "version": "0.0.1-dev",
+    "authors": [
+        {
+            "name": "Stefano Sabatini",
+            "email": "sabas88@gmail.com",
+            "homepage": "http://stefanosabatini.eu",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/sabas/edifact/issues"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "https://github.com/sabas/edifact"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "EDI\\": "src/EDI"
+        }
+    }
+}
