@@ -24,7 +24,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "EDI\\": "src/EDI"
+            "EDI\\": "src/EDI/"
         }
     }
 }
