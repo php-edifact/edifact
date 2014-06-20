@@ -18,6 +18,8 @@ OUTPUT
 	Array  $c->get()
 */
 
+namespace EDI;
+
 class Parser
 {
 	private $parsedfile;
