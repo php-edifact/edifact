@@ -58,7 +58,7 @@ class Parser
 			$line = preg_replace('#[\r\n]#', '', $line); //carriage return removal (CR+LF)
 			if (preg_match("/[\x01-\x1F\x80-\xFF]/",$line)) $this->errors[]="There's a not printable character on line ".($x+1).": ". $line;
 			$line = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $line); //basic sanitization, remove non printable chars	
-			if (strlen($line)==0) {
+			if (strlen($line)==0 || substr( $line, 0, 3 ) === "UNA")
 			unset($file2[$x]);
 			continue;
 			}
