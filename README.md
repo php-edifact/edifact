@@ -11,6 +11,17 @@ EDI/Parser
 ------------------
 Given an edi message checks the syntax, outputs errors and returns the message as a multidimensional array.
 
+EDI/Encoder
+------------------
+Given a multidimensional array (formatted as the output of the parser), returns an EDI string, optionally one segment per line.
+
+Example
+-------
+
+Edifact DTM+7:201309200717:203'
+
+Array ['DTM',['7','201309200717','203']]
+
 Syntax data
 ----------
 Comes from [https://code.google.com/p/izi-sandbox/source/browse/trunk/php/php_edi/](IZISandbox).
