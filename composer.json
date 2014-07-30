@@ -22,6 +22,9 @@
             "url":  "https://github.com/sabas/edifact"
         }
     ],
+    "require-dev": {
+        "phpunit/phpunit": "4.1.*"
+    }
     "autoload": {
         "psr-4": {
             "EDI\\": "src/EDI/"
