@@ -102,8 +102,10 @@ class Parser
 	function splitData($str)
 	{
 		$arr=preg_split("/(?<!\?):/", $str); //split on : if not escaped (negative lookbehind)
-		if (count($arr)==1) return $str;
-		foreach ($arr as &$value) $value=str_replace("?","",$value);
+		if (count($arr)==1)
+            return preg_replace("/\?(?=\?)|\?(?=\+)|\?(?=:)|\?(?=')/", "",$str); //remove ? if not escaped
+		foreach ($arr as &$value)
+            $value=preg_replace("/\?(?=\?)|\?(?=\+)|\?(?=:)|\?(?=')/", "",$value);
 		return $arr;
 	}
 	
