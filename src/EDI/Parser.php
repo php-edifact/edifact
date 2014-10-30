@@ -33,21 +33,22 @@ class Parser
 		
 		if (is_array($url)) //ARRAY
 		{
-		$tmparr=$url;
-		if (count($url)==1) //containing only one row
-		{
-			$tmparr=$this->unwrap($url[0]);
-		}
-		$this->parse($tmparr);
+			$tmparr=$url;
+			if (count($url)==1) //containing only one row
+			{
+				$tmparr=$this->unwrap($url[0]);
+			}
+			$this->parse($tmparr);
 		}
 		else
-		if (file_exists($url)) $this->load($url); //FILE URL
+		if (file_exists($url)) 
+			$this->load($url); //FILE URL
 		else
 		{
-		$this->parse($this->unwrap($url)); //STRING
+			$this->parse($this->unwrap($url)); //STRING
 		}
 	}
-	
+
 	//Parse edi array
 	function parse($file2)
 	{
@@ -56,20 +57,22 @@ class Parser
 		{
 			$i++;
 			$line = preg_replace('#[\r\n]#', '', $line); //carriage return removal (CR+LF)
-			if (preg_match("/[\x01-\x1F\x80-\xFF]/",$line)) $this->errors[]="There's a not printable character on line ".($x+1).": ". $line;
+			if (preg_match("/[\x01-\x1F\x80-\xFF]/",$line))
+				$this->errors[]="There's a not printable character on line ".($x+1).": ". $line;
 			$line = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $line); //basic sanitization, remove non printable chars	
-			if (strlen($line)==0 || substr( $line, 0, 3 ) === "UNA"){
-			unset($file2[$x]);
-			continue;
+			if (strlen($line)==0 || substr( $line, 0, 3 ) === "UNA")
+			{
+				unset($file2[$x]);
+				continue;
 			}
 			if (strrpos($line,"'")!=strlen($line)-1) 
-					$this->errors[]='Segment not ended correctly at line '.$i. "=>". $line;
+				$this->errors[]='Segment not ended correctly at line '.$i. "=>". $line;
 			$line=$this->splitSegment($line);
 		}
-		$this->parsedfile=$file2;
+		$this->parsedfile=array_values($file2); //reindex
 		return $file2;
 	}
-	
+
 	//unwrap string splitting rows on terminator (if not escaped)
 	function unwrap($string)
 	{
@@ -77,13 +80,13 @@ class Parser
 		$file=preg_split("/(?<!\?)'/i", $string);
 		foreach($file as &$line) 
 		{
-		$temp=trim($line)."'";
-		if($temp!="'")
-			$file2[]=$temp;
+			$temp=trim($line)."'";
+			if($temp!="'")
+				$file2[]=$temp;
 		}
 		return $file2;
 	}
-	
+
 	//Segments
 	function splitSegment($str)
 	{
@@ -91,8 +94,10 @@ class Parser
 		$matches=preg_split("/(?<!\?)\+/", $str); //split on + if not escaped (negative lookbehind)
 		foreach ($matches as &$value)
 		{ 
-			if (preg_match("/(?<!\?)'/",$value)) $this->errors[]="There's a ' not escaped in the data; string ". $str;
-			if (preg_match("/(?<!\?)\?(?!\?)(?!\+)(?!:)(?!')/",$value)) $this->errors[]="There's a ? not escaped in the data; string ". $value;
+			if (preg_match("/(?<!\?)'/",$value))
+				$this->errors[]="There's a ' not escaped in the data; string ". $str;
+			if (preg_match("/(?<!\?)\?(?!\?)(?!\+)(?!:)(?!')/",$value))
+				$this->errors[]="There's a character not escaped with ? in the data; string ". $value;
 			$value=$this->splitData($value); //split on :
 		}
 		return $matches;
@@ -103,9 +108,9 @@ class Parser
 	{
 		$arr=preg_split("/(?<!\?):/", $str); //split on : if not escaped (negative lookbehind)
 		if (count($arr)==1)
-            return preg_replace("/\?(?=\?)|\?(?=\+)|\?(?=:)|\?(?=')/", "",$str); //remove ? if not escaped
+			return preg_replace("/\?(?=\?)|\?(?=\+)|\?(?=:)|\?(?=')/", "",$str); //remove ? if not escaped
 		foreach ($arr as &$value)
-            $value=preg_replace("/\?(?=\?)|\?(?=\+)|\?(?=:)|\?(?=')/", "",$value);
+			$value=preg_replace("/\?(?=\?)|\?(?=\+)|\?(?=:)|\?(?=')/", "",$value);
 		return $arr;
 	}
 	
