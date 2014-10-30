@@ -1,5 +1,21 @@
 <?php
+/*
+EDIFACT Messages Parser
+Uldis Nelsons
 
+INPUT
+    $analyser = new EDI\Analyser();
+    $analyser->load_edi_message($ulr);
+    $analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml'); 
+    $analyser->process($parsed);
+    Where:
+        $url path to edi orginal message file:
+        $parsed - by EDI\parser() created EDI messgaes array
+	
+OUTPUT
+$analyser->process($parsed);
+	text 
+*/
 namespace EDI;
 
 class Analyser {
@@ -11,6 +27,11 @@ class Analyser {
 		$this->edi_message=file($url);        
     }
     
+    /**
+     * convert segment definiton from XML to array. Sequence of data_elements and 
+     * composite_data_element same as in XML
+     * @param char $segment_xml_file
+     */
     public function loadSegmentsXml($segment_xml_file) {
 
         $segments_xml = file_get_contents($segment_xml_file);
@@ -80,6 +101,11 @@ class Analyser {
         }
     }
     
+    /**
+     * create readble EDI MESSAGE with comments
+     * @param array $data by EDI\parser() created array from plain EDI message
+     * @return text file
+     */
     public function process($data){
         $r = array();
         foreach($data as $nrow => $segment){
