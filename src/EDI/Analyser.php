@@ -135,7 +135,6 @@ class Analyser {
                         $r[] = '  [' . $n . '] ' . $detail;
                         $r[] = $l1;
                         $r[] = $l2;
-                        
                     }else{
                         $r[] = '  [' . $n . '] ' . implode(',',$detail);
                         $r[] = $l1;
@@ -144,7 +143,7 @@ class Analyser {
                         //var_dump($sub_details_desc);
                         foreach($detail as $d_n => $d_detail){
                             $d_sub_desc_attr =  $sub_details_desc[$d_n]['attributes'];                    
-                            $r[] = '    [' . $d_n . '] ' . $d_detail;
+                            $r[] = '    [' . $n . '][' . $d_n . '] ' . $d_detail;
                             $r[] = '        id: ' . $d_sub_desc_attr['id'] . ' - ' . $d_sub_desc_attr['name'];
                             $r[] = '        ' . wordwrap($d_sub_desc_attr['desc'],69,PHP_EOL.'        ');
                             $r[] = '        type: ' . $d_sub_desc_attr['type'];
