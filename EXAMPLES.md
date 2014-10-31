@@ -26,6 +26,87 @@ Loading from a php array:
 	echo $p->get();
 ```
 
+Create from EDI file readable file with comments
+------------------------------------------------
+
+```php
+    $file_name = 'demo.edi';
+    $parser = new EDI\Parser();
+    $parsed = $parser->load($file_name);
+
+    $analyser = new EDI\Analyser();
+    $analyser->load_edi_message($file_name);
+    $analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml'); 
+    
+    $text = $analyser->process($parsed);
+
+```
+
+Readable EDI file
+-----------------
+```
+UNB+UNOE:2+RIXCT++141028:0746+NBFILE027747'
+UNB - InterchangeHeader
+  (To start, identify and specify an interchange)
+  [1] UNOE,2
+      unb1 - syntaxIdentifier
+      Syntax identifier
+    [0] UNOE
+        id: unb11 - syntaxIdentifier
+        Syntax identifier
+        type: a
+        required: true
+        length: 4
+    [1] 2
+        id: unb12 - syntaxVersionNumber
+        Syntax version number
+        type: n
+        required: true
+        length: 1
+  [2] RIXCT
+      unb2 - interchangeSender
+      Interchange sender
+  [3] 
+      unb3 - interchangeRecipient
+      Interchange recipient
+  [4] 141028,0746
+      unb4 - dateTimePreparation
+      Date Time of preparation
+    [0] 141028
+        id: unb41 - date
+        type: n
+        required: true
+        length: 6
+    [1] 0746
+        id: unb42 - time
+        type: n
+        required: true
+        length: 4
+  [5] NBFILE027747
+      unb5 - interchangeControlReference
+```
+
+EDI data element reading
+-----------------
+
+```php
+    $file_name = 'files/truck_out_176699.edi';
+    $parser = new EDI\Parser();
+    $parser->load($file_name);
+    $record = array(
+            'interchangeSender' => $parser->readEdiDataValue('UNB',2),
+            'dateTimePreparation' => $parser->readEdiDataValue('UNB',4,0) .  $parser->readEdiDataValue('UNB',4,1),
+            'messageReferenceNumber' => $parser->readEdiDataValue('UNH',1),
+            'TareWeight' => $parser->readEdiDataValue(['MEA',['2'=>'T']],3,0) 
+                                . ' ' 
+                                . $parser->readEdiDataValue(['MEA',['2'=>'T']],3,1),
+            'GrossWeight' => $parser->readEdiDataValue(['MEA',['2'=>'G']],3,0) 
+                                . ' ' 
+                                . $parser->readEdiDataValue(['MEA',['2'=>'G']],3,1),
+    )
+    var_dump($record);
+```
+
 Demo
 -------
 
