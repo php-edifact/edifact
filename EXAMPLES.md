@@ -46,6 +46,9 @@ Readable EDI file
 -----------------
 ```
 UNB+UNOE:2+RIXCT++141028:0746+NBFILE027747'
+```
+
+```
 UNB - InterchangeHeader
   (To start, identify and specify an interchange)
   [1] UNOE,2
