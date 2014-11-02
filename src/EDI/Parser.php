@@ -219,4 +219,31 @@ class Parser
 		return $segment[$l1][$l2];
 	}
 
+    
+    /**
+     * read date from DTM segment period qualifier - codelist 2005
+     * @param int $PeriodQualifier period qualifier (codelist/2005)
+     * @return string YYYY-MM-DD HH:MM:SS
+     */
+    public function readEdiSegmentDTM($PeriodQualifier){
+
+        $date = $this->readEdiDataValue(['DTM', ['1.0' => $PeriodQualifier]], 1,1);
+        $format = $this->readEdiDataValue(['DTM', ['1.0' => $PeriodQualifier]], 1,2);
+        if(empty($date)){
+            return $date;
+        }
+        switch ($format) {
+
+            case 203: //CCYYMMDDHHMM
+                return preg_replace('#(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)#','$1-$2-$3 $4:$5:00' , $date);
+
+                break;
+
+            default:
+                return $date;
+                break;
+        }
+        
+        
+    }
 }
