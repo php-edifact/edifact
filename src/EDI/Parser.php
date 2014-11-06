@@ -12,7 +12,7 @@ INPUT
 	or
 	$c=new Parser();
 	followed by parse, load and/or unwrap
-	
+
 OUTPUT
 	Errors $c->errors()
 	Array  $c->get()
@@ -30,7 +30,7 @@ class Parser
 	{
 		$errors=array();
 		if($url===null) return;
-		
+
 		if (is_array($url)) //ARRAY
 		{
 			$tmparr=$url;
@@ -41,7 +41,7 @@ class Parser
 			$this->parse($tmparr);
 		}
 		else
-		if (file_exists($url)) 
+		if (file_exists($url))
 			$this->load($url); //FILE URL
 		else
 		{
@@ -59,13 +59,13 @@ class Parser
 			$line = preg_replace('#[\r\n]#', '', $line); //carriage return removal (CR+LF)
 			if (preg_match("/[\x01-\x1F\x80-\xFF]/",$line))
 				$this->errors[]="There's a not printable character on line ".($x+1).": ". $line;
-			$line = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $line); //basic sanitization, remove non printable chars	
+			$line = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $line); //basic sanitization, remove non printable chars
 			if (strlen($line)==0 || substr( $line, 0, 3 ) === "UNA")
 			{
 				unset($file2[$x]);
 				continue;
 			}
-			if (strrpos($line,"'")!=strlen($line)-1) 
+			if (strrpos($line,"'")!=strlen($line)-1)
 				$this->errors[]='Segment not ended correctly at line '.$i. "=>". $line;
 			$line=$this->splitSegment($line);
 		}
@@ -78,7 +78,7 @@ class Parser
 	{
 		$file2=array();
 		$file=preg_split("/(?<!\?)'/i", $string);
-		foreach($file as &$line) 
+		foreach($file as &$line)
 		{
 			$temp=trim($line)."'";
 			if($temp!="'")
@@ -93,7 +93,7 @@ class Parser
 		$str = strrev(preg_replace("/'/", "", strrev($str), 1));//remove ending " ' "
 		$matches=preg_split("/(?<!\?)\+/", $str); //split on + if not escaped (negative lookbehind)
 		foreach ($matches as &$value)
-		{ 
+		{
 			if (preg_match("/(?<!\?)'/",$value))
 				$this->errors[]="There's a ' not escaped in the data; string ". $str;
 			if (preg_match("/(?<!\?)\?(?!\?)(?!\+)(?!:)(?!')/",$value))
@@ -113,19 +113,19 @@ class Parser
 			$value=preg_replace("/\?(?=\?)|\?(?=\+)|\?(?=:)|\?(?=')/", "",$value);
 		return $arr;
 	}
-	
+
 	//Get errors
 	function errors()
 	{
 		return $this->errors;
 	}
-	
+
 	//Get result
 	function get()
 	{
 		return $this->parsedfile;
 	}
-	
+
 	function load($url)
 	{
 		$file=file($url);
@@ -135,12 +135,12 @@ class Parser
 		}
 		return $this->parse($file);
 	}
-	
+
 	/**
 	 * read data value from parsed EDI data
-	 * 
-	 * @param array/string $filter 
-	 *  'AGR' - segment code 
+	 *
+	 * @param array/string $filter
+	 *  'AGR' - segment code
 	 *  or ['AGR',['1'=>'BB']], where AGR segment code and first element equal 'BB'
 	 *  or ['AGR',['1.0'=>'BB']], where AGR segment code and first element zero subelement  equal 'BB'
 	 * @param int $l1 first level item number (start by 1)

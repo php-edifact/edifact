@@ -6,15 +6,15 @@ Uldis Nelsons
 INPUT
 	$analyser = new EDI\Analyser();
 	$analyser->load_edi_message($ulr);
-	$analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml'); 
+	$analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml');
 	$analyser->process($parsed);
 	Where:
 		$url path to edi orginal message file:
 		$parsed - by EDI\parser() created EDI messgaes array
-	
+
 OUTPUT
 $analyser->process($parsed);
-	text 
+	text
 */
 namespace EDI;
 
@@ -26,9 +26,9 @@ class Analyser {
 	public function load_edi_message($url){
 		$this->edi_message=file($url);
 	}
-	
+
 	/**
-	 * convert segment definiton from XML to array. Sequence of data_elements and 
+	 * convert segment definiton from XML to array. Sequence of data_elements and
 	 * composite_data_element same as in XML
 	 * @param char $segment_xml_file
 	 */
@@ -99,7 +99,7 @@ class Analyser {
 
 		}
 	}
-	
+
 	/**
 	 * create readble EDI MESSAGE with comments
 	 * @param array $data by EDI\parser() created array from plain EDI message
@@ -115,7 +115,7 @@ class Analyser {
 			$r[] = trim($this->edi_message[$nrow]);
 
 			if(isset($this->segments[$id])){
-				
+
 				$attributes = $this->segments[$id]['attributes'];
 				$details_desc = $this->segments[$id]['deatils'];
 
@@ -133,7 +133,7 @@ class Analyser {
 						$r[] = '  [' . $n . '] ' . $detail;
 						$r[] = $l1;
 						$r[] = $l2;
-						
+
 					}else{
 						$r[] = '  [' . $n . '] ' . implode(',',$detail);
 						$r[] = $l1;
@@ -175,9 +175,9 @@ class Analyser {
 			}else{
 				 $r[] = $id;
 			}
-			
+
 		}
-		
+
 		return implode(PHP_EOL,$r);
 	}
 
