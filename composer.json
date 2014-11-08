@@ -1,5 +1,5 @@
 {
-    "name": "dbrkls/edifact",
+    "name": "sabas/edifact",
     "description": "Tools in PHP for UN/EDIFACT",
     "keywords": ["EDI", "EDIFACT", "message", "container"],
     "homepage": "https://github.com/sabas/edifact",
@@ -10,6 +10,10 @@
             "name": "Stefano Sabatini",
             "email": "sabas88@gmail.com",
             "homepage": "http://stefanosabatini.eu",
+            "role": "Developer"
+        },
+        {
+            "name": "Uldis Nelsons",
             "role": "Developer"
         }
     ],
