@@ -12,7 +12,7 @@ INPUT
 	or
 	$c=new Encoder();
 	followed by $c->encode($array,$wrap)
-	
+
 OUTPUT
 	String  $c->get()
 */
@@ -46,7 +46,7 @@ class Encoder
 					$elm=$this->escapeValue($row[$i]);
 				else
 				{
-					foreach ($row[$i] as &$temp) 
+					foreach ($row[$i] as &$temp)
 						$temp=$this->escapeValue($temp);
 					$elm=implode(":",$row[$i]);
 				}
