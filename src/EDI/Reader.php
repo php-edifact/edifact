@@ -4,13 +4,13 @@ EDIFACT Messages Reader
 Uldis Nelsons
 
 INPUT
-	$c=new Reader(X);
+	$r=new Reader(X);
 		Where X could be:
 		-an url
 		-a string (wrapped message)
 		-an array of strings (a segment per entry)
 	or
-	$c=new Parser();
+	$r=new Reader();
 	followed by parse, load and/or unwrap
 	
 OUTPUT
@@ -41,6 +41,10 @@ class Reader
         $Parser = new \EDI\Parser($url);
         $this->parsedfile = $Parser->get();
 	}
+    
+    function setParsedFile($parsed_file){
+        $this->parsedfile = $parsed_file;
+    }
 	
 	/**
 	 * read data value from parsed EDI data

@@ -15,6 +15,15 @@ EDI/Encoder
 ------------------
 Given a multidimensional array (formatted as the output of the parser), returns an EDI string, optionally one segment per line.
 
+EDI/Analyser
+------------------
+Create from EDI file readable structured text with comments from segments.xml
+
+EDI/Reader
+------------------
+Read from EDI file requested segment element values
+
+
 Example
 -------
 
