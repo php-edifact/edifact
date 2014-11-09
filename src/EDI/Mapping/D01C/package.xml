@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.4.2" 
+         version="2.0" 
+         xmlns="http://pear.php.net/dtd/package-2.0" 
+         xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+                             http://pear.php.net/dtd/tasks-1.0.xsd
+                             http://pear.php.net/dtd/package-2.0
+                             http://pear.php.net/dtd/package-2.0.xsd">
+    <name>EDI_EDIFACT_D01C</name>
+    <channel>pear.php.net</channel>
+    <summary>UN/EDIFACT XML mapping for the directory D01C</summary>
+    <description>
+This package contains the data elements (and its codes),composite data
+elements, segments and messages mapping corresponding to the UN/EDIFACT 
+directory D01C. It is provided to be used with the EDI PEAR package.
+    </description>
+    <lead>
+        <name>David JEAN LOUIS</name>
+        <user>izi</user>
+        <email>izimobil@gmail.com</email>
+        <active>yes</active>
+    </lead>
+    <date>2008-09-15</date>
+    <version>
+        <release>1.0.0</release>
+        <api>1.0.0</api>
+    </version>
+    <stability>
+        <release>stable</release>
+        <api>stable</api>
+    </stability>
+    <license uri="http://www.opensource.org/licenses/mit-license.html">MIT</license>
+    <notes>Initial release.</notes>
+    <contents>
+        <dir baseinstalldir="EDI_EDIFACT_D01C" name="/">
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="data_elements.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="composite_data_elements.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/creext.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/tupreq.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/conapw.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/ssrech.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/casint.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/proinq.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/reprem.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/conrpw.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/dmrdef.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/cuscar.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/ostenq.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/payord.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/iftiag.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/colreq.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/codeno.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/fincan.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/conwqd.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/creadv.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/itrrpt.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/utilts.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/orders.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/rpcall.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/lreclm.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/lreact.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/tiqrsp.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/skdupd.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/procst.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/jobcon.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/quotes.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/codeco.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/avlreq.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/cohaor.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/tiqreq.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/chacco.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/conest.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/cntcnd.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/vatdec.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/ordchg.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/author.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/medreq.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/docare.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/partin.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/iftfcc.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/recadv.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/debadv.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/ostrpt.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/cremul.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/slsrpt.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/docinf.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/retacc.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/medpid.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/casres.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/docami.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/iftmbc.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/tsdupd.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/statac.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/medrpt.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/infent.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/ihcebi.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/supres.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/reclam.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/prodex.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/medruc.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/japres.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/rdrmes.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/movins.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/socade.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/pasrsp.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/avlrsp.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/docama.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/slsfct.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/icasrp.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/conqva.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/iftstq.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/impdef.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/wkgrre.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/berman.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/coparn.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/supman.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/tpfrep.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/dirdef.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/cusres.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/recalc.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/skdreq.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/utilmd.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/dirdeb.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/reqdoc.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/coacsu.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/iftmin.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/tuprsp.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/wkgrdc.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/balanc.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/iftmcs.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/entrec.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/costco.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/relist.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/destim.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/debrec.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/ippomo.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/bopbnk.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/bopcus.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/paymul.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/iftsai.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/calinf.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/prihis.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/gesmes.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/hanmov.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/docadv.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/ssregw.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/receco.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/joboff.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/ssimod.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/iftmbf.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/conten.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/insrpt.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/conitt.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/stlrpt.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/aperak.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/ordrsp.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/rebord.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/jobmod.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/cusdec.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/protap.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/prodat.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/meqpos.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/copaym.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/iftman.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/jupreq.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/reqote.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/iftsta.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/iftmca.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/infcon.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/payduc.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/remadv.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/coreor.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/medpre.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/deljit.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/costor.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/coedor.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/insreq.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/iftcca.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/wasdis.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/vesdep.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/desadv.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/finpay.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/dmstat.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/mscons.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/invoic.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/baplte.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/baplie.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/claset.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/paxlst.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/resett.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/ippoad.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/prpaid.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/invrpt.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/tansta.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/retann.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/jinfde.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/resreq.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/pasreq.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/iftdgn.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/bopinf.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/payext.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/debmul.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/supcot.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/record.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/docamr.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/dgreca.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/condpv.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/sancrt.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/prosrv.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/jobapp.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/qality.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/regent.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/docapp.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/isends.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/resrsp.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/icsoli.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/iftmbp.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/bopdir.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/cusexp.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/genral.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/delfor.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/conpva.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/copino.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/retins.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/bmisrm.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/ledger.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/insdes.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/ifticl.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/cusped.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/cusrep.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/comdis.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/ihclme.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/bansta.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/iftrin.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/buscrd.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/coprar.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/condra.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/resmsg.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/pricat.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/finsta.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/condro.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/inspre.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/taxcon.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/coarri.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/ifcsum.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="messages/safhaz.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="codes.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="segments.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="service_codes_v3.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D01C" name="service_codes_v4.xml" role="data"/>
+        </dir>
+    </contents>
+    <dependencies>
+        <required>
+            <php><min>5.1.0</min></php>
+            <pearinstaller><min>1.5.0</min></pearinstaller>
+            <package>
+                <name>EDI</name>
+                <channel>pear.php.net</channel>
+                <min>0.2.0</min>
+            </package>
+        </required>
+    </dependencies>
+    <phprelease></phprelease>
+    <changelog></changelog>
+</package>

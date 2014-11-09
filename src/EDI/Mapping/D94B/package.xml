@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.4.2" 
+         version="2.0" 
+         xmlns="http://pear.php.net/dtd/package-2.0" 
+         xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+                             http://pear.php.net/dtd/tasks-1.0.xsd
+                             http://pear.php.net/dtd/package-2.0
+                             http://pear.php.net/dtd/package-2.0.xsd">
+    <name>EDI_EDIFACT_D94B</name>
+    <channel>pear.php.net</channel>
+    <summary>UN/EDIFACT XML mapping for the directory D94B</summary>
+    <description>
+This package contains the data elements (and its codes),composite data
+elements, segments and messages mapping corresponding to the UN/EDIFACT 
+directory D94B. It is provided to be used with the EDI PEAR package.
+    </description>
+    <lead>
+        <name>David JEAN LOUIS</name>
+        <user>izi</user>
+        <email>izimobil@gmail.com</email>
+        <active>yes</active>
+    </lead>
+    <date>2008-09-15</date>
+    <version>
+        <release>1.0.0</release>
+        <api>1.0.0</api>
+    </version>
+    <stability>
+        <release>stable</release>
+        <api>stable</api>
+    </stability>
+    <license uri="http://www.opensource.org/licenses/mit-license.html">MIT</license>
+    <notes>Initial release.</notes>
+    <contents>
+        <dir baseinstalldir="EDI_EDIFACT_D94B" name="/">
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="data_elements.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="composite_data_elements.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/creext.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/conapw.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/conrpw.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/cuscar.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/payord.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/conwqd.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/creadv.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/orders.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/quotes.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/conest.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/ordchg.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/author.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/partin.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/debadv.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/slsrpt.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/docinf.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/iftmbc.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/statac.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/prodex.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/movins.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/slsfct.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/conqva.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/iftstq.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/supman.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/cusres.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/dirdeb.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/reqdoc.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/iftmin.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/iftmcs.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/bopbnk.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/bopcus.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/paymul.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/iftsai.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/hanmov.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/docadv.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/receco.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/iftmbf.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/conten.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/conitt.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/ordrsp.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/cusdec.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/iftman.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/reqote.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/iftsta.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/payduc.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/remadv.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/deljit.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/iftcca.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/desadv.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/invoic.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/baplte.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/baplie.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/paxlst.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/prpaid.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/invrpt.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/iftdgn.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/bopinf.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/payext.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/supcot.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/condpv.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/sancrt.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/qality.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/docapp.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/iftmbp.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/bopdir.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/cusexp.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/delfor.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/conpva.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/cusrep.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/comdis.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/bansta.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/iftrin.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/pricat.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/inspre.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="messages/ifcsum.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="codes.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="segments.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_D94B" name="service_codes_v3.xml" role="data"/>
+        </dir>
+    </contents>
+    <dependencies>
+        <required>
+            <php><min>5.1.0</min></php>
+            <pearinstaller><min>1.5.0</min></pearinstaller>
+            <package>
+                <name>EDI</name>
+                <channel>pear.php.net</channel>
+                <min>0.2.0</min>
+            </package>
+        </required>
+    </dependencies>
+    <phprelease></phprelease>
+    <changelog></changelog>
+</package>

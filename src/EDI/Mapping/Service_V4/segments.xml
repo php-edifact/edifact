@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<segments>
+    <segment id="UCD"  name="dataElementErrorIndication" desc="To identify an erroneous stand-alone, composite or component data element, and to identify the nature of the error.">
+        <data_element id="0085" required="true"/>
+        <composite_data_element id="S011" required="true"/>
+    </segment>
+    <segment id="UCF"  name="groupResponse" desc="To identify a group in the subject interchange and to indicate acknowledgement or rejection (action taken) of the UNG and UNE segments, and to identify any error related to these segments. It can also identify errors related to the USA, USC, USD, USH, USR, UST, or USU security segments when they appear at the group level. Depending on the action code, it may also indicate the action taken on the messages and packages within that group.">
+        <data_element id="0048" required="true"/>
+        <composite_data_element id="S006"/>
+        <composite_data_element id="S007"/>
+        <data_element id="0083" required="true"/>
+        <data_element id="0085"/>
+        <data_element id="0135"/>
+        <composite_data_element id="S011"/>
+        <data_element id="0534"/>
+        <data_element id="0138"/>
+    </segment>
+    <segment id="UCI"  name="interchangeResponse" desc="To identify the subject interchange, to indicate interchange receipt, to indicate acknowledgement or rejection (action taken) of the UNA, UNB and UNZ segments, and to identify any error related to these segments. It can also identify errors related to the USA, USC, USD, USH, USR, UST, or USU security segments when they appear at the interchange level. Depending on the action code, it may also indicate the action taken on the groups, messages, and packages within that interchange.">
+        <data_element id="0020" required="true"/>
+        <composite_data_element id="S002" required="true"/>
+        <composite_data_element id="S003" required="true"/>
+        <data_element id="0083" required="true"/>
+        <data_element id="0085"/>
+        <data_element id="0135"/>
+        <composite_data_element id="S011"/>
+        <data_element id="0534"/>
+        <data_element id="0138"/>
+    </segment>
+    <segment id="UCM"  name="messagepackageResponse" desc="To identify a message or package in the subject interchange, and to indicate that message&apos;s or package&apos;s acknowledgement or rejection (action taken), and to identify any error related to the UNH, UNT, UNO, and UNP segments. It can also identify errors related to the USA, USC, USD, USH, USR, UST, or USU security segments when they appear at the message or package level.">
+        <data_element id="0062"/>
+        <composite_data_element id="S009"/>
+        <data_element id="0083" required="true"/>
+        <data_element id="0085"/>
+        <data_element id="0135"/>
+        <composite_data_element id="S011"/>
+        <data_element id="0800"/>
+        <composite_data_element id="S020"/>
+        <data_element id="0534"/>
+        <data_element id="0138"/>
+    </segment>
+    <segment id="UCS"  name="segmentErrorIndication" desc="To identify either a segment containing an error or a missing segment, and to identify any error related to the complete segment.">
+        <data_element id="0096" required="true"/>
+        <data_element id="0085"/>
+    </segment>
+    <segment id="UGH"  name="anticollisionSegmentGroupHeader" desc="To head, identify and specify an anti-collision segment group.">
+        <data_element id="0087" required="true"/>
+    </segment>
+    <segment id="UGT"  name="anticollisionSegmentGroupTrailer" desc="To end and check the completeness of an anti-collision segment group.">
+        <data_element id="0087" required="true"/>
+    </segment>
+    <segment id="UIB"  name="interactiveInterchangeHeader" desc="To head and identify an interchange.">
+        <composite_data_element id="S001" required="true"/>
+        <composite_data_element id="S302"/>
+        <composite_data_element id="S303"/>
+        <composite_data_element id="S018"/>
+        <composite_data_element id="S305"/>
+        <composite_data_element id="S002"/>
+        <composite_data_element id="S003"/>
+        <composite_data_element id="S300"/>
+        <data_element id="0325"/>
+        <data_element id="0035"/>
+    </segment>
+    <segment id="UIH"  name="interactiveMessageHeader" desc="To head, identify and specify a message.">
+        <composite_data_element id="S306" required="true"/>
+        <data_element id="0340"/>
+        <composite_data_element id="S302"/>
+        <composite_data_element id="S301"/>
+        <composite_data_element id="S300"/>
+        <data_element id="0035"/>
+    </segment>
+    <segment id="UIR"  name="interactiveStatus" desc="To report the status of the dialogue. to a UIR received with syntax errors.">
+        <data_element id="0331" required="true"/>
+        <composite_data_element id="S307"/>
+        <composite_data_element id="S302"/>
+        <composite_data_element id="S300"/>
+        <data_element id="0340"/>
+        <data_element id="0800"/>
+        <data_element id="0085"/>
+        <data_element id="0096"/>
+        <composite_data_element id="S011"/>
+    </segment>
+    <segment id="UIT"  name="interactiveMessageTrailer" desc="To end and check the completeness of a message.">
+        <data_element id="0340"/>
+        <data_element id="0074"/>
+    </segment>
+    <segment id="UIZ"  name="interactiveInterchangeTrailer" desc="To end and check the completeness of an interchange.">
+        <composite_data_element id="S302"/>
+        <data_element id="0036"/>
+        <data_element id="0325"/>
+    </segment>
+    <segment id="UNB"  name="interchangeHeader" desc="To identify an interchange.">
+        <composite_data_element id="S001" required="true"/>
+        <composite_data_element id="S002" required="true"/>
+        <composite_data_element id="S003" required="true"/>
+        <composite_data_element id="S004" required="true"/>
+        <data_element id="0020" required="true"/>
+        <composite_data_element id="S005"/>
+        <data_element id="0026"/>
+        <data_element id="0029"/>
+        <data_element id="0031"/>
+        <data_element id="0032"/>
+        <data_element id="0035"/>
+    </segment>
+    <segment id="UNE"  name="groupTrailer" desc="To end and check the completeness of a group.">
+        <data_element id="0060" required="true"/>
+        <data_element id="0048" required="true"/>
+    </segment>
+    <segment id="UNG"  name="groupHeader" desc="To head, identify and specify a group of messages and/or packages, which may be used for internal routing and which may contain one or more message types and/or packages.">
+        <data_element id="0038"/>
+        <composite_data_element id="S006"/>
+        <composite_data_element id="S007"/>
+        <composite_data_element id="S004"/>
+        <data_element id="0048" required="true"/>
+        <data_element id="0051"/>
+        <composite_data_element id="S008"/>
+        <data_element id="0058"/>
+    </segment>
+    <segment id="UNH"  name="messageHeader" desc="To head, identify and specify a message.">
+        <data_element id="0062" required="true"/>
+        <composite_data_element id="S009" required="true"/>
+        <data_element id="0068"/>
+        <composite_data_element id="S010"/>
+        <composite_data_element id="S016"/>
+        <composite_data_element id="S018"/>
+    </segment>
+    <segment id="UNO"  name="objectHeader" desc="To head, identify and specify an object.">
+        <data_element id="0800" required="true"/>
+        <composite_data_element id="S020" required="true"/>
+        <composite_data_element id="S021" required="true"/>
+        <composite_data_element id="S022" required="true"/>
+        <composite_data_element id="S302"/>
+        <composite_data_element id="S301"/>
+        <composite_data_element id="S300"/>
+        <data_element id="0035"/>
+    </segment>
+    <segment id="UNP"  name="objectTrailer" desc="To end and check the completeness of an object.">
+        <data_element id="0810" required="true"/>
+        <data_element id="0800" required="true"/>
+    </segment>
+    <segment id="UNS"  name="sectionControl" desc="To separate header, detail and summary sections of a message. Note: To be used by message designers only when required to avoid ambiguities.">
+        <data_element id="0081" required="true"/>
+    </segment>
+    <segment id="UNT"  name="messageTrailer" desc="To end and check the completeness of a message.">
+        <data_element id="0074" required="true"/>
+        <data_element id="0062" required="true"/>
+    </segment>
+    <segment id="UNZ"  name="interchangeTrailer" desc="To end and check the completeness of an interchange.">
+        <data_element id="0036" required="true"/>
+        <data_element id="0020" required="true"/>
+    </segment>
+    <segment id="USA"  name="securityAlgorithm" desc="To identify a security algorithm, the technical usage made of it, and to contain the technical parameters required.">
+        <composite_data_element id="S502" required="true"/>
+        <composite_data_element id="S503"/>
+    </segment>
+    <segment id="USB"  name="securedDataIdentification" desc="To contain details related to the AUTACK.">
+        <data_element id="0503" required="true"/>
+        <composite_data_element id="S501"/>
+        <composite_data_element id="S002" required="true"/>
+        <composite_data_element id="S003" required="true"/>
+    </segment>
+    <segment id="USC"  name="certificate" desc="To convey the public key and the credentials of its owner.">
+        <data_element id="0536"/>
+        <composite_data_element id="S500"/>
+        <data_element id="0545"/>
+        <data_element id="0505"/>
+        <data_element id="0507"/>
+        <data_element id="0546"/>
+        <composite_data_element id="S505"/>
+        <composite_data_element id="S501"/>
+        <data_element id="0567"/>
+        <data_element id="0569"/>
+    </segment>
+    <segment id="USD"  name="dataEncryptionHeader" desc="To specify size (i.e. length of data in octets of bits) of encrypted data following the segment terminator of this segment.">
+        <data_element id="0556" required="true"/>
+        <data_element id="0518"/>
+        <data_element id="0582"/>
+    </segment>
+    <segment id="USE"  name="securityMessageRelation" desc="To specify the relation to earlier security messages, such as response to a particular request, or request for a particular answer.">
+        <data_element id="0565" required="true"/>
+    </segment>
+    <segment id="USF"  name="keyManagementFunction" desc="To specify the type of key management function and the status of a corresponding key or certificate.">
+        <data_element id="0579"/>
+        <composite_data_element id="S504"/>
+        <data_element id="0567"/>
+        <data_element id="0572"/>
+        <data_element id="0505"/>
+    </segment>
+    <segment id="USH"  name="securityHeader" desc="To specify a security mechanism applied to a EDIFACT structure (i.e.: either message/package, group or interchange).">
+        <data_element id="0501" required="true"/>
+        <data_element id="0534" required="true"/>
+        <data_element id="0541"/>
+        <data_element id="0503"/>
+        <data_element id="0505"/>
+        <data_element id="0507"/>
+        <data_element id="0509"/>
+        <composite_data_element id="S500"/>
+        <data_element id="0520"/>
+        <composite_data_element id="S501"/>
+    </segment>
+    <segment id="USL"  name="securityListStatus" desc="To specify the status of security objects, such as keys or certificates to be delivered in a list, and the corresponding list parameters.">
+        <data_element id="0567" required="true"/>
+        <composite_data_element id="S504"/>
+    </segment>
+    <segment id="USR"  name="securityResult" desc="To contain the result of the security mechanisms.">
+        <composite_data_element id="S508" required="true"/>
+    </segment>
+    <segment id="UST"  name="securityTrailer" desc="To establish a link between security header and security trailer segment groups.">
+        <data_element id="0534" required="true"/>
+        <data_element id="0588" required="true"/>
+    </segment>
+    <segment id="USU"  name="dataEncryptionTrailer" desc="To provide a trailer for the encrypted data.">
+        <data_element id="0556" required="true"/>
+        <data_element id="0518"/>
+    </segment>
+    <segment id="USX"  name="securityReferences" desc="To refer to the secured EDIFACT structure and its associated date and time.">
+        <data_element id="0020" required="true"/>
+        <composite_data_element id="S002"/>
+        <composite_data_element id="S003"/>
+        <data_element id="0048"/>
+        <composite_data_element id="S006"/>
+        <composite_data_element id="S007"/>
+        <data_element id="0062"/>
+        <composite_data_element id="S009"/>
+        <data_element id="0800"/>
+        <composite_data_element id="S501"/>
+    </segment>
+    <segment id="USY"  name="securityOnReferences" desc="To identify the applicable header, and to contain the security result and/or to indicate the possible cause of security rejection for the referred value.">
+        <data_element id="0534" required="true"/>
+        <composite_data_element id="S508"/>
+        <data_element id="0571"/>
+    </segment>
+</segments>

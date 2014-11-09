@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.4.2" 
+         version="2.0" 
+         xmlns="http://pear.php.net/dtd/package-2.0" 
+         xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+                             http://pear.php.net/dtd/tasks-1.0.xsd
+                             http://pear.php.net/dtd/package-2.0
+                             http://pear.php.net/dtd/package-2.0.xsd">
+    <name>EDI_EDIFACT_Service_V2</name>
+    <channel>pear.php.net</channel>
+    <summary>UN/EDIFACT XML mapping for the service syntax</summary>
+    <description>
+This package contains the data elements (and its codes),composite data
+elements, segments and messages mapping corresponding to the UN/EDIFACT 
+service syntax. It is provided to be used with the EDI PEAR package.
+    </description>
+    <lead>
+        <name>David JEAN LOUIS</name>
+        <user>izi</user>
+        <email>izimobil@gmail.com</email>
+        <active>yes</active>
+    </lead>
+    <date>2008-09-15</date>
+    <version>
+        <release>1.0.0</release>
+        <api>1.0.0</api>
+    </version>
+    <stability>
+        <release>stable</release>
+        <api>stable</api>
+    </stability>
+    <license uri="http://www.opensource.org/licenses/mit-license.html">MIT</license>
+    <notes>Initial release.</notes>
+    <contents>
+        <dir baseinstalldir="EDI_EDIFACT_Service_V2" name="/">
+            <file baseinstalldir="EDI_EDIFACT_Service_V2" name="data_elements.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_Service_V2" name="composite_data_elements.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_Service_V2" name="messages/contrl.xml" role="data"/>
+            <file baseinstalldir="EDI_EDIFACT_Service_V2" name="segments.xml" role="data"/>
+        </dir>
+    </contents>
+    <dependencies>
+        <required>
+            <php><min>5.1.0</min></php>
+            <pearinstaller><min>1.5.0</min></pearinstaller>
+            <package>
+                <name>EDI</name>
+                <channel>pear.php.net</channel>
+                <min>0.2.0</min>
+            </package>
+        </required>
+    </dependencies>
+    <phprelease></phprelease>
+    <changelog></changelog>
+</package>
