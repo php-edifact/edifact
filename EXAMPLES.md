@@ -107,6 +107,12 @@ EDI data element reading
                                 . ' ' 
                                 . $reader->readEdiDataValue(['MEA',['2'=>'G']],3,1),
     )
+
+    //error procesing
+    $reader_errors = $EdiReader->errors();
+    if(!empty($reader_errors)){
+        var_dump($reader_errors);
+    }  
     var_dump($record);
 ```
 

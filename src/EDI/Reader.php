@@ -27,6 +27,7 @@ class Reader
 
 	public function __construct($url=null)
 	{
+        $errors=array();
         $this->load($url);
 	}
 
@@ -34,6 +35,12 @@ class Reader
 	function errors()
 	{
 		return $this->errors;
+	}
+
+    // reset errors
+	function resetErrors()
+	{
+		$this->errors = array();
 	}
 	
 	function load($url)
@@ -106,8 +113,9 @@ class Reader
 
 		//found more one segment - error
 		if ($segment_count > 1) {
-			echo 'Error: Segment name "' . $segment_name . '" is ambiguous';
-			exit;
+			
+            $this->errors['Error: Segment name "' . $segment_name . '" is ambiguous'];
+			return null;
 		}
 
 		//validate elements
@@ -121,7 +129,7 @@ class Reader
 		}
 
 		//requestd second level element, but not exist
-		if (!isset($segment[$l1][$l2])) {
+		if (!is_array($segment[$l1]) || !isset($segment[$l1][$l2])) {
 			return null;
 		}
 
@@ -154,4 +162,37 @@ class Reader
                 break;
         }
     }
+    
+    public function readUNBDateTimeOfPpreperation(){
+        
+        //separate date (YYMMDD) and time (HHMM)
+        $date = $this->readEdiDataValue('UNB', 4, 0);
+        if(!empty($date)){
+            $time = $this->readEdiDataValue('UNB', 4, 1);
+            $datetime = preg_replace('#(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)#','20$1-$2-$3 $4:$5:00' , $date.$time);
+            return $datetime;
+        }
+        
+        //common YYYYMMDDHHMM
+        $datetime = $this->readEdiDataValue('UNB', 4);
+        $datetime = preg_replace('#(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)#','$1-$2-$3 $4:$5:00' , $datetime);
+        
+        return $datetime;
+    }
+
+    public function readTDTtransportIdentification($transportStageQualifier){
+        
+        $transportIdentification = $this->readEdiDataValue(['TDT', ['1' => $transportStageQualifier]], 8, 0);
+        if(!empty($transportIdentification)){
+            return $transportIdentification;
+        }
+        
+        return $this->readEdiDataValue(['TDT', ['1' => $transportStageQualifier]], 8);        
+
+    }
+    
+    public function readUNHmessageType(){
+        return $this->readEdiDataValue('UNH', 2,0);        
+    }
+    
 }
