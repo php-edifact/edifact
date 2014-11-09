@@ -1,0 +1,1480 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<composite_data_elements>
+    <composite_data_element id="C002"  name="documentmessageName" desc="Identification of a type of document/message by code or name. Code preferred.">
+        <data_element id="1001"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="1000"/>
+    </composite_data_element>
+    <composite_data_element id="C040"  name="carrier" desc="Identification of a carrier by code and/or by name. Code preferred.">
+        <data_element id="3127"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3128"/>
+    </composite_data_element>
+    <composite_data_element id="C042"  name="nationalityDetails" desc="To specify a nationality.">
+        <data_element id="3293"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3292"/>
+    </composite_data_element>
+    <composite_data_element id="C045"  name="billLevelIdentification" desc="A sequenced collection of facetted codes used for multiple indexing purposes.">
+        <data_element id="7436"/>
+        <data_element id="7438"/>
+        <data_element id="7440"/>
+        <data_element id="7442"/>
+        <data_element id="7444"/>
+        <data_element id="7446"/>
+    </composite_data_element>
+    <composite_data_element id="C049"  name="remunerationTypeIdentification" desc="Identification of the type of a remuneration.">
+        <data_element id="5315"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="5314"/>
+        <data_element id="5314"/>
+    </composite_data_element>
+    <composite_data_element id="C056"  name="departmentOrEmployeeDetails" desc="Code and/or name of a department or employee. Code preferred.">
+        <data_element id="3413"/>
+        <data_element id="3412"/>
+    </composite_data_element>
+    <composite_data_element id="C058"  name="nameAndAddress" desc="Unstructured name and address: one to five lines.">
+        <data_element id="3124" required="true"/>
+        <data_element id="3124"/>
+        <data_element id="3124"/>
+        <data_element id="3124"/>
+        <data_element id="3124"/>
+    </composite_data_element>
+    <composite_data_element id="C059"  name="street" desc="Street address and/or PO Box number in a structured address: one to four lines.">
+        <data_element id="3042" required="true"/>
+        <data_element id="3042"/>
+        <data_element id="3042"/>
+        <data_element id="3042"/>
+    </composite_data_element>
+    <composite_data_element id="C076"  name="communicationContact" desc="Communication number of a department or employee in a specified channel.">
+        <data_element id="3148" required="true"/>
+        <data_element id="3155" required="true"/>
+    </composite_data_element>
+    <composite_data_element id="C077"  name="fileIdentification" desc="To identify a file.">
+        <data_element id="1508"/>
+        <data_element id="7008"/>
+    </composite_data_element>
+    <composite_data_element id="C078"  name="accountHolderIdentification" desc="Identification of an account holder by account number and/or account holder name in one or two lines. Number preferred.">
+        <data_element id="3194"/>
+        <data_element id="3192"/>
+        <data_element id="3192"/>
+        <data_element id="6345"/>
+    </composite_data_element>
+    <composite_data_element id="C079"  name="computerEnvironmentIdentification" desc="To identify parts of a computer environment.">
+        <data_element id="1511"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="1510"/>
+        <data_element id="1056"/>
+        <data_element id="1058"/>
+        <data_element id="7402"/>
+    </composite_data_element>
+    <composite_data_element id="C080"  name="partyName" desc="Identification of a transaction party by name, one to five lines. Party name may be formatted.">
+        <data_element id="3036" required="true"/>
+        <data_element id="3036"/>
+        <data_element id="3036"/>
+        <data_element id="3036"/>
+        <data_element id="3036"/>
+        <data_element id="3045"/>
+    </composite_data_element>
+    <composite_data_element id="C082"  name="partyIdentificationDetails" desc="Identification of a transaction party by code.">
+        <data_element id="3039" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C085"  name="maritalStatusDetails" desc="To specify the marital status of a person.">
+        <data_element id="3479"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3478"/>
+    </composite_data_element>
+    <composite_data_element id="C088"  name="institutionIdentification" desc="Identification of a financial institution by code branch number, or name and name of place. Code or branch number preferred.">
+        <data_element id="3433"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3434"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3432"/>
+        <data_element id="3436"/>
+    </composite_data_element>
+    <composite_data_element id="C090"  name="addressDetails" desc="To specify the details of an address.">
+        <data_element id="3477" required="true"/>
+        <data_element id="3286" required="true"/>
+        <data_element id="3286"/>
+        <data_element id="3286"/>
+        <data_element id="3286"/>
+        <data_element id="3286"/>
+    </composite_data_element>
+    <composite_data_element id="C099"  name="fileDetails" desc="To define details relevant to a file.">
+        <data_element id="1516" required="true"/>
+        <data_element id="1056"/>
+        <data_element id="1503"/>
+        <data_element id="1502"/>
+    </composite_data_element>
+    <composite_data_element id="C100"  name="termsOfDeliveryOrTransport" desc="Terms of delivery or transport code from a specified source.">
+        <data_element id="4053"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="4052"/>
+        <data_element id="4052"/>
+    </composite_data_element>
+    <composite_data_element id="C101"  name="religionDetails" desc="To specify the religion of a person.">
+        <data_element id="3483"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3482"/>
+    </composite_data_element>
+    <composite_data_element id="C106"  name="documentmessageIdentification" desc="Identification of a document/message by its number and eventually its version or revision.">
+        <data_element id="1004"/>
+        <data_element id="1056"/>
+        <data_element id="1060"/>
+    </composite_data_element>
+    <composite_data_element id="C107"  name="textReference" desc="Coded reference to a standard text and its source.">
+        <data_element id="4441" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C108"  name="textLiteral" desc="Free text; one to five lines.">
+        <data_element id="4440" required="true"/>
+        <data_element id="4440"/>
+        <data_element id="4440"/>
+        <data_element id="4440"/>
+        <data_element id="4440"/>
+    </composite_data_element>
+    <composite_data_element id="C110"  name="paymentTerms" desc="Terms of payment code from a specified source.">
+        <data_element id="4277" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="4276"/>
+        <data_element id="4276"/>
+    </composite_data_element>
+    <composite_data_element id="C112"  name="termstimeInformation" desc="Time details in payment terms.">
+        <data_element id="2475" required="true"/>
+        <data_element id="2009"/>
+        <data_element id="2151"/>
+        <data_element id="2152"/>
+    </composite_data_element>
+    <composite_data_element id="C128"  name="rateDetails" desc="Rate per unit and rate basis.">
+        <data_element id="5419" required="true"/>
+        <data_element id="5420" required="true"/>
+        <data_element id="5284"/>
+        <data_element id="6411"/>
+    </composite_data_element>
+    <composite_data_element id="C138"  name="priceMultiplierInformation" desc="Price multiplier and its identification.">
+        <data_element id="5394" required="true"/>
+        <data_element id="5393"/>
+    </composite_data_element>
+    <composite_data_element id="C174"  name="valuerange" desc="Measurement value and relevant minimum and maximum values of the measurement range.">
+        <data_element id="6411" required="true"/>
+        <data_element id="6314"/>
+        <data_element id="6162"/>
+        <data_element id="6152"/>
+        <data_element id="6432"/>
+    </composite_data_element>
+    <composite_data_element id="C186"  name="quantityDetails" desc="Quantity information in a transaction, qualified when relevant.">
+        <data_element id="6063" required="true"/>
+        <data_element id="6060" required="true"/>
+        <data_element id="6411"/>
+    </composite_data_element>
+    <composite_data_element id="C200"  name="charge" desc="Identification of a charge by code and/or by name.">
+        <data_element id="8023"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="8022"/>
+        <data_element id="4237"/>
+        <data_element id="7140"/>
+    </composite_data_element>
+    <composite_data_element id="C202"  name="packageType" desc="Type of package by name or by code from a specified source.">
+        <data_element id="7065"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7064"/>
+    </composite_data_element>
+    <composite_data_element id="C203"  name="ratetariffClass" desc="Identification of the applicable rate/tariff class.">
+        <data_element id="5243" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="5242"/>
+        <data_element id="5275"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="5275"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C205"  name="hazardCode" desc="The identification of the dangerous goods in code.">
+        <data_element id="8351" required="true"/>
+        <data_element id="8078"/>
+        <data_element id="8092"/>
+    </composite_data_element>
+    <composite_data_element id="C206"  name="identificationNumber" desc="The identification of an object.">
+        <data_element id="7402" required="true"/>
+        <data_element id="7405"/>
+        <data_element id="4405"/>
+    </composite_data_element>
+    <composite_data_element id="C208"  name="identityNumberRange" desc="Goods item identification numbers, start and end of consecutively numbered range.">
+        <data_element id="7402" required="true"/>
+        <data_element id="7402"/>
+    </composite_data_element>
+    <composite_data_element id="C210"  name="marksAndLabels" desc="Shipping marks on packages in free text; one to ten lines.">
+        <data_element id="7102" required="true"/>
+        <data_element id="7102"/>
+        <data_element id="7102"/>
+        <data_element id="7102"/>
+        <data_element id="7102"/>
+        <data_element id="7102"/>
+        <data_element id="7102"/>
+        <data_element id="7102"/>
+        <data_element id="7102"/>
+        <data_element id="7102"/>
+    </composite_data_element>
+    <composite_data_element id="C211"  name="dimensions" desc="Specification of the dimensions of a transportable unit.">
+        <data_element id="6411" required="true"/>
+        <data_element id="6168"/>
+        <data_element id="6140"/>
+        <data_element id="6008"/>
+    </composite_data_element>
+    <composite_data_element id="C212"  name="itemNumberIdentification" desc="Goods identification for a specified source.">
+        <data_element id="7140"/>
+        <data_element id="7143"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C213"  name="numberAndTypeOfPackages" desc="Number and type of individual parts of a shipment.">
+        <data_element id="7224"/>
+        <data_element id="7065"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7064"/>
+        <data_element id="7233"/>
+    </composite_data_element>
+    <composite_data_element id="C214"  name="specialServicesIdentification" desc="Identification of a special service by a code from a specified source or by description.">
+        <data_element id="7161"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7160"/>
+        <data_element id="7160"/>
+    </composite_data_element>
+    <composite_data_element id="C215"  name="sealIssuer" desc="Identification of the issuer of a seal on equipment either by code or by name.">
+        <data_element id="9303"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="9302"/>
+    </composite_data_element>
+    <composite_data_element id="C218"  name="hazardousMaterial" desc="To specify a hazardous material.">
+        <data_element id="7419"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7418"/>
+    </composite_data_element>
+    <composite_data_element id="C219"  name="movementType" desc="Description of type of service for movement of cargo.">
+        <data_element id="8335"/>
+        <data_element id="8334"/>
+    </composite_data_element>
+    <composite_data_element id="C220"  name="modeOfTransport" desc="Method of transport code or name. Code preferred.">
+        <data_element id="8067"/>
+        <data_element id="8066"/>
+    </composite_data_element>
+    <composite_data_element id="C222"  name="transportIdentification" desc="Code and/or name identifying the means of transport.">
+        <data_element id="8213"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="8212"/>
+        <data_element id="8453"/>
+    </composite_data_element>
+    <composite_data_element id="C223"  name="dangerousGoodsShipmentFlashpoint" desc="Temperature at which a vapor can be ignited as per ISO 1523/73.">
+        <data_element id="7106"/>
+        <data_element id="6411"/>
+    </composite_data_element>
+    <composite_data_element id="C224"  name="equipmentSizeAndType" desc="Code and/or name identifying size and type of equipment used in transport. Code preferred.">
+        <data_element id="8155"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="8154"/>
+    </composite_data_element>
+    <composite_data_element id="C228"  name="transportMeans" desc="Code and/or name identifying the type of means of transport.">
+        <data_element id="8179"/>
+        <data_element id="8178"/>
+    </composite_data_element>
+    <composite_data_element id="C229"  name="chargeCategory" desc="Identification of a category or a zone of charges.">
+        <data_element id="5237" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C231"  name="methodOfPayment" desc="Code identifying the method of payment.">
+        <data_element id="4215" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C232"  name="governmentAction" desc="Code indicating a type of government action.">
+        <data_element id="9415"/>
+        <data_element id="9411"/>
+        <data_element id="9417"/>
+        <data_element id="9353"/>
+    </composite_data_element>
+    <composite_data_element id="C233"  name="service" desc="To identify a service (which may constitute an additional component to a basic contract).">
+        <data_element id="7273" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7273"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C234"  name="undgInformation" desc="Information on dangerous goods, taken from the United Nations Dangerous Goods classification.">
+        <data_element id="7124"/>
+        <data_element id="7088"/>
+    </composite_data_element>
+    <composite_data_element id="C235"  name="hazardIdentificationPlacardDetails" desc="These numbers appear on the hazard identification placard required on the means of transport.">
+        <data_element id="8158"/>
+        <data_element id="8186"/>
+    </composite_data_element>
+    <composite_data_element id="C236"  name="dangerousGoodsLabel" desc="Markings identifying the type of hazardous goods and similar information.">
+        <data_element id="8246"/>
+        <data_element id="8246"/>
+        <data_element id="8246"/>
+    </composite_data_element>
+    <composite_data_element id="C237"  name="equipmentIdentification" desc="Marks (letters and/or numbers) identifying equipment used for transport such as a container.">
+        <data_element id="8260"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3207"/>
+    </composite_data_element>
+    <composite_data_element id="C239"  name="temperatureSetting" desc="The temperature under which the goods are (to be) stored or shipped.">
+        <data_element id="6246"/>
+        <data_element id="6411"/>
+    </composite_data_element>
+    <composite_data_element id="C240"  name="productCharacteristic" desc="Specific product characteristic data.">
+        <data_element id="7037" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7036"/>
+        <data_element id="7036"/>
+    </composite_data_element>
+    <composite_data_element id="C241"  name="dutytaxfeeType" desc="Code and/or name identifying duty, tax or fee.">
+        <data_element id="5153"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="5152"/>
+    </composite_data_element>
+    <composite_data_element id="C242"  name="processTypeAndDescription" desc="Identification of process type and description.">
+        <data_element id="7187" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7186"/>
+        <data_element id="7186"/>
+    </composite_data_element>
+    <composite_data_element id="C243"  name="dutytaxfeeDetail" desc="Rate of duty/tax/fee applicable to commodities or of tax applicable to services.">
+        <data_element id="5279"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="5278"/>
+        <data_element id="5273"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C244"  name="testMethod" desc="Specification of the test method employed.">
+        <data_element id="4415"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="4416"/>
+    </composite_data_element>
+    <composite_data_element id="C246"  name="customsIdentityCodes" desc="Specification of goods in terms of customs identity.">
+        <data_element id="7361" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C270"  name="control" desc="Control total for checking integrity of a message or part of a message.">
+        <data_element id="6069" required="true"/>
+        <data_element id="6066" required="true"/>
+        <data_element id="6411"/>
+    </composite_data_element>
+    <composite_data_element id="C272"  name="itemCharacteristic" desc="To provide the characteristic of the item being described.">
+        <data_element id="7081"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C273"  name="itemDescription" desc="Description of an item.">
+        <data_element id="7009"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7008"/>
+        <data_element id="7008"/>
+        <data_element id="3453"/>
+    </composite_data_element>
+    <composite_data_element id="C279"  name="quantityDifferenceInformation" desc="Information on quantity difference.">
+        <data_element id="6064" required="true"/>
+        <data_element id="6063"/>
+    </composite_data_element>
+    <composite_data_element id="C280"  name="range" desc="Range minimum and maximum limits.">
+        <data_element id="6411" required="true"/>
+        <data_element id="6162"/>
+        <data_element id="6152"/>
+    </composite_data_element>
+    <composite_data_element id="C286"  name="sequenceInformation" desc="Identification of a sequence and source for sequencing.">
+        <data_element id="1050" required="true"/>
+        <data_element id="1159"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C288"  name="productGroup" desc="To give product group information.">
+        <data_element id="5389"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="5388"/>
+    </composite_data_element>
+    <composite_data_element id="C292"  name="priceChangeInformation" desc="A value assigned by the seller to indicate movement of prices from a previous price catalogue.">
+        <data_element id="5377" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C329"  name="patternDescription" desc="Shipment, delivery or production interval pattern and timing.">
+        <data_element id="2013"/>
+        <data_element id="2015"/>
+        <data_element id="2017"/>
+    </composite_data_element>
+    <composite_data_element id="C330"  name="insuranceCoverType" desc="To provide the insurance cover type.">
+        <data_element id="4497" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C331"  name="insuranceCoverDetails" desc="To provide the insurance cover details.">
+        <data_element id="4495"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="4494"/>
+        <data_element id="4494"/>
+    </composite_data_element>
+    <composite_data_element id="C332"  name="salesChannelIdentification" desc="Identification of sales channel for marketing data, sales, forecast, planning...">
+        <data_element id="3496" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C333"  name="informationRequest" desc="To specify the information requested in a responding message.">
+        <data_element id="4511"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="4510"/>
+    </composite_data_element>
+    <composite_data_element id="C401"  name="excessTransportationInformation" desc="To provide details of reason for, and responsibility for, use of transportation other than normally utilized.">
+        <data_element id="8457" required="true"/>
+        <data_element id="8459" required="true"/>
+        <data_element id="7130"/>
+    </composite_data_element>
+    <composite_data_element id="C402"  name="packageTypeIdentification" desc="Identification of the form in which goods are described.">
+        <data_element id="7077" required="true"/>
+        <data_element id="7064" required="true"/>
+        <data_element id="7143"/>
+        <data_element id="7064"/>
+        <data_element id="7143"/>
+    </composite_data_element>
+    <composite_data_element id="C501"  name="percentageDetails" desc="Percentage relating to a specified basis.">
+        <data_element id="5245" required="true"/>
+        <data_element id="5482"/>
+        <data_element id="5249"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C502"  name="measurementDetails" desc="Identification of measurement type.">
+        <data_element id="6313"/>
+        <data_element id="6321"/>
+        <data_element id="6155"/>
+        <data_element id="6154"/>
+    </composite_data_element>
+    <composite_data_element id="C503"  name="documentmessageDetails" desc="Identification of document/message by number, status, source and/or language.">
+        <data_element id="1004"/>
+        <data_element id="1373"/>
+        <data_element id="1366"/>
+        <data_element id="3453"/>
+    </composite_data_element>
+    <composite_data_element id="C504"  name="currencyDetails" desc="The usage to which a currency relates.">
+        <data_element id="6347" required="true"/>
+        <data_element id="6345"/>
+        <data_element id="6343"/>
+        <data_element id="6348"/>
+    </composite_data_element>
+    <composite_data_element id="C506"  name="reference" desc="Identification of a reference.">
+        <data_element id="1153" required="true"/>
+        <data_element id="1154"/>
+        <data_element id="1156"/>
+        <data_element id="4000"/>
+    </composite_data_element>
+    <composite_data_element id="C507"  name="datetimeperiod" desc="Date and/or time, or period relevant to the specified date/time/period type.">
+        <data_element id="2005" required="true"/>
+        <data_element id="2380"/>
+        <data_element id="2379"/>
+    </composite_data_element>
+    <composite_data_element id="C508"  name="languageDetails" desc="To identify a language.">
+        <data_element id="3453"/>
+        <data_element id="3452"/>
+    </composite_data_element>
+    <composite_data_element id="C509"  name="priceInformation" desc="Identification of price type, price and related details.">
+        <data_element id="5125" required="true"/>
+        <data_element id="5118"/>
+        <data_element id="5375"/>
+        <data_element id="5387"/>
+        <data_element id="5284"/>
+        <data_element id="6411"/>
+    </composite_data_element>
+    <composite_data_element id="C512"  name="sizeDetails" desc="Information about the number of observations.">
+        <data_element id="6173"/>
+        <data_element id="6174"/>
+    </composite_data_element>
+    <composite_data_element id="C514"  name="sampleLocationDetails" desc="Identification of location within the specimen, from which the sample was taken.">
+        <data_element id="3237"/>
+        <data_element id="3236"/>
+    </composite_data_element>
+    <composite_data_element id="C515"  name="testReason" desc="To identify the reason for the test as specified.">
+        <data_element id="4425"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="4424"/>
+    </composite_data_element>
+    <composite_data_element id="C516"  name="monetaryAmount" desc="Amount of goods or services stated as a monetary amount in a specified currency.">
+        <data_element id="5025" required="true"/>
+        <data_element id="5004"/>
+        <data_element id="6345"/>
+        <data_element id="6343"/>
+        <data_element id="4405"/>
+    </composite_data_element>
+    <composite_data_element id="C517"  name="locationIdentification" desc="Identification of a location by code or name.">
+        <data_element id="3225"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3224"/>
+    </composite_data_element>
+    <composite_data_element id="C519"  name="relatedLocationOneIdentification" desc="Identification the first related location by code or name.">
+        <data_element id="3223"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3222"/>
+    </composite_data_element>
+    <composite_data_element id="C521"  name="businessFunction" desc="To specify a business reason.">
+        <data_element id="4027" required="true"/>
+        <data_element id="4025" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="4022"/>
+    </composite_data_element>
+    <composite_data_element id="C522"  name="instruction" desc="To specify an instruction.">
+        <data_element id="4403" required="true"/>
+        <data_element id="4401"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="4400"/>
+    </composite_data_element>
+    <composite_data_element id="C523"  name="numberOfUnitDetails" desc="Identification of number of units and its purpose.">
+        <data_element id="6350"/>
+        <data_element id="6353"/>
+    </composite_data_element>
+    <composite_data_element id="C524"  name="handlingInstructions" desc="Instruction for the handling of goods, products or articles in shipment, storage etc.">
+        <data_element id="4079"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="4078"/>
+    </composite_data_element>
+    <composite_data_element id="C525"  name="purposeOfConveyanceCall" desc="Description of the purpose of the call of the conveyance.">
+        <data_element id="8025"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="8024"/>
+    </composite_data_element>
+    <composite_data_element id="C526"  name="frequencyDetails" desc="Number of samples collected per specified unit of measure.">
+        <data_element id="6071" required="true"/>
+        <data_element id="6072"/>
+        <data_element id="6411"/>
+    </composite_data_element>
+    <composite_data_element id="C527"  name="statisticalDetails" desc="Specifications related to statistical measurements.">
+        <data_element id="6314"/>
+        <data_element id="6411"/>
+        <data_element id="6313"/>
+        <data_element id="6321"/>
+    </composite_data_element>
+    <composite_data_element id="C528"  name="commodityrateDetail" desc="Identification of commodity/rates.">
+        <data_element id="7357"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C529"  name="processingIndicator" desc="Type of process indication.">
+        <data_element id="7365" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7187"/>
+    </composite_data_element>
+    <composite_data_element id="C531"  name="packagingDetails" desc="Packaging level and details, terms and conditions.">
+        <data_element id="7075"/>
+        <data_element id="7233"/>
+        <data_element id="7073"/>
+    </composite_data_element>
+    <composite_data_element id="C532"  name="returnablePackageDetails" desc="Indication of responsibility for payment and load contents of returnable packages.">
+        <data_element id="8395"/>
+        <data_element id="8393"/>
+    </composite_data_element>
+    <composite_data_element id="C533"  name="dutytaxfeeAccountDetail" desc="Indication of account reference for duties, taxes and/or fees.">
+        <data_element id="5289" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C534"  name="paymentInstructionDetails" desc="Indication of method of payment employed or to be employed.">
+        <data_element id="4439"/>
+        <data_element id="4431"/>
+        <data_element id="4461"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="4435"/>
+    </composite_data_element>
+    <composite_data_element id="C536"  name="contractAndCarriageCondition" desc="To identify a contract and carriage condition.">
+        <data_element id="4065" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C537"  name="transportPriority" desc="To indicate the priority of requested transport service.">
+        <data_element id="4219" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C543"  name="agreementTypeIdentification" desc="Identification of specific agreement type by code or name.">
+        <data_element id="7431" required="true"/>
+        <data_element id="7433"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7434"/>
+    </composite_data_element>
+    <composite_data_element id="C545"  name="indexIdentification" desc="To identify an index.">
+        <data_element id="5013" required="true"/>
+        <data_element id="5027"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C546"  name="indexValue" desc="To identify the value of an index.">
+        <data_element id="5030" required="true"/>
+        <data_element id="5039"/>
+    </composite_data_element>
+    <composite_data_element id="C549"  name="monetaryFunction" desc="To identify the function of a related monetary amount.">
+        <data_element id="5007" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C550"  name="requirementconditionIdentification" desc="To identify the specific rule/condition requirement.">
+        <data_element id="7295" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7294"/>
+    </composite_data_element>
+    <composite_data_element id="C551"  name="bankOperation" desc="Identification of a bank operation by code.">
+        <data_element id="4383" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C552"  name="allowancechargeInformation" desc="Identification of allowance/charge information by number and/or code.">
+        <data_element id="1230"/>
+        <data_element id="5189"/>
+    </composite_data_element>
+    <composite_data_element id="C553"  name="relatedLocationTwoIdentification" desc="Identification of second related location by code or name.">
+        <data_element id="3233"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3232"/>
+    </composite_data_element>
+    <composite_data_element id="C554"  name="ratetariffClassDetail" desc="Identification of the applicable rate/tariff class.">
+        <data_element id="5243"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C555"  name="statusEvent" desc="To specify a status event.">
+        <data_element id="9011" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="9010"/>
+    </composite_data_element>
+    <composite_data_element id="C556"  name="statusReason" desc="To specify the reason behind a status event.">
+        <data_element id="9013" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="9012"/>
+    </composite_data_element>
+    <composite_data_element id="C564"  name="physicalOrLogicalStateInformation" desc="To give information in coded or clear text form on the physical or logical state.">
+        <data_element id="7007"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7006"/>
+    </composite_data_element>
+    <composite_data_element id="C585"  name="priorityDetails" desc="To indicate a priority.">
+        <data_element id="4037"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="4036"/>
+    </composite_data_element>
+    <composite_data_element id="C593"  name="accountIdentification" desc="Identification of an account.">
+        <data_element id="1147" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="1148"/>
+        <data_element id="1146"/>
+        <data_element id="1146"/>
+        <data_element id="6345"/>
+    </composite_data_element>
+    <composite_data_element id="C595"  name="accountingJournalIdentification" desc="Identification of an accounting journal.">
+        <data_element id="1171" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="1170"/>
+    </composite_data_element>
+    <composite_data_element id="C596"  name="accountingEntryTypeDetails" desc="Identification of the type of entry included in an accounting journal.">
+        <data_element id="4475" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="4474"/>
+    </composite_data_element>
+    <composite_data_element id="C601"  name="statusType" desc="To specify the type of status in relation to an industry sector or business function.">
+        <data_element id="9015" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C701"  name="errorPointDetails" desc="Indication of the point of error in a message.">
+        <data_element id="1049"/>
+        <data_element id="1052"/>
+        <data_element id="1054"/>
+    </composite_data_element>
+    <composite_data_element id="C702"  name="codeSetIdentification" desc="To identify a code set.">
+        <data_element id="9150"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C703"  name="natureOfCargo" desc="Rough classification of a type of cargo.">
+        <data_element id="7085" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C709"  name="messageIdentifier" desc="Identification of the message.">
+        <data_element id="1475" required="true"/>
+        <data_element id="1056" required="true"/>
+        <data_element id="1058" required="true"/>
+        <data_element id="1476" required="true"/>
+        <data_element id="1523"/>
+        <data_element id="1060"/>
+        <data_element id="1373"/>
+    </composite_data_element>
+    <composite_data_element id="C770"  name="arrayCellDetails" desc="To contain the data for a contiguous set of cells in an array. times in the composite.">
+        <data_element id="9424"/>
+    </composite_data_element>
+    <composite_data_element id="C778"  name="positionIdentification" desc="To identify the position of an object in a structure containing the object.">
+        <data_element id="7164"/>
+        <data_element id="1050"/>
+    </composite_data_element>
+    <composite_data_element id="C779"  name="arrayStructureIdentification" desc="The identification of an array structure.">
+        <data_element id="9428" required="true"/>
+        <data_element id="7405"/>
+    </composite_data_element>
+    <composite_data_element id="C780"  name="valueListIdentification" desc="The identification of a coded or non coded value list.">
+        <data_element id="1518" required="true"/>
+        <data_element id="7405"/>
+    </composite_data_element>
+    <composite_data_element id="C782"  name="dataSetIdentification" desc="The identification of a data set.">
+        <data_element id="1520" required="true"/>
+        <data_element id="7405"/>
+    </composite_data_element>
+    <composite_data_element id="C783"  name="footnoteSetIdentification" desc="The identification of a set of footnotes.">
+        <data_element id="9430" required="true"/>
+        <data_element id="7405"/>
+    </composite_data_element>
+    <composite_data_element id="C784"  name="footnoteIdentification" desc="The identification of a footnote.">
+        <data_element id="9432" required="true"/>
+        <data_element id="7405"/>
+    </composite_data_element>
+    <composite_data_element id="C785"  name="statisticalConceptIdentification" desc="The identification of a statistical concept.">
+        <data_element id="6434" required="true"/>
+        <data_element id="7405"/>
+    </composite_data_element>
+    <composite_data_element id="C786"  name="structureComponentIdentification" desc="The identification of a structure component.">
+        <data_element id="7512" required="true"/>
+        <data_element id="7405"/>
+    </composite_data_element>
+    <composite_data_element id="C814"  name="safetySection" desc="To identify the safety section to which information relates.">
+        <data_element id="4046" required="true"/>
+        <data_element id="4044"/>
+    </composite_data_element>
+    <composite_data_element id="C815"  name="additionalSafetyInformation" desc="To identify additional safety information.">
+        <data_element id="4039" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="4038"/>
+    </composite_data_element>
+    <composite_data_element id="C816"  name="nameComponentDetails" desc="To specify a name component.">
+        <data_element id="3405" required="true"/>
+        <data_element id="3398"/>
+        <data_element id="3401"/>
+        <data_element id="3295"/>
+    </composite_data_element>
+    <composite_data_element id="C817"  name="addressUsage" desc="To describe the usage of an address.">
+        <data_element id="3299"/>
+        <data_element id="3131"/>
+        <data_element id="3475"/>
+    </composite_data_element>
+    <composite_data_element id="C818"  name="personInheritedCharacteristicDetails" desc="To specify an inherited characteristic of a person.">
+        <data_element id="3311"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3310"/>
+    </composite_data_element>
+    <composite_data_element id="C819"  name="countrySubentityDetails" desc="To specify a part of a country (eg county or part of a city).">
+        <data_element id="3229"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3228"/>
+    </composite_data_element>
+    <composite_data_element id="C821"  name="typeOfDamage" desc="To specify the type of damage to an object.">
+        <data_element id="7501"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7500"/>
+    </composite_data_element>
+    <composite_data_element id="C822"  name="damageArea" desc="To specify where the damage is on an object.">
+        <data_element id="7503"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7502"/>
+    </composite_data_element>
+    <composite_data_element id="C823"  name="typeOfUnitcomponent" desc="To identify the type of unit/component of an object (e.g. lock, door, tyre).">
+        <data_element id="7505"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7504"/>
+    </composite_data_element>
+    <composite_data_element id="C824"  name="componentMaterial" desc="To identify the material of which a component is composed (e.g. steel, plastics).">
+        <data_element id="7507"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7506"/>
+    </composite_data_element>
+    <composite_data_element id="C825"  name="damageSeverity" desc="To specify the severity of damage to an object.">
+        <data_element id="7509"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7508"/>
+    </composite_data_element>
+    <composite_data_element id="C826"  name="action" desc="To indicate an action which has been taken or is to be taken (e.g. in relation to a certain object).">
+        <data_element id="1229"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="1228"/>
+    </composite_data_element>
+    <composite_data_element id="C827"  name="typeOfMarking" desc="Specification of the type of marking that reflects the method that was used and the conventions adhered to for marking (e.g. of packages).">
+        <data_element id="7511" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C828"  name="clinicalInterventionDetails" desc="To specify a clinical intervention.">
+        <data_element id="9437"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="9436"/>
+    </composite_data_element>
+    <composite_data_element id="C829"  name="sublineInformation" desc="To provide an indication that a segment or segment group is used to contain sub-line or sub-line item information and to optionally enable the sub-line to be identified.">
+        <data_element id="5495"/>
+        <data_element id="1082"/>
+    </composite_data_element>
+    <composite_data_element id="C830"  name="processIdentificationDetails" desc="To identify the details of a specific process.">
+        <data_element id="7191"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7190"/>
+    </composite_data_element>
+    <composite_data_element id="C831"  name="resultDetails" desc="To specify a value.">
+        <data_element id="6314"/>
+        <data_element id="6321"/>
+        <data_element id="6155"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="6154"/>
+    </composite_data_element>
+    <composite_data_element id="C836"  name="clinicalInformationDetails" desc="To specify an item of clinical information.">
+        <data_element id="6413"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="6412"/>
+    </composite_data_element>
+    <composite_data_element id="C837"  name="certaintyDetails" desc="To specify the certainty.">
+        <data_element id="4049"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="4048"/>
+    </composite_data_element>
+    <composite_data_element id="C838"  name="dosageDetails" desc="To specify a dosage.">
+        <data_element id="6083"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="6082"/>
+    </composite_data_element>
+    <composite_data_element id="C839"  name="attendeeCategory" desc="To specify the category of the attendee.">
+        <data_element id="7459"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7458"/>
+    </composite_data_element>
+    <composite_data_element id="C840"  name="attendanceAdmissionDetails" desc="To specify type of admission.">
+        <data_element id="9445"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="9444"/>
+    </composite_data_element>
+    <composite_data_element id="C841"  name="attendanceDischargeDetails" desc="To specify type of discharge.">
+        <data_element id="9447"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="9446"/>
+    </composite_data_element>
+    <composite_data_element id="C844"  name="organisationClassificationDetail" desc="To specify details regarding the class of an organisation.">
+        <data_element id="3083"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3082"/>
+    </composite_data_element>
+    <composite_data_element id="C848"  name="measurementUnitDetails" desc="To specify a measurement unit.">
+        <data_element id="6417"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="6416"/>
+    </composite_data_element>
+    <composite_data_element id="C849"  name="partiesToInstruction" desc="Identify the sending and receiving parties of the instruction.">
+        <data_element id="3301" required="true"/>
+        <data_element id="3285"/>
+    </composite_data_element>
+    <composite_data_element id="C850"  name="statusOfInstruction" desc="Provides information regarding the status of an instruction.">
+        <data_element id="4405" required="true"/>
+        <data_element id="3036"/>
+    </composite_data_element>
+    <composite_data_element id="C853"  name="errorSegmentPointDetails" desc="To indicate the exact segment location of an application error within a message.">
+        <data_element id="9166"/>
+        <data_element id="1050"/>
+        <data_element id="1159"/>
+    </composite_data_element>
+    <composite_data_element id="C878"  name="chargeallowanceAccount" desc="Identification of the account for charge or allowance.">
+        <data_element id="3434" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3194"/>
+        <data_element id="6345"/>
+    </composite_data_element>
+    <composite_data_element id="C889"  name="characteristicValue" desc="To provide the value of a characteristic.">
+        <data_element id="7111"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7110"/>
+        <data_element id="7110"/>
+    </composite_data_element>
+    <composite_data_element id="C901"  name="applicationErrorDetail" desc="Code assigned by the recipient of a message to indicate a data validation error condition.">
+        <data_element id="9321" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C941"  name="relationship" desc="Identification and/or description of a relationship.">
+        <data_element id="9143"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="9142"/>
+    </composite_data_element>
+    <composite_data_element id="C942"  name="membershipCategory" desc="Identification and/or description of a membership category for a member of a scheme or group.">
+        <data_element id="7451" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7450"/>
+    </composite_data_element>
+    <composite_data_element id="C944"  name="membershipStatus" desc="Code and/or description of membership status.">
+        <data_element id="7453"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7452"/>
+    </composite_data_element>
+    <composite_data_element id="C945"  name="membershipLevel" desc="Identification of a membership level.">
+        <data_element id="7455" required="true"/>
+        <data_element id="7457"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="7456"/>
+    </composite_data_element>
+    <composite_data_element id="C948"  name="employmentCategory" desc="Code and/or description of an employment category.">
+        <data_element id="9005"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="9004"/>
+    </composite_data_element>
+    <composite_data_element id="C950"  name="qualificationClassification" desc="Qualification classification description and/or code. This specifies the trade, skill, professional or similar qualification category.">
+        <data_element id="9007"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="9006"/>
+        <data_element id="9006"/>
+    </composite_data_element>
+    <composite_data_element id="C951"  name="occupation" desc="Description of an occupation.">
+        <data_element id="9009"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="9008"/>
+        <data_element id="9008"/>
+    </composite_data_element>
+    <composite_data_element id="C953"  name="contributionType" desc="Identification of the type of a contribution to a scheme or group.">
+        <data_element id="5049" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="5048"/>
+    </composite_data_element>
+    <composite_data_element id="C955"  name="attributeType" desc="Identification of the type of attribute.">
+        <data_element id="9021" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="C956"  name="attributeDetails" desc="Identification of the attribute related to an entity.">
+        <data_element id="9019"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="9018"/>
+    </composite_data_element>
+    <composite_data_element id="C960"  name="reasonForChange" desc="Code and/or description of the reason for a change. has been deleted in this directory).">
+        <data_element id="4295"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="4294"/>
+    </composite_data_element>
+    <composite_data_element id="E001"  name="addressDetails" desc="To specify the details of an address.">
+        <data_element id="3477" required="true"/>
+        <data_element id="3286" required="true"/>
+        <data_element id="3286"/>
+        <data_element id="3286"/>
+        <data_element id="3286"/>
+        <data_element id="3286"/>
+        <data_element id="3286"/>
+    </composite_data_element>
+    <composite_data_element id="E002"  name="commissionDetails" desc="To specify the commission conditions, amount, currency, party paying, and any related free text.">
+        <data_element id="4439" required="true"/>
+        <data_element id="5004"/>
+        <data_element id="6345"/>
+        <data_element id="3036"/>
+        <data_element id="4440"/>
+    </composite_data_element>
+    <composite_data_element id="E003"  name="attributeInformation" desc="To identify the type of attribute and the attribute.">
+        <data_element id="9021" required="true"/>
+        <data_element id="9018"/>
+    </composite_data_element>
+    <composite_data_element id="E004"  name="ruleDetails" desc="To indicate the coded rule, a number and it&apos;s relation to the rule, a start day of service, a monetary amount associated to the rule, and additional information associated with the rule.">
+        <data_element id="4183" required="true"/>
+        <data_element id="6350"/>
+        <data_element id="6353"/>
+        <data_element id="5479"/>
+        <data_element id="2160"/>
+        <data_element id="5004"/>
+        <data_element id="5025"/>
+        <data_element id="6345"/>
+        <data_element id="4440"/>
+        <data_element id="4440"/>
+        <data_element id="4440"/>
+        <data_element id="4440"/>
+        <data_element id="4440"/>
+        <data_element id="4440"/>
+        <data_element id="4440"/>
+        <data_element id="4440"/>
+        <data_element id="4440"/>
+    </composite_data_element>
+    <composite_data_element id="E005"  name="ruleText" desc="To specify the text rule. composite.">
+        <data_element id="4183" required="true"/>
+        <data_element id="4473"/>
+        <data_element id="4440"/>
+    </composite_data_element>
+    <composite_data_element id="E006"  name="ruleStatus" desc="To specify the status of the rule.">
+        <data_element id="4183" required="true"/>
+        <data_element id="7365"/>
+    </composite_data_element>
+    <composite_data_element id="E007"  name="trafficRestrictionDetails" desc="To provide details which restrict traffic.">
+        <data_element id="8015"/>
+        <data_element id="8017"/>
+        <data_element id="8035"/>
+        <data_element id="4440"/>
+    </composite_data_element>
+    <composite_data_element id="E008"  name="geographicDetails" desc="To specify a type of location, the actual location, the direction, distance, travel time and transportation to the location.">
+        <data_element id="3227" required="true"/>
+        <data_element id="3224" required="true"/>
+        <data_element id="5479"/>
+        <data_element id="6060"/>
+        <data_element id="6063"/>
+        <data_element id="2002"/>
+        <data_element id="8179"/>
+        <data_element id="8179"/>
+        <data_element id="8179"/>
+        <data_element id="8179"/>
+        <data_element id="8179"/>
+    </composite_data_element>
+    <composite_data_element id="E009"  name="dailyAvailabilityInformation" desc="To specify availability on a daily basis.">
+        <data_element id="2000" required="true"/>
+        <data_element id="4510"/>
+    </composite_data_element>
+    <composite_data_element id="E010"  name="selectionDetailsInformation" desc="To specify a selected option and associated information.">
+        <data_element id="4009" required="true"/>
+        <data_element id="4018"/>
+    </composite_data_element>
+    <composite_data_element id="E011"  name="rateClassDetails" desc="To identify rate classes and how they should be processed.">
+        <data_element id="5243" required="true"/>
+        <data_element id="7365"/>
+    </composite_data_element>
+    <composite_data_element id="E012"  name="nameInformation" desc="To identify the type of name, the actual name or a code to identify the name, and the status of the name.">
+        <data_element id="3035" required="true"/>
+        <data_element id="3036"/>
+        <data_element id="3039"/>
+        <data_element id="3397"/>
+    </composite_data_element>
+    <composite_data_element id="E082"  name="partyIdentificationDetails" desc="Identification of a transaction party by code. replaced by E012.">
+        <data_element id="3039" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="E206"  name="identificationNumber" desc="The identification of an object. replaced by E012.">
+        <data_element id="7402" required="true"/>
+        <data_element id="7405"/>
+        <data_element id="4405"/>
+    </composite_data_element>
+    <composite_data_element id="E211"  name="dimensions" desc="Specification of the dimensions of a transportable unit.">
+        <data_element id="6411" required="true"/>
+        <data_element id="6168"/>
+        <data_element id="6140"/>
+        <data_element id="6008"/>
+    </composite_data_element>
+    <composite_data_element id="E212"  name="itemNumberIdentification" desc="Goods identification for a specified source.">
+        <data_element id="7140"/>
+        <data_element id="7143"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="E504"  name="currencyDetails" desc="The usage to which a currency relates.">
+        <data_element id="6347" required="true"/>
+        <data_element id="6345"/>
+        <data_element id="6343"/>
+        <data_element id="6348"/>
+    </composite_data_element>
+    <composite_data_element id="E517"  name="locationIdentification" desc="Identification of a location by code or name.">
+        <data_element id="3225"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3224"/>
+    </composite_data_element>
+    <composite_data_element id="E523"  name="numberOfUnitDetails" desc="Identification of number of units and its purpose.">
+        <data_element id="6350"/>
+        <data_element id="6353"/>
+    </composite_data_element>
+    <composite_data_element id="E778"  name="positionIdentification" desc="To identify the position of an object in a structure containing the object.">
+        <data_element id="7164"/>
+        <data_element id="1050"/>
+    </composite_data_element>
+    <composite_data_element id="E816"  name="nameComponentDetails" desc="To specify a name component. replaced by E012.">
+        <data_element id="3405" required="true"/>
+        <data_element id="3398"/>
+        <data_element id="3401"/>
+        <data_element id="3295"/>
+    </composite_data_element>
+    <composite_data_element id="E817"  name="addressUsage" desc="To describe the usage of an address.">
+        <data_element id="3299"/>
+        <data_element id="3131"/>
+        <data_element id="3475"/>
+    </composite_data_element>
+    <composite_data_element id="E819"  name="countrySubentityDetails" desc="To specify a part of a country (eg county or part of a city).">
+        <data_element id="3229"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+        <data_element id="3228"/>
+    </composite_data_element>
+    <composite_data_element id="E901"  name="applicationErrorDetails" desc="Code assigned by the recipient of  a message to indicate a data validation error condition.">
+        <data_element id="9321" required="true"/>
+        <data_element id="1131"/>
+        <data_element id="3055"/>
+    </composite_data_element>
+    <composite_data_element id="E958"  name="quantityAndActionDetails" desc="To specify quantity and action required for a product or service.">
+        <data_element id="6060"/>
+        <data_element id="4405"/>
+    </composite_data_element>
+    <composite_data_element id="E959"  name="serviceDateTimeLocationInformation" desc="To specify the reserved date, starting time, ending time and location information, in this sequence, related to a service.">
+        <data_element id="7161" required="true"/>
+        <data_element id="2002"/>
+        <data_element id="2002"/>
+        <data_element id="2000"/>
+        <data_element id="3224"/>
+    </composite_data_element>
+    <composite_data_element id="E961"  name="transportDetails" desc="Details describing a specific means of transport.">
+        <data_element id="8179"/>
+        <data_element id="8216"/>
+        <data_element id="2162"/>
+        <data_element id="5482"/>
+        <data_element id="2160"/>
+        <data_element id="2380"/>
+        <data_element id="8215"/>
+        <data_element id="3225"/>
+        <data_element id="3225"/>
+        <data_element id="3225"/>
+    </composite_data_element>
+    <composite_data_element id="E962"  name="terminalInformation" desc="To specify departure or arrival information relative to a terminal.">
+        <data_element id="3463"/>
+        <data_element id="3223"/>
+        <data_element id="3223"/>
+    </composite_data_element>
+    <composite_data_element id="E963"  name="distanceOrTimeDetails" desc="Information about distance or duration.">
+        <data_element id="6314"/>
+        <data_element id="6411"/>
+        <data_element id="2002"/>
+    </composite_data_element>
+    <composite_data_element id="E964"  name="travellerTimeDetails" desc="Gate departure time, gate arrival time, and check-in date and time, in this sequence relevant to a traveller.">
+        <data_element id="2002"/>
+        <data_element id="2002"/>
+        <data_element id="2156"/>
+    </composite_data_element>
+    <composite_data_element id="E965"  name="specialTravelFacilities" desc="Specification of special travel facilities.">
+        <data_element id="9039"/>
+        <data_element id="9038"/>
+    </composite_data_element>
+    <composite_data_element id="E966"  name="contactInformation" desc="To specify communication numbers, type of number, and to whom the number belongs.">
+        <data_element id="3035" required="true"/>
+        <data_element id="3148" required="true"/>
+        <data_element id="3155"/>
+        <data_element id="3036"/>
+    </composite_data_element>
+    <composite_data_element id="E967"  name="consumerReferenceIdentification" desc="Identification of consumer references by type, company, number and reference to a traveller.">
+        <data_element id="1153" required="true"/>
+        <data_element id="1154"/>
+        <data_element id="3036"/>
+        <data_element id="1145"/>
+    </composite_data_element>
+    <composite_data_element id="E968"  name="documentInformation" desc="Identification of a document by coded name, number, classification and place of issue.">
+        <data_element id="1001" required="true"/>
+        <data_element id="1004" required="true"/>
+        <data_element id="7111"/>
+        <data_element id="3225"/>
+        <data_element id="3207"/>
+        <data_element id="3207"/>
+    </composite_data_element>
+    <composite_data_element id="E969"  name="validityDates" desc="Identification of the effective and expiration dates, effective date first.">
+        <data_element id="2000" required="true"/>
+        <data_element id="2000"/>
+    </composite_data_element>
+    <composite_data_element id="E970"  name="frequentTravellerIdentification" desc="Identification of the frequent traveller by company with the capability to reference to a specific traveller.">
+        <data_element id="3036" required="true"/>
+        <data_element id="3459" required="true"/>
+        <data_element id="1145"/>
+    </composite_data_element>
+    <composite_data_element id="E971"  name="freeTextQualification" desc="To specify the type, purpose, status, and language of free text.">
+        <data_element id="4451" required="true"/>
+        <data_element id="4473"/>
+        <data_element id="4405"/>
+        <data_element id="3036"/>
+        <data_element id="3453"/>
+    </composite_data_element>
+    <composite_data_element id="E972"  name="messageProcessingDetails" desc="To indicate message processing information.">
+        <data_element id="4025"/>
+        <data_element id="1225"/>
+        <data_element id="3055"/>
+        <data_element id="1225"/>
+        <data_element id="1225"/>
+        <data_element id="1225"/>
+        <data_element id="1225"/>
+        <data_element id="1225"/>
+        <data_element id="1225"/>
+        <data_element id="1225"/>
+        <data_element id="1225"/>
+        <data_element id="1225"/>
+    </composite_data_element>
+    <composite_data_element id="E973"  name="deliveringSystemDetails" desc="To specify the system and its location that originates or delivers the message for a third party.">
+        <data_element id="3036"/>
+        <data_element id="3225"/>
+        <data_element id="3224"/>
+    </composite_data_element>
+    <composite_data_element id="E974"  name="originatorIdentificationDetails" desc="To identify the assigned agent identification code, the originating system identification, booking source and agent name, in that sequence.">
+        <data_element id="3197"/>
+        <data_element id="3465"/>
+        <data_element id="3197"/>
+        <data_element id="3036"/>
+    </composite_data_element>
+    <composite_data_element id="E975"  name="location" desc="To identify a location.">
+        <data_element id="3225"/>
+        <data_element id="3224"/>
+    </composite_data_element>
+    <composite_data_element id="E976"  name="originatorDetails" desc="To specify details about the originator.">
+        <data_element id="3207"/>
+        <data_element id="6345"/>
+        <data_element id="3453"/>
+    </composite_data_element>
+    <composite_data_element id="E977"  name="paymentDetails" desc="To identify the method, type, amount, currency and due date of payment.">
+        <data_element id="4467"/>
+        <data_element id="4469"/>
+        <data_element id="5267"/>
+        <data_element id="5004"/>
+        <data_element id="6345"/>
+        <data_element id="1154"/>
+        <data_element id="2000"/>
+        <data_element id="3225"/>
+    </composite_data_element>
+    <composite_data_element id="E978"  name="creditCardInformation" desc="To identify the relevant information of a credit card and relate it to a traveller.">
+        <data_element id="3036" required="true"/>
+        <data_element id="1154"/>
+        <data_element id="2000"/>
+        <data_element id="3449"/>
+        <data_element id="1145"/>
+    </composite_data_element>
+    <composite_data_element id="E979"  name="reservationControlIdentification" desc="To specify the information required to identify a reservation.">
+        <data_element id="3036"/>
+        <data_element id="9040"/>
+        <data_element id="9043"/>
+        <data_element id="2000"/>
+        <data_element id="2164"/>
+        <data_element id="1154"/>
+    </composite_data_element>
+    <composite_data_element id="E980"  name="specialRequirementTypeDetails" desc="To specify special requirements on services, the quantity required, action to be taken and where the requirement should be administered.">
+        <data_element id="4187" required="true"/>
+        <data_element id="4405"/>
+        <data_element id="6060"/>
+        <data_element id="3036"/>
+        <data_element id="7365"/>
+        <data_element id="3225"/>
+        <data_element id="3225"/>
+    </composite_data_element>
+    <composite_data_element id="E981"  name="specialRequirementDetails" desc="To specify requirements concerning a special request or requirement and to reference to a traveller.">
+        <data_element id="4184"/>
+        <data_element id="6411"/>
+        <data_element id="6060"/>
+        <data_element id="1145"/>
+        <data_element id="7111"/>
+        <data_element id="7111"/>
+        <data_element id="7111"/>
+        <data_element id="7111"/>
+        <data_element id="7111"/>
+    </composite_data_element>
+    <composite_data_element id="E982"  name="tariffInformation" desc="To identify the rates or tariff details.">
+        <data_element id="5263"/>
+        <data_element id="5004"/>
+        <data_element id="6345"/>
+        <data_element id="5501"/>
+        <data_element id="5025"/>
+        <data_element id="2152"/>
+        <data_element id="5377"/>
+        <data_element id="5160"/>
+        <data_element id="2000"/>
+        <data_element id="2000"/>
+        <data_element id="4183"/>
+    </composite_data_element>
+    <composite_data_element id="E983"  name="rateInformation" desc="To identify the rate or tariff categories, rate or tariff range, and processing information.">
+        <data_element id="5243"/>
+        <data_element id="6162"/>
+        <data_element id="6152"/>
+        <data_element id="7365"/>
+    </composite_data_element>
+    <composite_data_element id="E984"  name="associatedChargesInformation" desc="Identification of the additional charges that are associated to a product or service.">
+        <data_element id="5261"/>
+        <data_element id="5004"/>
+        <data_element id="7008"/>
+        <data_element id="6060"/>
+        <data_element id="2155"/>
+        <data_element id="6345"/>
+        <data_element id="3225"/>
+        <data_element id="4440"/>
+        <data_element id="4513"/>
+    </composite_data_element>
+    <composite_data_element id="E985"  name="travellerSurnameAndRelatedInformation" desc="Identification of the surname of traveller, the type of traveller, number of travellers per surname,  status of the surname, and surname language.">
+        <data_element id="3500" required="true"/>
+        <data_element id="3035"/>
+        <data_element id="6060"/>
+        <data_element id="4405"/>
+        <data_element id="3453"/>
+    </composite_data_element>
+    <composite_data_element id="E986"  name="travellerDetails" desc="To identify the given or first name and title of a traveller, the traveller type, the traveller language, and the sex and age of the traveller.">
+        <data_element id="3460"/>
+        <data_element id="3035"/>
+        <data_element id="1145"/>
+        <data_element id="3504"/>
+        <data_element id="8219"/>
+        <data_element id="3453"/>
+        <data_element id="3499"/>
+        <data_element id="2018"/>
+    </composite_data_element>
+    <composite_data_element id="E987"  name="productDateAndTime" desc="To specify first the beginning date and time followed by the ending date and time associated with a product or service.">
+        <data_element id="2000" required="true"/>
+        <data_element id="2002"/>
+        <data_element id="2000"/>
+        <data_element id="2002"/>
+        <data_element id="2148"/>
+    </composite_data_element>
+    <composite_data_element id="E988"  name="companyIdentification" desc="To identify the company and any associated companies.">
+        <data_element id="3036" required="true"/>
+        <data_element id="3036"/>
+        <data_element id="3036"/>
+    </composite_data_element>
+    <composite_data_element id="E989"  name="productIdentificationDetails" desc="Code, number or name to identify a specific product or service and a code to identify the level or type of product or service.">
+        <data_element id="7135"/>
+        <data_element id="7037"/>
+        <data_element id="7139"/>
+        <data_element id="7009"/>
+        <data_element id="7009"/>
+        <data_element id="7009"/>
+    </composite_data_element>
+    <composite_data_element id="E990"  name="sequenceNumberDetails" desc="To specify sequence number information about a product or service.">
+        <data_element id="1050" required="true"/>
+        <data_element id="1050"/>
+        <data_element id="1050"/>
+        <data_element id="1050"/>
+        <data_element id="1050"/>
+        <data_element id="1050"/>
+        <data_element id="1050"/>
+        <data_element id="1050"/>
+        <data_element id="1050"/>
+    </composite_data_element>
+    <composite_data_element id="E991"  name="vehicleInformation" desc="To identify a vehicle by make or model and vehicle identification number.">
+        <data_element id="8154"/>
+        <data_element id="7402"/>
+    </composite_data_element>
+    <composite_data_element id="E992"  name="position" desc="To identify the position of an item.">
+        <data_element id="3223"/>
+        <data_element id="3233"/>
+    </composite_data_element>
+    <composite_data_element id="E993"  name="tourDetails" desc="To provide details of a tour by code, name of the tour provider, length, number of stops, room occupancy and number of rooms.">
+        <data_element id="7135"/>
+        <data_element id="3036"/>
+        <data_element id="6168"/>
+        <data_element id="8216"/>
+        <data_element id="2160"/>
+        <data_element id="6350"/>
+        <data_element id="6060"/>
+    </composite_data_element>
+    <composite_data_element id="E994"  name="stopoverInformation" desc="To specify location of and number of nights at a stopover.">
+        <data_element id="3225"/>
+        <data_element id="6350"/>
+    </composite_data_element>
+    <composite_data_element id="E995"  name="movementDetails" desc="To specify information concerning delivery.">
+        <data_element id="7273"/>
+        <data_element id="2000"/>
+        <data_element id="2002"/>
+    </composite_data_element>
+    <composite_data_element id="E996"  name="productClassDetails" desc="To specify details for a product class.">
+        <data_element id="7037"/>
+        <data_element id="4510"/>
+        <data_element id="7161"/>
+        <data_element id="7009"/>
+        <data_element id="7009"/>
+        <data_element id="7009"/>
+    </composite_data_element>
+    <composite_data_element id="E997"  name="accommodationAllocationInformation" desc="To specify references, type and characteristics of accommodations allocated. 99 times in the composite.">
+        <data_element id="1154" required="true"/>
+        <data_element id="9143"/>
+        <data_element id="4187"/>
+        <data_element id="7111"/>
+        <data_element id="4184"/>
+    </composite_data_element>
+    <composite_data_element id="E998"  name="discountInformation" desc="To specify the reason for, amount, the company granting, and a number related to the reason for a discount.">
+        <data_element id="4465" required="true"/>
+        <data_element id="5482"/>
+        <data_element id="3036"/>
+        <data_element id="6350"/>
+    </composite_data_element>
+    <composite_data_element id="E999"  name="connectionDetails" desc="To specify a location for connections and stopovers and the designated supplier.">
+        <data_element id="3225"/>
+        <data_element id="3036"/>
+        <data_element id="2002"/>
+        <data_element id="2002"/>
+    </composite_data_element>
+</composite_data_elements>

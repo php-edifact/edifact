@@ -6,11 +6,11 @@ class ParserTest extends PHPUnit_Framework_TestCase
         $p=new Parser();
         $string="LOC+9+VNSGN'LOC+11+ITGOA'MEA+WT++KGM:9040'";
         $test=$p->unwrap($string);
-                
+
         $expected=array("LOC+9+VNSGN'","LOC+11+ITGOA'","MEA+WT++KGM:9040'");
         $this->assertEquals($expected,$test);
     }
-    
+
     public function testParseSimple()
     {
         $p=new Parser();
@@ -20,7 +20,7 @@ class ParserTest extends PHPUnit_Framework_TestCase
         $result=$p->get();
         $this->assertEquals($expected,$result);
     }
-    
+
     public function testEscapedSegment()
     {
         $p=new Parser();
@@ -28,9 +28,9 @@ class ParserTest extends PHPUnit_Framework_TestCase
         $expected=[["EQD","CX?DU12+3456","2:0"]];
         $p->splitSegment($string);
         $result=$p->get();
-        $this->assertEquals($expected,$result);    
+        $this->assertEquals($expected,$result);
     }
-    
+
     public function testNotEscapedSegment()
     {
         $p=new Parser();
@@ -43,7 +43,7 @@ class ParserTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected,$result);
         $this->assertContains($experror,$error);
     }
-    
+
     public function testNotTerminatedSegment()
     {
         $p=new Parser();
@@ -51,16 +51,16 @@ class ParserTest extends PHPUnit_Framework_TestCase
         $error="Segment not ended correctly at line 1=>LOC+9+VNSGN";
         $p->parse($string);
         $result=$p->errors();
-        $this->assertContains($error,$result);    
+        $this->assertContains($error,$result);
     }
-    
+
     public function testNoErrors()
     {
         $p=new Parser();
         $string="LOC+9+VNSGN'\nLOC+11+ITGOA'";
         $p->parse($string);
         $result=$p->errors();
-        $this->assertEmpty($result);    
+        $this->assertEmpty($result);
     }
 }
 ?>

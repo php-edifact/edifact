@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<segments>
+    <segment id="UCD"  name="dataElementErrorIndication" desc="To identify an erroneous simple, composite or component data element, and to identify the nature of the error.">
+        <data_element id="0085" required="true"/>
+        <composite_data_element id="S011" required="true"/>
+    </segment>
+    <segment id="UCF"  name="functionalGroupResponse" desc="To identify a functional group in the subject interchange and to indicate acknowledgement or rejection (action taken) of the UNG and UNE segments, and to identify any error related to these segments. Depending on the action code, it may also indicate the action taken on the messages within that functional group.">
+        <data_element id="0048" required="true"/>
+        <composite_data_element id="S006" required="true"/>
+        <composite_data_element id="S007" required="true"/>
+        <data_element id="0083" required="true"/>
+        <data_element id="0085"/>
+        <data_element id="0013"/>
+        <composite_data_element id="S011"/>
+    </segment>
+    <segment id="UCI"  name="interchangeResponse" desc="To identify the subject interchange, to indicate interchange receipt, to indicate acknowledgement or rejection (action taken) of the UNA, UNB and UNZ segments, and to identify any error related to these segments. Depending on the action code, it may also indicate the action taken on the functional groups and messages within that interchange.">
+        <data_element id="0020" required="true"/>
+        <composite_data_element id="S002" required="true"/>
+        <composite_data_element id="S003" required="true"/>
+        <data_element id="0083" required="true"/>
+        <data_element id="0085"/>
+        <data_element id="0013"/>
+        <composite_data_element id="S011"/>
+    </segment>
+    <segment id="UCM"  name="messageResponse" desc="To identify a message in the subject interchange, and to indicate that message&apos;s acknowledgement or rejection (action taken), and to identify any error related to the UNH and UNT segments.">
+        <data_element id="0062" required="true"/>
+        <composite_data_element id="S009" required="true"/>
+        <data_element id="0083" required="true"/>
+        <data_element id="0085"/>
+        <data_element id="0013"/>
+        <composite_data_element id="S011"/>
+    </segment>
+    <segment id="UCS"  name="segmentErrorIndication" desc="To identify either a segment containing an error or a missing segment, and to identify any error related to the complete segment.">
+        <data_element id="0096" required="true"/>
+        <data_element id="0085"/>
+    </segment>
+    <segment id="UNB"  name="interchangeHeader" desc="To start, identify and specify an interchange.">
+        <composite_data_element id="S001" required="true"/>
+        <composite_data_element id="S002" required="true"/>
+        <composite_data_element id="S003" required="true"/>
+        <composite_data_element id="S004" required="true"/>
+        <data_element id="0020" required="true"/>
+        <composite_data_element id="S005"/>
+        <data_element id="0026"/>
+        <data_element id="0029"/>
+        <data_element id="0031"/>
+        <data_element id="0032"/>
+        <data_element id="0035"/>
+    </segment>
+    <segment id="UNE"  name="functionalGroupTrailer" desc="To end and check the completeness of a functional group.">
+        <data_element id="0060" required="true"/>
+        <data_element id="0048" required="true"/>
+    </segment>
+    <segment id="UNG"  name="functionalGroupHeader" desc="To head, identify and specify a functional group.">
+        <data_element id="0038" required="true"/>
+        <composite_data_element id="S006" required="true"/>
+        <composite_data_element id="S007" required="true"/>
+        <composite_data_element id="S004" required="true"/>
+        <data_element id="0048" required="true"/>
+        <data_element id="0051" required="true"/>
+        <composite_data_element id="S008" required="true"/>
+        <data_element id="0058"/>
+    </segment>
+    <segment id="UNH"  name="messageHeader" desc="To head, identify and specify a message.">
+        <data_element id="0062" required="true"/>
+        <composite_data_element id="S009" required="true"/>
+        <data_element id="0068"/>
+        <composite_data_element id="S010"/>
+    </segment>
+    <segment id="UNS"  name="sectionControl" desc="To separate header, detail and summary sections of a message. note: To be used by message designers when required to avoid ambiguities. Mandatory only if specified for the type of message concerned.">
+        <data_element id="0081" required="true"/>
+    </segment>
+    <segment id="UNT"  name="messageTrailer" desc="To end and check the completeness of a message.">
+        <data_element id="0074" required="true"/>
+        <data_element id="0062" required="true"/>
+    </segment>
+    <segment id="UNZ"  name="interchangeTrailer" desc="To end and check the completeness of an interchange.">
+        <data_element id="0036" required="true"/>
+        <data_element id="0020" required="true"/>
+    </segment>
+</segments>
