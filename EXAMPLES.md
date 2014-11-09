@@ -94,18 +94,18 @@ EDI data element reading
 
 ```php
     $file_name = 'files/truck_out_176699.edi';
-    $parser = new EDI\Parser();
-    $parser->load($file_name);
+    $reader = new EDI\Reader($file_name);
+
     $record = array(
-            'interchangeSender' => $parser->readEdiDataValue('UNB',2),
-            'dateTimePreparation' => $parser->readEdiDataValue('UNB',4,0) .  $parser->readEdiDataValue('UNB',4,1),
-            'messageReferenceNumber' => $parser->readEdiDataValue('UNH',1),
-            'TareWeight' => $parser->readEdiDataValue(['MEA',['2'=>'T']],3,0) 
+            'interchangeSender' => $reader->readEdiDataValue('UNB',2),
+            'arrivalDateTimeEstimated' => $reader->$EdiReader->readEdiSegmentDTM('132'),
+            'messageReferenceNumber' => $reader->readEdiDataValue('UNH',1),
+            'TareWeight' => $reader->readEdiDataValue(['MEA',['2'=>'T']],3,0) 
                                 . ' ' 
-                                . $parser->readEdiDataValue(['MEA',['2'=>'T']],3,1),
-            'GrossWeight' => $parser->readEdiDataValue(['MEA',['2'=>'G']],3,0) 
+                                . $reader->readEdiDataValue(['MEA',['2'=>'T']],3,1),
+            'GrossWeight' => $reader->readEdiDataValue(['MEA',['2'=>'G']],3,0) 
                                 . ' ' 
-                                . $parser->readEdiDataValue(['MEA',['2'=>'G']],3,1),
+                                . $reader->readEdiDataValue(['MEA',['2'=>'G']],3,1),
     )
     var_dump($record);
 ```
