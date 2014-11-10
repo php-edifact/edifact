@@ -33,9 +33,12 @@
         <code id="31" desc="Underbond request"/>
         <code id="32" desc="Underbond approval"/>
         <code id="33" desc="Certificate of sealing of export meat lockers"/>
-        <code id="34" desc="Cargo status"/>
+        <code id="34" desc="Gate In"/><!--Cargo status-->
         <code id="35" desc="Inventory report"/>
+        <code id="36" desc="Gate Out"/>
         <code id="37" desc="Response to a trade statistics message"/>
+        <code id="44" desc="Discharge"/><!--Cargo status-->
+        <code id="46" desc="Loading"/>
         <code id="59" desc="Treatment - nil outturn"/>
         <code id="60" desc="Treatment - time-up underbond"/>
         <code id="61" desc="Treatment - underbond by sea"/>
@@ -326,6 +329,7 @@
         <code id="995" desc="Statistical document, import"/>
         <code id="996" desc="Application for documentary credit"/>
         <code id="998" desc="Previous Customs document/message"/>
+        <code id="999" desc="Logistic Move"/>
     </data_element>
     <data_element id="1049">
         <code id="1" desc="Heading section"/>
@@ -1427,46 +1431,46 @@
         <code id="ZZZ" desc="Mutually defined"/>
     </data_element>
     <data_element id="2379">
-        <code id="2" desc="DDMMYY"/>
-        <code id="3" desc="MMDDYY"/>
-        <code id="101" desc="YYMMDD"/>
-        <code id="102" desc="CCYYMMDD"/>
-        <code id="103" desc="YYWWD"/>
-        <code id="105" desc="YYDDD"/>
-        <code id="106" desc="MMDD"/>
-        <code id="107" desc="DDD"/>
-        <code id="108" desc="WW"/>
-        <code id="109" desc="MM"/>
-        <code id="110" desc="DD"/>
-        <code id="201" desc="YYMMDDHHMM"/>
-        <code id="202" desc="YYMMDDHHMMSS"/>
-        <code id="203" desc="CCYYMMDDHHMM"/>
-        <code id="204" desc="CCYYMMDDHHMMSS"/>
-        <code id="301" desc="YYMMDDHHMMZZZ"/>
-        <code id="302" desc="YYMMDDHHMMSSZZZ"/>
-        <code id="303" desc="CCYYMMDDHHMMZZZ"/>
-        <code id="304" desc="CCYYMMDDHHMMSSZZZ"/>
-        <code id="305" desc="MMDDHHMM"/>
-        <code id="306" desc="DDHHMM"/>
-        <code id="401" desc="HHMM"/>
-        <code id="402" desc="HHMMSS"/>
-        <code id="404" desc="HHMMSSZZZ"/>
+        <code id="2" desc="DDMMYY" parseformat="dmy"/>
+        <code id="3" desc="MMDDYY" parseformat="mdy"/>
+        <code id="101" desc="YYMMDD" parseformat="ymd"/>
+        <code id="102" desc="CCYYMMDD" parseformat="Ymd"/>
+        <code id="103" desc="YYWWD" parseformat="yWN"/>
+        <code id="105" desc="YYDDD" parseformat="yZ"/>
+        <code id="106" desc="MMDD" parseformat="md"/>
+        <code id="107" desc="DDD" parseformat="Z"/>
+        <code id="108" desc="WW" parseformat="W"/>
+        <code id="109" desc="MM" parseformat="m"/>
+        <code id="110" desc="DD" parseformat="d"/>
+        <code id="201" desc="YYMMDDHHMM" parseformat="ymdHi"/>
+        <code id="202" desc="YYMMDDHHMMSS" parseformat="ymdHis"/>
+        <code id="203" desc="CCYYMMDDHHMM" parseformat="YmdHi" outformat="d/m/Y H:i"/>
+        <code id="204" desc="CCYYMMDDHHMMSS" parseformat="YmdHis" outformat="d/m/Y H:i:s"/>
+        <code id="301" desc="YYMMDDHHMMZZZ" parseformat="ymdHiT" outformat="d/m/Y H:i T"/>
+        <code id="302" desc="YYMMDDHHMMSSZZZ" parseformat="ymdHisT" outformat="d/m/Y H:i:s T"/>
+        <code id="303" desc="CCYYMMDDHHMMZZZ" parseformat="YmdHiT" outformat="d/m/Y H:i T"/>
+        <code id="304" desc="CCYYMMDDHHMMSSZZZ" parseformat="YmdHisT" outformat="d/m/Y H:i:s T"/>
+        <code id="305" desc="MMDDHHMM" parseformat="mdHi"/>
+        <code id="306" desc="DDHHMM" parseformat="dHi"/>
+        <code id="401" desc="HHMM" parseformat="Hi"/>
+        <code id="402" desc="HHMMSS" parseformat="His"/>
+        <code id="404" desc="HHMMSSZZZ" parseformat="HisT"/>
         <code id="405" desc="MMMMSS"/>
         <code id="501" desc="HHMMHHMM"/>
         <code id="502" desc="HHMMSS-HHMMSS"/>
         <code id="503" desc="HHMMSSZZZ-HHMMSSZZZ"/>
         <code id="600" desc="CC"/>
-        <code id="601" desc="YY"/>
-        <code id="602" desc="CCYY"/>
+        <code id="601" desc="YY" parseformat="y"/>
+        <code id="602" desc="CCYY" parseformat="Y"/>
         <code id="603" desc="YYS"/>
         <code id="604" desc="CCYYS"/>
         <code id="608" desc="CCYYQ"/>
-        <code id="609" desc="YYMM"/>
-        <code id="610" desc="CCYYMM"/>
+        <code id="609" desc="YYMM" parseformat="ym"/>
+        <code id="610" desc="CCYYMM" parseformat="Ym"/>
         <code id="613" desc="YYMMA"/>
         <code id="614" desc="CCYYMMA"/>
-        <code id="615" desc="YYWW"/>
-        <code id="616" desc="CCYYWW"/>
+        <code id="615" desc="YYWW" parseformat="yW"/>
+        <code id="616" desc="CCYYWW" parseformat="YW"/>
         <code id="701" desc="YY-YY"/>
         <code id="702" desc="CCYY-CCYY"/>
         <code id="703" desc="YYS-YYS"/>
@@ -5732,6 +5736,17 @@
         <code id="TS" desc="Tackles"/>
         <code id="TSU" desc="Tarpaulin support"/>
         <code id="UL" desc="ULD (Unit load device)"/>
+    </data_element>
+	<data_element id="8067"> <!-- modeoftransport -->
+        <code id="1" desc="Maritime transport"/>
+        <code id="2" desc="Rail transport"/>
+        <code id="3" desc="Road transport"/>
+        <code id="4" desc="Air transport"/>
+        <code id="5" desc="Mail"/>
+        <code id="6" desc="Multimodal transport"/>
+        <code id="7" desc="Fixed transport installations"/>
+        <code id="8" desc="Inland water transport"/>
+        <code id="9" desc="Mode unknown"/>
     </data_element>
     <data_element id="8077">
         <code id="1" desc="Shipper supplied"/>
