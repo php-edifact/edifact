@@ -33,7 +33,7 @@ Array ['DTM',['7','201309200717','203']]
 
 Syntax data
 ----------
-Comes from [https://code.google.com/p/izi-sandbox/source/browse/trunk/php/php_edi/](IZISandbox).
+Processed from EDI PEAR Package by David JEAN LOUIS (izi), downloadable from [https://code.google.com/p/izi-sandbox/source/browse/trunk/php/php_edi/](IZISandbox).
 
 
 Notes
