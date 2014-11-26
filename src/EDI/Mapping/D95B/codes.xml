@@ -3012,6 +3012,8 @@
         <code id="44" desc="Group guarantee"/>
         <code id="45" desc="Insurance certificate"/>
         <code id="ZZZ" desc="Mutually defined"/>
+    </data_element>
+    <data_element id="4435">        
         <code id="1" desc="Ordinary post"/>
         <code id="2" desc="Air mail"/>
         <code id="3" desc="Telegraph"/>
