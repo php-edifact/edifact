@@ -23,7 +23,7 @@ namespace EDI;
 class Reader
 {
 	private $parsedfile;
-	private $errors;
+	private $errors = array();
 
 	public function __construct($url=null)
 	{
@@ -52,7 +52,15 @@ class Reader
     function setParsedFile($parsed_file){
         $this->parsedfile = $parsed_file;
     }
+
+    function getParsedFile(){
+        return $this->parsedfile;
+    }
 	
+	public function readEdiDataValueReq($filter,$l1,$l2 = false) {    
+        return $this->readEdiDataValue($filter, $l1, $l2,true);
+    }
+    
 	/**
 	 * read data value from parsed EDI data
 	 * 
@@ -64,7 +72,7 @@ class Reader
 	 * @param int/false $l2 second level item number (start by 0)
 	 * @return string/null
 	 */
-	public function readEdiDataValue($filter,$l1,$l2 = false) {
+	public function readEdiDataValue($filter,$l1,$l2 = false,$required = false) {
 
 		//interpret filter arameters
 		if (!is_array($filter)) {
@@ -108,18 +116,24 @@ class Reader
 
 		//no found segment
 		if (!$segment) {
+            if($required){
+                $this->errors[] = 'Segment "' . $segment_name . '" no exist';                
+            }
 			return null;
 		}
 
 		//found more one segment - error
 		if ($segment_count > 1) {
 			
-            $this->errors['Error: Segment name "' . $segment_name . '" is ambiguous'];
+            $this->errors[] = 'Segment "' . $segment_name . '" is ambiguous';
 			return null;
 		}
 
 		//validate elements
 		if (!isset($segment[$l1])) {
+            if($required){
+                $this->errors[] = 'Segment value "' . $segment_name . '['.$l1.']" no exist';                
+            }            
 			return null;
 		}
 
@@ -130,6 +144,9 @@ class Reader
 
 		//requestd second level element, but not exist
 		if (!is_array($segment[$l1]) || !isset($segment[$l1][$l2])) {
+            if($required){
+                $this->errors[] = 'Segment value "' . $segment_name . '['.$l1.']['.$l2.']" no exist';                
+            }             
 			return null;
 		}
 
@@ -193,6 +210,77 @@ class Reader
     
     public function readUNHmessageType(){
         return $this->readEdiDataValue('UNH', 2,0);        
+    }
+    
+    public function readGroups($before,$start,$end,$after){
+        $groups = [];
+        $group = [];
+        $position = 'before_search';
+        foreach ($this->parsedfile as $edi_row) {
+            //echo $edi_row[0].' '.$position.PHP_EOL;
+            
+            //search before group segment
+            if ($position == 'before_search' && $edi_row[0] == $before) {
+                $position = 'before_is';
+                continue;
+            }
+
+            if ($position == 'before_search') {
+                continue;
+            }
+
+            if ($position == 'before_is' && $edi_row[0] == $before) {
+                continue;
+            }            
+            
+            //after before search start
+            if ($position == 'before_is' && $edi_row[0] == $start) {
+                $position = 'group_is';
+                $group[] = $edi_row;
+                continue;
+            }            
+
+            //if after before segment no start segment, search again before segment
+            if ($position == 'before_is') {
+                $position = 'before_search';
+                continue;
+            }            
+
+            //get group element
+            if ($position == 'group_is' && $edi_row[0] != $end) {
+                $group[] = $edi_row;
+                continue;
+            }            
+            
+            //found end of group
+            if ($position == 'group_is' && $edi_row[0] == $end) {
+                $position = 'group_finish';
+                $group[] = $edi_row;
+                $groups[] = $group; 
+                $group = [];
+                continue;
+            }            
+            
+            //next group start
+            if ($position == 'group_finish' && $edi_row[0] == $start) {
+                $group[] = $edi_row;
+                $position = 'group_is';
+                continue;
+            }                 
+            
+            //finish
+            if ($position == 'group_finish' && $edi_row[0] == $after) {
+                break;
+            }       
+            
+            $this->errors[] = 'Reading group ' . $before.'/'.$start.'/'.$end.'/'.$after
+                    .'. Error on position: ' . $position;
+            return false;
+            
+        }
+        
+        return $groups;
+        
     }
     
 }
