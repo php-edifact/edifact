@@ -212,6 +212,14 @@ class Reader
         return $this->readEdiDataValue('UNH', 2,0);        
     }
     
+    /**
+     * get groups from message
+     * @param char $before segment before groups 
+     * @param type $start first segment of group
+     * @param type $end last segment of group
+     * @param type $after segment after groups
+     * @return boolean/array
+     */
     public function readGroups($before,$start,$end,$after){
         $groups = [];
         $group = [];
