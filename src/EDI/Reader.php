@@ -43,6 +43,15 @@ class Reader
 		$this->errors = array();
 	}
 	
+	/**
+	 * Returns the parsed file contained within.
+	 * @returns array
+	 */
+	public function getParsedFile()
+	{
+		return $this->parsedfile;
+	}
+	
 	function load($url)
 	{
         $Parser = new \EDI\Parser($url);
