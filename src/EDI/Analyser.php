@@ -181,4 +181,13 @@ class Analyser {
 		return implode(PHP_EOL,$r);
 	}
 
+    public function readCodes($codes_file){
+        $codes_xml = file_get_contents($codes_file);
+        $xml = simplexml_load_string($codes_xml);
+        unset($codes_xml);
+        $json = json_encode($xml);
+        unset($xml);
+        return json_decode($json,TRUE);
+    }
+    
 }
