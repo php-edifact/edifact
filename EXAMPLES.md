@@ -106,9 +106,9 @@ EDI data element reading
             'GrossWeight' => $reader->readEdiDataValue(['MEA',['2'=>'G']],3,0) 
                                 . ' ' 
                                 . $reader->readEdiDataValue(['MEA',['2'=>'G']],3,1),
-    )
+    );
 
-    //error procesing
+    //error processing
     $reader_errors = $EdiReader->errors();
     if(!empty($reader_errors)){
         var_dump($reader_errors);
