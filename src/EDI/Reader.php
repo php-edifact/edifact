@@ -62,10 +62,6 @@ class Reader
         $this->parsedfile = $parsed_file;
     }
 
-    function getParsedFile(){
-        return $this->parsedfile;
-    }
-	
 	public function readEdiDataValueReq($filter,$l1,$l2 = false) {    
         return $this->readEdiDataValue($filter, $l1, $l2,true);
     }
