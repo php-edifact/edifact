@@ -216,7 +216,7 @@ class Reader
     public function readUNHmessageType(){
         return $this->readEdiDataValue('UNH', 2,0);        
     }
-    
+
     /**
      * get groups from message
      * @param char $before segment before groups 
