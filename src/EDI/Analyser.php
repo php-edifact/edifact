@@ -28,9 +28,9 @@ class Analyser {
 	}
 
 	/**
-	 * convert segment definiton from XML to array. Sequence of data_elements and
+	 * convert segment definition from XML to array. Sequence of data_elements and
 	 * composite_data_element same as in XML
-	 * @param char $segment_xml_file
+	 * @param string $segment_xml_file
 	 */
 	public function loadSegmentsXml($segment_xml_file) {
 
@@ -48,6 +48,7 @@ class Analyser {
 
 			$pos = 0;
 			$deatils = array();
+			/** @var \SimpleXmlElement $detail */
 			foreach ($segment as $type => $detail) {
 				$pos ++;
 				$detail_attributes = array();
@@ -60,6 +61,7 @@ class Analyser {
 						break;
 					case 'composite_data_element':
 						$sub_deatils = array();
+						/** @var \SimpleXmlElement $sub_detail */
 						foreach ($detail as $sub_type => $sub_detail) {
 
 							$sub_detail_attributes = array();
@@ -101,9 +103,9 @@ class Analyser {
 	}
 
 	/**
-	 * create readble EDI MESSAGE with comments
+	 * create readable EDI MESSAGE with comments
 	 * @param array $data by EDI\parser() created array from plain EDI message
-	 * @return text file
+	 * @return string file
 	 */
 	public function process($data){
 		$r = array();
@@ -189,5 +191,5 @@ class Analyser {
         unset($xml);
         return json_decode($json,TRUE);
     }
-    
+
 }
