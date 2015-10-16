@@ -56,11 +56,11 @@ class Analyser {
 					$detail_attributes[$av] = (string) $ak;
 				}
 
+				$sub_details = array();
 				switch ($type) {
 					case 'data_element':
 						break;
 					case 'composite_data_element':
-						$sub_details = array();
 						/** @var \SimpleXmlElement $sub_detail */
 						foreach ($detail as $sub_type => $sub_detail) {
 
