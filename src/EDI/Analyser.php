@@ -119,7 +119,7 @@ class Analyser {
 			if(isset($this->segments[$id])){
 
 				$attributes = $this->segments[$id]['attributes'];
-				$details_desc = $this->segments[$id]['deatils'];
+				$details_desc = $this->segments[$id]['details'];
 
 				$r[] = $id . ' - ' . $attributes['name'];
 				$r[] = '  (' . wordwrap($attributes['desc'],75,PHP_EOL.'  ') . ')';
@@ -175,7 +175,7 @@ class Analyser {
 					}
 				}
 			}else{
-				 $r[] = $id;
+				$r[] = $id;
 			}
 
 		}
@@ -183,13 +183,13 @@ class Analyser {
 		return implode(PHP_EOL,$r);
 	}
 
-    public function readCodes($codes_file){
-        $codes_xml = file_get_contents($codes_file);
-        $xml = simplexml_load_string($codes_xml);
-        unset($codes_xml);
-        $json = json_encode($xml);
-        unset($xml);
-        return json_decode($json,TRUE);
-    }
+	public function readCodes($codes_file){
+		$codes_xml = file_get_contents($codes_file);
+		$xml = simplexml_load_string($codes_xml);
+		unset($codes_xml);
+		$json = json_encode($xml);
+		unset($xml);
+		return json_decode($json,TRUE);
+	}
 
 }
