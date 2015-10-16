@@ -28,9 +28,9 @@ class Analyser {
 	}
 
 	/**
-	 * convert segment definiton from XML to array. Sequence of data_elements and
+	 * convert segment definition from XML to array. Sequence of data_elements and
 	 * composite_data_element same as in XML
-	 * @param char $segment_xml_file
+	 * @param string $segment_xml_file
 	 */
 	public function loadSegmentsXml($segment_xml_file) {
 
@@ -47,7 +47,8 @@ class Analyser {
 			}
 
 			$pos = 0;
-			$deatils = array();
+			$details = array();
+			/** @var \SimpleXmlElement $detail */
 			foreach ($segment as $type => $detail) {
 				$pos ++;
 				$detail_attributes = array();
@@ -55,11 +56,12 @@ class Analyser {
 					$detail_attributes[$av] = (string) $ak;
 				}
 
+				$sub_details = array();
 				switch ($type) {
 					case 'data_element':
 						break;
 					case 'composite_data_element':
-						$sub_deatils = array();
+						/** @var \SimpleXmlElement $sub_detail */
 						foreach ($detail as $sub_type => $sub_detail) {
 
 							$sub_detail_attributes = array();
@@ -67,7 +69,7 @@ class Analyser {
 								$sub_detail_attributes[$av] = (string) $ak;
 							}
 
-							$sub_deatils[] = array(
+							$sub_details[] = array(
 								'type' => $sub_type,
 								'attributes' => $sub_detail_attributes,
 							);
@@ -85,25 +87,25 @@ class Analyser {
 						break;
 				}
 
-				$deatils[$pos] = array(
+				$details[$pos] = array(
 					'type' => $type,
 					'attributes' => $detail_attributes,
-					'details' => $sub_deatils,
+					'details' => $sub_details,
 				);
 			}
 
 			$this->segments[$segment_attributes['id']] = array(
 				'attributes' => $segment_attributes,
-				'deatils' => $deatils,
+				'details' => $details,
 			);
 
 		}
 	}
 
 	/**
-	 * create readble EDI MESSAGE with comments
+	 * create readable EDI MESSAGE with comments
 	 * @param array $data by EDI\parser() created array from plain EDI message
-	 * @return text file
+	 * @return string file
 	 */
 	public function process($data){
 		$r = array();
@@ -117,7 +119,7 @@ class Analyser {
 			if(isset($this->segments[$id])){
 
 				$attributes = $this->segments[$id]['attributes'];
-				$details_desc = $this->segments[$id]['deatils'];
+				$details_desc = $this->segments[$id]['details'];
 
 				$r[] = $id . ' - ' . $attributes['name'];
 				$r[] = '  (' . wordwrap($attributes['desc'],75,PHP_EOL.'  ') . ')';
@@ -173,7 +175,7 @@ class Analyser {
 					}
 				}
 			}else{
-				 $r[] = $id;
+				$r[] = $id;
 			}
 
 		}
@@ -181,13 +183,13 @@ class Analyser {
 		return implode(PHP_EOL,$r);
 	}
 
-    public function readCodes($codes_file){
-        $codes_xml = file_get_contents($codes_file);
-        $xml = simplexml_load_string($codes_xml);
-        unset($codes_xml);
-        $json = json_encode($xml);
-        unset($xml);
-        return json_decode($json,TRUE);
-    }
-    
+	public function readCodes($codes_file){
+		$codes_xml = file_get_contents($codes_file);
+		$xml = simplexml_load_string($codes_xml);
+		unset($codes_xml);
+		$json = json_encode($xml);
+		unset($xml);
+		return json_decode($json,TRUE);
+	}
+
 }
