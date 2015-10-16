@@ -47,7 +47,7 @@ class Analyser {
 			}
 
 			$pos = 0;
-			$deatils = array();
+			$details = array();
 			/** @var \SimpleXmlElement $detail */
 			foreach ($segment as $type => $detail) {
 				$pos ++;
@@ -60,7 +60,7 @@ class Analyser {
 					case 'data_element':
 						break;
 					case 'composite_data_element':
-						$sub_deatils = array();
+						$sub_details = array();
 						/** @var \SimpleXmlElement $sub_detail */
 						foreach ($detail as $sub_type => $sub_detail) {
 
@@ -69,7 +69,7 @@ class Analyser {
 								$sub_detail_attributes[$av] = (string) $ak;
 							}
 
-							$sub_deatils[] = array(
+							$sub_details[] = array(
 								'type' => $sub_type,
 								'attributes' => $sub_detail_attributes,
 							);
@@ -87,16 +87,16 @@ class Analyser {
 						break;
 				}
 
-				$deatils[$pos] = array(
+				$details[$pos] = array(
 					'type' => $type,
 					'attributes' => $detail_attributes,
-					'details' => $sub_deatils,
+					'details' => $sub_details,
 				);
 			}
 
 			$this->segments[$segment_attributes['id']] = array(
 				'attributes' => $segment_attributes,
-				'deatils' => $deatils,
+				'details' => $details,
 			);
 
 		}
