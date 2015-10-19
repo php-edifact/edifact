@@ -28,6 +28,72 @@ class Analyser {
 	}
 
 	/**
+	 * @param string $message_xml_file
+	 * @return array
+	 */
+	public function loadMessageXml($message_xml_file)
+	{
+		$messageXmlString = file_get_contents($message_xml_file);
+		$messageXml = new \SimpleXMLIterator($messageXmlString);
+		$message = [
+			"defaults" => $this->readMessageDefaults($messageXml),
+			"segments" => $this->readMessageSegments($messageXml),
+		];
+		return $message;
+	}
+
+	/**
+	 * read default values in given message xml
+	 * @param \SimpleXmlElement $message
+	 * @return array
+	 */
+	protected function readMessageDefaults(\SimpleXmlElement $message) {
+		$defaults = array();
+		$defaultsNode = isset($message->defaults[0]) ? $message->defaults[0] : array();
+		/** @var \SimpleXMLElement $defaultValueNode */
+		foreach ($defaultsNode as $defaultValueNode) {
+			$attributes = $defaultValueNode->attributes();
+			$id = (string) $attributes->id;
+			$value = (string) $attributes->value;
+			$defaults[$id] = $value;
+		}
+		return $defaults;
+	}
+
+	/**
+	 * read message segments and groups
+	 * @param \SimpleXmlElement $element
+	 * @return array
+	 */
+	protected function readMessageSegments(\SimpleXmlElement $element) {
+		$segments = [];
+		foreach ($element as $name => $node) {
+			if($name == "defaults") {
+				continue;
+			}
+			$group = [];
+			$group["type"] = $name;
+			$group["attributes"] = $this->readAttributesArray($node);
+			$group["details"] = $this->readMessageSegments($node);
+			$segments[] = $group;
+		}
+		return $segments;
+	}
+
+	/**
+	 * return an xml elements attributes in as array
+	 * @param \SimpleXmlElement $element
+	 * @return array
+	 */
+	protected function readAttributesArray(\SimpleXmlElement $element) {
+		$attributes = [];
+		foreach ($element->attributes() as $attrName => $attr) {
+			$attributes[$attrName] = (string) $attr;
+		}
+		return $attributes;
+	}
+
+	/**
 	 * convert segment definition from XML to array. Sequence of data_elements and
 	 * composite_data_element same as in XML
 	 * @param string $segment_xml_file
