@@ -38,7 +38,7 @@ class Analyser {
 		unset($messageXmlString);
 		$message = [
 			"defaults" => $this->readMessageDefaults($messageXml),
-			"segments" => $this->readMessageSegments($messageXml),
+			"segments" => $this->readXmlNodes($messageXml),
 		];
 		unset($messageXml);
 		return $message;
@@ -67,19 +67,22 @@ class Analyser {
 	 * @param \SimpleXmlElement $element
 	 * @return array
 	 */
-	protected function readMessageSegments(\SimpleXmlElement $element) {
-		$segments = [];
+	protected function readXmlNodes(\SimpleXmlElement $element) {
+		$arrayElements = [];
 		foreach ($element as $name => $node) {
 			if($name == "defaults") {
 				continue;
 			}
-			$group = [];
-			$group["type"] = $name;
-			$group["attributes"] = $this->readAttributesArray($node);
-			$group["details"] = $this->readMessageSegments($node);
-			$segments[] = $group;
+			$arrayElement = [];
+			$arrayElement["type"] = $name;
+			$arrayElement["attributes"] = $this->readAttributesArray($node);
+			$details = $this->readXmlNodes($node);
+			if(!empty($details)) {
+				$arrayElement["details"] = $details;
+			}
+			$arrayElements[] = $arrayElement;
 		}
-		return $segments;
+		return $arrayElements;
 	}
 
 	/**
@@ -135,66 +138,17 @@ class Analyser {
 		$xml = simplexml_load_string($segments_xml);
 		unset($segments_xml);
 		$this->segments = array();
-		foreach ($xml->segment as $sk => $segment) {
 
-			$segment_attributes = array();
-			foreach ($segment->attributes() as $av => $ak) {
-				$segment_attributes[$av] = (string) $ak;
+		/** @var \SimpleXmlElement $segmentNode */
+		foreach ($xml as $segmentNode) {
+			$qualifier = (string)$segmentNode->attributes()->id;
+			$segment = [];
+			$segment["attributes"] = $this->readAttributesArray($segmentNode);
+			$details = $this->readXmlNodes($segmentNode);
+			if(!empty($details)) {
+				$segment["details"] = $details;
 			}
-
-			$pos = 0;
-			$details = array();
-			/** @var \SimpleXmlElement $detail */
-			foreach ($segment as $type => $detail) {
-				$pos ++;
-				$detail_attributes = array();
-				foreach ($detail->attributes() as $av => $ak) {
-					$detail_attributes[$av] = (string) $ak;
-				}
-
-				$sub_details = array();
-				switch ($type) {
-					case 'data_element':
-						break;
-					case 'composite_data_element':
-						/** @var \SimpleXmlElement $sub_detail */
-						foreach ($detail as $sub_type => $sub_detail) {
-
-							$sub_detail_attributes = array();
-							foreach ($sub_detail->attributes() as $av => $ak) {
-								$sub_detail_attributes[$av] = (string) $ak;
-							}
-
-							$sub_details[] = array(
-								'type' => $sub_type,
-								'attributes' => $sub_detail_attributes,
-							);
-
-							if ($sub_type != 'data_element') {
-								echo '  sub_type=' . $sub_type . PHP_EOL;
-							}
-						}
-
-
-						break;
-
-					default:
-						echo '  type=' . $type . PHP_EOL;
-						break;
-				}
-
-				$details[$pos] = array(
-					'type' => $type,
-					'attributes' => $detail_attributes,
-					'details' => $sub_details,
-				);
-			}
-
-			$this->segments[$segment_attributes['id']] = array(
-				'attributes' => $segment_attributes,
-				'details' => $details,
-			);
-
+			$this->segments[$qualifier] = $segment;
 		}
 	}
 
