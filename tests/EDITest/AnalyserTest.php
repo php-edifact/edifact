@@ -30,4 +30,13 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
             "Unable to get the correct message structure array");
     }
 
+    public function testGetCodes()
+    {
+        $codesXml =  __DIR__."/../../src/EDI/Mapping/D07A/codes.xml";
+        $expected = include __DIR__."/../files/codes.php";
+        $actual = $this->analyser->loadCodesXml($codesXml);
+        $this->assertEquals($expected, $actual,
+            "Unable to get all codes as array");
+    }
+
 }

@@ -93,6 +93,32 @@ class Analyser {
 		return $attributes;
 	}
 
+
+	/**
+	 * get all data element codes
+	 * @param string $codesXml
+	 * @return array
+	 */
+	public function loadCodesXml($codesXml)
+	{
+		$codesXmlString = file_get_contents($codesXml);
+		$codesXml = new \SimpleXMLIterator($codesXmlString);
+		$codes = [];
+		/** @var \SimpleXmlIterator $codeCollection */
+		foreach ($codesXml as $codeCollection) {
+			$id = (string)$codeCollection->attributes()->id;
+			$codes[$id] = [];
+			/** @var \SimpleXmlIterator $codeNode */
+			foreach ($codeCollection as $codeNode) {
+				$codeAttributes = $codeNode->attributes();
+				$code = (string)$codeAttributes->id;
+				$desc = (string)$codeAttributes->desc;
+				$codes[$id][$code] = $desc;
+			}
+		}
+		return $codes;
+	}
+
 	/**
 	 * convert segment definition from XML to array. Sequence of data_elements and
 	 * composite_data_element same as in XML
@@ -249,6 +275,11 @@ class Analyser {
 		return implode(PHP_EOL,$r);
 	}
 
+	/**
+	 * @param string $codes_file
+	 * @return array
+	 * @deprecated
+	 */
 	public function readCodes($codes_file){
 		$codes_xml = file_get_contents($codes_file);
 		$xml = simplexml_load_string($codes_xml);
