@@ -35,10 +35,12 @@ class Analyser {
 	{
 		$messageXmlString = file_get_contents($message_xml_file);
 		$messageXml = new \SimpleXMLIterator($messageXmlString);
+		unset($messageXmlString);
 		$message = [
 			"defaults" => $this->readMessageDefaults($messageXml),
 			"segments" => $this->readMessageSegments($messageXml),
 		];
+		unset($messageXml);
 		return $message;
 	}
 
@@ -103,6 +105,7 @@ class Analyser {
 	{
 		$codesXmlString = file_get_contents($codesXml);
 		$codesXml = new \SimpleXMLIterator($codesXmlString);
+		unset($codesXmlString);
 		$codes = [];
 		/** @var \SimpleXmlIterator $codeCollection */
 		foreach ($codesXml as $codeCollection) {
@@ -116,6 +119,7 @@ class Analyser {
 				$codes[$id][$code] = $desc;
 			}
 		}
+		unset($codesXml);
 		return $codes;
 	}
 
