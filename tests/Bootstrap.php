@@ -7,7 +7,7 @@ class Bootstrap {
 
     public static function init()
     {
-        static::initAutoloader();    
+        static::initAutoloader();
     }
 
     protected static function initAutoloader()
@@ -18,18 +18,8 @@ class Bootstrap {
         }
         spl_autoload_register(function($className) {
             $path = str_replace('\\', '/', $className);
-            $testNs = 'ModoLibTest/';
-            $testNsLen = strlen($testNs);
-            if(substr($path, 0, $testNsLen) == $testNs) {
-                include_once __DIR__.'/'.$path.'.php';
-            }
+            include_once '../src/'.$path.'.php';
         });
-    }
-
-    public static function chroot()
-    {
-        $rootPath = dirname(static::findParentPath('test'));
-        chdir($rootPath);
     }
 
     public static function findParentPath($path)
@@ -49,4 +39,3 @@ class Bootstrap {
 }
 
 Bootstrap::init();
-Bootstrap::chroot();
