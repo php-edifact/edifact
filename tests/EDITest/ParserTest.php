@@ -4,6 +4,12 @@ namespace EDITest;
 
 use EDI\Parser;
 
+/**
+ * Class EncoderTest
+ * @package EDITest
+ * @author Stefano Sabatini <sabas88@gmail.com>
+ */
+ 
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
     public function testMessageUnwrap()
@@ -63,6 +69,20 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         $arr= ["LOC+9+VNSGN'","LOC+11+ITGOA'"];
         $p=new Parser($arr);
+        $result=$p->errors();
+        $this->assertEmpty($result);
+    }
+
+    public function testLoadFile()
+    {
+        $p=new Parser(__DIR__."/../files/example.edi");
+        $result=$p->errors();
+        $this->assertEmpty($result);
+    }
+
+    public function testLoadWrappedFile()
+    {
+        $p=new Parser(__DIR__."/../files/example_wrapped.edi");
         $result=$p->errors();
         $this->assertEmpty($result);
     }

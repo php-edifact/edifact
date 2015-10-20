@@ -6,4 +6,13 @@
             <directory>./tests/EDITest</directory>
         </testsuite>
     </testsuites>
+    <filter>
+     <whitelist>
+      <directory suffix=".php">./src/</directory>
+     </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-html" target="./codeCoverage" charset="UTF-8"
+            yui="true" highlight="true"/>
+    </logging>
 </phpunit>
