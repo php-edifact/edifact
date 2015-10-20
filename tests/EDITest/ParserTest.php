@@ -26,46 +26,45 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected,$result);
     }
 
-//    public function testEscapedSegment()
-//    {
-//        $p=new Parser();
-//        $string="EQD+CX??DU12?+3456+2?:0'";
-//        $expected=[["EQD","CX?DU12+3456","2:0"]];
-//        $p->splitSegment($string);
-//        $result=$p->get();
-//        $this->assertEquals($expected,$result);
-//    }
-//
-//    public function testNotEscapedSegment()
-//    {
-//        $p=new Parser();
-//        $string="EQD+CX?DU12?+3456+2?:0'";
-//        $expected=[["EQD","CX?DU12+3456","2:0"]];
-//        $p->splitSegment($string);
-//        $result=$p->get();
-//        $experror="There's a ? not escaped in the data; string CX?DU12?+3456";
-//        $error=$p->errors();
-//        $this->assertEquals($expected,$result);
-//        $this->assertContains($experror,$error);
-//    }
+    public function testEscapedSegment()
+    {
 
-//    public function testNotTerminatedSegment()
-//    {
-//        $p=new Parser();
-//        $string= "LOC+9+VNSGN\nLOC+11+ITGOA'";
-//        $error="Segment not ended correctly at line 1=>LOC+9+VNSGN";
-//        $p->parse($string);
-//        $result=$p->errors();
-//        $this->assertContains($error,$result);
-//    }
-//
-//    public function testNoErrors()
-//    {
-//        $p=new Parser();
-//        $string="LOC+9+VNSGN'\nLOC+11+ITGOA'";
-//        $p->parse($string);
-//        $result=$p->errors();
-//        $this->assertEmpty($result);
-//    }
+        $string="EQD+CX??DU12?+3456+2?:0'";
+        $expected=[["EQD","CX?DU12+3456","2:0"]];
+        $p=new Parser($string);
+        $result=$p->get();
+        $this->assertEquals($expected,$result);
+    }
+
+    public function testNotEscapedSegment()
+    {
+
+        $string="EQD+CX?DU12?+3456+2?:0'";
+        $expected=[["EQD","CX?DU12+3456","2:0"]];
+         $p=new Parser($string);
+        $result=$p->get();
+        $experror="There's a character not escaped with ? in the data; string CX?DU12?+3456";
+        $error=$p->errors();
+        $this->assertEquals($expected,$result);
+        $this->assertContains($experror,$error);
+    }
+
+    public function testNotTerminatedSegment()
+    {
+
+        $arr= ["LOC+9+VNSGN","LOC+11+ITGOA'"];
+        $error="Segment not ended correctly at line 1=>LOC+9+VNSGN";
+        $p=new Parser($arr);
+        $result=$p->errors();
+        $this->assertContains($error,$result);
+    }
+
+    public function testArrayInputNoErrors()
+    {
+        $arr= ["LOC+9+VNSGN'","LOC+11+ITGOA'"];
+        $p=new Parser($arr);
+        $result=$p->errors();
+        $this->assertEmpty($result);
+    }
 }
 ?>

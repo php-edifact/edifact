@@ -28,7 +28,7 @@ class Parser
 
 	public function __construct($url=null)
 	{
-		$errors=array();
+		$this->errors=array();
 		if($url===null) return;
 
 		if (is_array($url)) //ARRAY

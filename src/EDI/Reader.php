@@ -27,7 +27,7 @@ class Reader
 
 	public function __construct($url=null)
 	{
-        $errors=array();
+        $this->errors=array();
         $this->load($url);
 	}
 
