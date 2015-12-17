@@ -7,6 +7,8 @@ Supported syntax is version 3.
 
 It's provided in a Composer package.
 
+The mapping xml files are provided in a separate repository (https://github.com/sabas/edifact-data). To get them within the repository remember to clone with the --recursive flag.
+
 EDI/Parser
 ------------------
 Given an edi message checks the syntax, outputs errors and returns the message as a multidimensional array.
