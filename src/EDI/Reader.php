@@ -1,21 +1,7 @@
 <?php
 /**
 EDIFACT Messages Reader
-Uldis Nelsons
-
-INPUT
-    $r=new Reader(X);
-        Where X could be:
-        -an url
-        -a string (wrapped message)
-        -an array of strings (a segment per entry)
-    or
-    $r=new Reader();
-    followed by parse, load and/or unwrap
-
-OUTPUT
-    Errors $c->errors()
-    Array  $c->get()
+(c)2016 Uldis Nelsons
 */
 
 namespace EDI;

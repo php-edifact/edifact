@@ -3,6 +3,7 @@
 namespace EDITest;
 
 use EDI\Analyser;
+use EDI\Parser;
 
 /**
  * Class AnalyserTest
@@ -56,5 +57,17 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
             $actual,
             "Unable to get all segment structures as array"
         );
+    }
+
+    public function testProcess()
+    {
+        $parser = new Parser(__DIR__."/../files/example.edi");
+        $parsed = $parser->get();
+        $this->assertEquals(15, count($parsed));
+        $analyser = new Analyser(__DIR__."/../files/example.edi");
+        $codesXml =  __DIR__."/../../src/EDI/Mapping/D07A/segments.xml";
+        //$analyser->loadSegmentsXml($codesXml);
+        $result = $analyser->process($parsed);
+        $this->assertEquals(399, strlen($result));
     }
 }

@@ -5,13 +5,24 @@ namespace EDITest;
 use EDI\Parser;
 
 /**
- * Class EncoderTest
+ * Class ParserTest
  * @package EDITest
  * @author Stefano Sabatini <sabas88@gmail.com>
  */
 
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
+    public function testCustomStripRegex()
+    {
+        $p=new Parser();
+        $p->setStripRegex("/[\x{0001}-\x{001F}\x{0080}-\x{00C0}]/");
+        $string="LOC+11+ITGOA'MEA+WT++KGM:9040'";
+        $test=$p->loadString($string);
+
+        $expected=array(array("LOC","11","ITGOA"),array("MEA","WT","",array("KGM","9040")));
+        $this->assertEquals($expected, $test);
+    }
+
     public function testMessageUnwrap()
     {
         $p=new Parser();

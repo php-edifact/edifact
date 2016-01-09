@@ -13,18 +13,68 @@ EDI/Parser
 ------------------
 Given an edi message checks the syntax, outputs errors and returns the message as a multidimensional array.
 
+INPUT
+    $c=new Parser(X);
+        Where X could be:
+        -an url
+        -a string (wrapped message)
+        -an array of strings (a segment per entry)
+    or
+    $c=new Parser();
+    followed by load (for files) or loadString (for strings)
+
+OUTPUT
+    Errors $c->errors()
+    Array  $c->get()
+
 EDI/Encoder
 ------------------
 Given a multidimensional array (formatted as the output of the parser), returns an EDI string, optionally one segment per line.
+INPUT
+    $c=new Encoder(X,[Y]);
+        X is a multidimensional array where first dimension are edi segment, second are elements:
+            - single value
+            - array (representing composite elements)
+        Y is a boolean, if you need a segment per line set to false to disable wrapping
+    or
+    $c=new Encoder();
+    followed by $c->encode($array,$wrap)
+
+OUTPUT
+    String  $c->get()
 
 EDI/Analyser
 ------------------
 Create from EDI file readable structured text with comments from segments.xml
+INPUT
+    $analyser = new EDI\Analyser();
+    $analyser->loadEdiMessage($url);
+    $analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml');
+    $analyser->process($parsed);
+    Where:
+        $url path to edi orginal message file:
+        $parsed - by EDI\parser() created EDI messgaes array
+
+OUTPUT
+$analyser->process($parsed);
+    text
 
 EDI/Reader
 ------------------
 Read from EDI file requested segment element values
+INPUT
+    $r=new Reader(X);
+        Where X could be:
+        -an url
+        -a string (wrapped message)
+        -an array of strings (a segment per entry)
+    or
+    $r=new Reader();
+    followed by parse, load and/or unwrap
 
+OUTPUT
+    Errors $c->errors()
+    Array  $c->get()
 
 Example
 -------

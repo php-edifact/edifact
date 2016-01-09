@@ -1,21 +1,7 @@
 <?php
 /**
 EDIFACT Messages Parser
-(c)2014 Stefano Sabatini
-
-INPUT
-    $c=new Parser(X);
-        Where X could be:
-        -an url
-        -a string (wrapped message)
-        -an array of strings (a segment per entry)
-    or
-    $c=new Parser();
-    followed by load (for files) or loadString (for strings)
-
-OUTPUT
-    Errors $c->errors()
-    Array  $c->get()
+(c)2016 Stefano Sabatini
 */
 
 namespace EDI;
@@ -25,6 +11,7 @@ class Parser
     private $parsedfile;
     private $obj;
     private $errors;
+    private $stripChars="/[\x01-\x1F\x80-\xFF]/";
 
     public function __construct($url = null)
     {
@@ -51,11 +38,11 @@ class Parser
         $i=0;
         foreach ($file2 as $x => &$line) {
             $i++;
-            $line = preg_replace('#[\r\n]#', '', $line); //carriage return removal (CR+LF)
-            if (preg_match("/[\x01-\x1F\x80-\xFF]/", $line)) {
+            $line = preg_replace('#[\x00\r\n]#', '', $line); //null byte and carriage return removal (CR+LF)
+            if (preg_match($this->stripChars, $line)) {
                 $this->errors[]="There's a not printable character on line ".($x+1).": ". $line;
             }
-            $line = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $line); //basic sanitization, remove non printable chars
+            $line = preg_replace($this->stripChars, '', $line); //basic sanitization, remove non printable chars
             if (strlen($line)==0 || substr($line, 0, 3) === "UNA") {
                 unset($file2[$x]);
                 continue;
@@ -137,5 +124,10 @@ class Parser
     {
         $string = $this->unwrap($string);
         return $this->parse($string);
+    }
+
+    public function setStripRegex($regex)
+    {
+        $this->stripChars=$regex;
     }
 }

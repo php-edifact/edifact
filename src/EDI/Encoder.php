@@ -1,20 +1,7 @@
 <?php
 /**
 EDIFACT Messages Encoder
-(c)2014 Stefano Sabatini
-
-INPUT
-    $c=new Encoder(X,[Y]);
-        X is a multidimensional array where first dimension are edi segment, second are elements:
-            - single value
-            - array (representing composite elements)
-        Y is a boolean, if you need a segment per line set to false to disable wrapping
-    or
-    $c=new Encoder();
-    followed by $c->encode($array,$wrap)
-
-OUTPUT
-    String  $c->get()
+(c)2016 Stefano Sabatini
 */
 
 namespace EDI;

@@ -1,21 +1,9 @@
 <?php
 /**
 EDIFACT Messages Parser
-Uldis Nelsons
-
-INPUT
-    $analyser = new EDI\Analyser();
-    $analyser->loadEdiMessage($url);
-    $analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml');
-    $analyser->process($parsed);
-    Where:
-        $url path to edi orginal message file:
-        $parsed - by EDI\parser() created EDI messgaes array
-
-OUTPUT
-$analyser->process($parsed);
-    text
+(c)2016 Uldis Nelsons
 */
+
 namespace EDI;
 
 class Analyser
@@ -64,8 +52,8 @@ class Analyser
         $defaults = array();
         $defaultsNode = isset($message->defaults[0]) ? $message->defaults[0] : array();
         /**
- * @var \SimpleXMLElement $defaultValueNode
-*/
+         * @var \SimpleXMLElement $defaultValueNode
+         */
         foreach ($defaultsNode as $defaultValueNode) {
             $attributes = $defaultValueNode->attributes();
             $id = (string) $attributes->id;
@@ -254,20 +242,5 @@ class Analyser
         }
 
         return implode(PHP_EOL, $r);
-    }
-
-    /**
-     * @param string $codes_file
-     * @return array
-     * @deprecated
-     */
-    public function readCodes($codes_file)
-    {
-        $codes_xml = file_get_contents($codes_file);
-        $xml = simplexml_load_string($codes_xml);
-        unset($codes_xml);
-        $json = json_encode($xml);
-        unset($xml);
-        return json_decode($json, true);
     }
 }
