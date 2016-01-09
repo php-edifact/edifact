@@ -7,7 +7,7 @@ Supported syntax is version 3.
 
 It's provided in a Composer package.
 
-The mapping xml files are provided in a separate repository (https://github.com/sabas/edifact-data). To get them within the repository remember to clone with the --recursive flag.
+The mapping xml files are provided in a separate repository (https://github.com/sabas/edifact-data). To get them within the repository remember to clone with the ```--recursive``` flag, or download them with ```git submodule update --init --recursive```
 
 EDI/Parser
 ------------------

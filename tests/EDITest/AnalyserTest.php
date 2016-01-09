@@ -26,8 +26,11 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
         $messageXml =  __DIR__."/../../src/EDI/Mapping/D07A/messages/tpfrep.xml";
         $expected = include __DIR__."/../files/messages/tpfrep.php";
         $actual = $this->analyser->loadMessageXml($messageXml);
-        $this->assertEquals($expected, $actual,
-            "Unable to get the correct message structure array");
+        $this->assertEquals(
+            $expected,
+            $actual,
+            "Unable to get the correct message structure array"
+        );
     }
 
     public function testGetCodes()
@@ -35,8 +38,11 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
         $codesXml =  __DIR__."/../../src/EDI/Mapping/D07A/codes.xml";
         $expected = include __DIR__."/../files/codes.php";
         $actual = $this->analyser->loadCodesXml($codesXml);
-        $this->assertEquals($expected, $actual,
-            "Unable to get all codes as array");
+        $this->assertEquals(
+            $expected,
+            $actual,
+            "Unable to get all codes as array"
+        );
     }
 
     public function testGetSegmentStructure()
@@ -45,8 +51,10 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
         $expected = include __DIR__."/../files/segments.php";
         $this->analyser->loadSegmentsXml($codesXml);
         $actual = $this->analyser->segments;
-        $this->assertEquals($expected, $actual,
-            "Unable to get all segment structures as array");
+        $this->assertEquals(
+            $expected,
+            $actual,
+            "Unable to get all segment structures as array"
+        );
     }
-
 }

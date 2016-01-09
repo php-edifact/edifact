@@ -11,7 +11,7 @@ INPUT
         -an array of strings (a segment per entry)
     or
     $c=new Parser();
-    followed by parse, load and/or unwrap
+    followed by load (for files) or loadString (for strings)
 
 OUTPUT
     Errors $c->errors()
@@ -41,7 +41,7 @@ class Parser
         } elseif (file_exists($url)) {
             $this->load($url); //FILE URL
         } else {
-              $this->parse($this->unwrap($url)); //STRING
+            $this->loadString($url); //STRING
         }
     }
 
@@ -131,5 +131,11 @@ class Parser
             return $this->parse($this->unwrap($file[0]));
         }
         return $this->parse($file);
+    }
+
+    public function loadString($string)
+    {
+        $string = $this->unwrap($string);
+        return $this->parse($string);
     }
 }

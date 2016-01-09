@@ -9,17 +9,26 @@ use EDI\Parser;
  * @package EDITest
  * @author Stefano Sabatini <sabas88@gmail.com>
  */
- 
+
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
     public function testMessageUnwrap()
     {
         $p=new Parser();
-        $string="LOC+9+VNSGN'LOC+11+ITGOA'MEA+WT++KGM:9040'";
-        $test=$p->unwrap($string);
+        $string="LOC+11+ITGOA'MEA+WT++KGM:9040'";
+        $test=$p->loadString($string);
 
-        $expected=array("LOC+9+VNSGN'","LOC+11+ITGOA'","MEA+WT++KGM:9040'");
-        $this->assertEquals($expected,$test);
+        $expected=array(array("LOC","11","ITGOA"),array("MEA","WT","",array("KGM","9040")));
+        $this->assertEquals($expected, $test);
+    }
+
+    public function testArrayUnwrap()
+    {
+        $arr=["LOC+11+ITGOA'MEA+WT++KGM:9040'"];
+        $p=new Parser($arr);
+        $test=$p->get();
+        $expected=array(array("LOC","11","ITGOA"),array("MEA","WT","",array("KGM","9040")));
+        $this->assertEquals($expected, $test);
     }
 
     public function testParseSimple()
@@ -29,7 +38,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $expected=[["LOC","9","VNSGN"],["LOC","11","ITGOA"],["MEA","WT","",["KGM","9040"]]];
         $p->parse($array);
         $result=$p->get();
-        $this->assertEquals($expected,$result);
+        $this->assertEquals($expected, $result);
     }
 
     public function testEscapedSegment()
@@ -39,20 +48,42 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $expected=[["EQD","CX?DU12+3456","2:0"]];
         $p=new Parser($string);
         $result=$p->get();
-        $this->assertEquals($expected,$result);
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testNotPrintableCharacter()
+    {
+        $string="EQD+CèèèXDU12?+3456+2?:0'";
+        $expected=[["EQD","CXDU12+3456","2:0"]];
+        $p=new Parser($string);
+        $result=$p->get();
+        $experror="There's a not printable character on line 1: EQD+CèèèXDU12?+3456+2?:0'";
+        $error=$p->errors();
+        $this->assertEquals($expected, $result);
+        $this->assertContains($experror, $error);
     }
 
     public function testNotEscapedSegment()
     {
-
         $string="EQD+CX?DU12?+3456+2?:0'";
         $expected=[["EQD","CX?DU12+3456","2:0"]];
-         $p=new Parser($string);
+        $p=new Parser($string);
         $result=$p->get();
         $experror="There's a character not escaped with ? in the data; string CX?DU12?+3456";
         $error=$p->errors();
-        $this->assertEquals($expected,$result);
-        $this->assertContains($experror,$error);
+        $this->assertEquals($expected, $result);
+        $this->assertContains($experror, $error);
+    }
+
+    public function testSegmentWithMultipleSingleQuotes()
+    {
+        $string=["EQD+CX'DU12?+3456+2?:0'","EQD+CXDU12?+3456+2?:0'"];
+        $p=new Parser();
+        $p->parse($string);
+        $result=$p->get();
+        $experror="There's a ' not escaped in the data; string EQD+CX'DU12?+3456+2?:0";
+        $error=$p->errors();
+        $this->assertContains($experror, $error);
     }
 
     public function testNotTerminatedSegment()
@@ -62,7 +93,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $error="Segment not ended correctly at line 1=>LOC+9+VNSGN";
         $p=new Parser($arr);
         $result=$p->errors();
-        $this->assertContains($error,$result);
+        $this->assertContains($error, $result);
     }
 
     public function testArrayInputNoErrors()
@@ -87,4 +118,3 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty($result);
     }
 }
-?>
