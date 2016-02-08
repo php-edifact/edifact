@@ -36,11 +36,12 @@ class Parser
     public function parse($file2)
     {
         $i=0;
+        $this->errors=array();
         foreach ($file2 as $x => &$line) {
             $i++;
             $line = preg_replace('#[\x00\r\n]#', '', $line); //null byte and carriage return removal (CR+LF)
             if (preg_match($this->stripChars, $line)) {
-                $this->errors[]="There's a not printable character on line ".($x+1).": ". $line;
+                $this->errors[]="There's a not printable character on line ".$i.": ". $line;
             }
             $line = preg_replace($this->stripChars, '', $line); //basic sanitization, remove non printable chars
             if (strlen($line)==0 || substr($line, 0, 3) === "UNA") {
@@ -111,6 +112,7 @@ class Parser
         return $this->parsedfile;
     }
 
+    //load the message from file
     public function load($url)
     {
         $file=file($url);
@@ -120,12 +122,14 @@ class Parser
         return $this->parse($file);
     }
 
+    //load the message from a string
     public function loadString($string)
     {
         $string = $this->unwrap($string);
         return $this->parse($string);
     }
 
+    // change the default regex used for stripping invalid characters
     public function setStripRegex($regex)
     {
         $this->stripChars=$regex;
