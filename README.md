@@ -5,7 +5,9 @@ Tools to process EDI messages in UN/EDIFACT format
 
 Supported syntax is version 3.
 
-It's provided in a Composer package.
+It's provided in a Composer package:
+
+`composer require sabas/edifact`
 
 The mapping xml files are provided in a separate repository (https://github.com/sabas/edifact-data). To get them within the repository remember to clone with the ```--recursive``` flag, or download them with ```git submodule update --init --recursive```
 
@@ -13,75 +15,123 @@ EDI/Parser
 ------------------
 Given an edi message checks the syntax, outputs errors and returns the message as a multidimensional array.
 
-INPUT
-    $c=new Parser(X);
-        Where X could be:
-        -an url
-        -a string (wrapped message)
-        -an array of strings (a segment per entry)
-    or
-    $c=new Parser();
-    followed by load (for files) or loadString (for strings)
+**INPUT**
+```php
+$c = new Parser($x);
+```
+Where `$x` could be:
+* a url
+* a string (wrapped message)
+* an array of strings (a segment per entry)
 
-OUTPUT
-    Errors $c->errors()
-    Array  $c->get()
+OR
+
+ ```php
+$c = new Parser();
+$c->load($file);
+$c->loadString($string);
+```
+
+**OUTPUT**
+
+Errors 
+```php
+$c->errors();
+```
+Array
+```php
+$c->get();
+```
+     
 
 EDI/Encoder
 ------------------
 Given a multidimensional array (formatted as the output of the parser), returns an EDI string, optionally one segment per line.
-INPUT
-    $c=new Encoder(X,[Y]);
-        X is a multidimensional array where first dimension are edi segment, second are elements:
-            - single value
-            - array (representing composite elements)
-        Y is a boolean, if you need a segment per line set to false to disable wrapping
-    or
-    $c=new Encoder();
-    followed by $c->encode($array,$wrap)
 
-OUTPUT
-    String  $c->get()
+**INPUT**
+```php
+$c = new Encoder($x, $wrap = true);
+```
+`$x` is a multidimensional array where first dimension is the EDI segment, second contains elements:
+* single value
+* array (representing composite elements)
+
+`$wrap` is a boolean, if you need a segment per line. Set to false to disable wrapping
+
+OR
+```php
+$c = new Encoder();
+$c->encode($array, $wrap);
+```
+
+**OUTPUT**
+```php
+$c->get(); // returns String
+```
 
 EDI/Analyser
 ------------------
-Create from EDI file readable structured text with comments from segments.xml
-INPUT
-    $analyser = new EDI\Analyser();
-    $analyser->loadEdiMessage($url);
-    $analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml');
-    $analyser->process($parsed);
-    Where:
-        $url path to edi orginal message file:
-        $parsed - by EDI\parser() created EDI messgaes array
+Create from EDI file readable structured text with comments from `segments.xml`.
 
-OUTPUT
+**INPUT**
+```php
+$analyser = new EDI\Analyser();
+$analyser->loadEdiMessage($url);
+$analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml');
 $analyser->process($parsed);
-    text
+```
+* `$url` is the path to orginal EDI message file
+* `$parsed` is a by `EDI\Parser()` created EDI messages array
+
+**OUTPUT**
+```php 
+$analyser->process($parsed); // returns text
+```
 
 EDI/Reader
 ------------------
-Read from EDI file requested segment element values
-INPUT
-    $r=new Reader(X);
-        Where X could be:
-        -an url
-        -a string (wrapped message)
-        -an array of strings (a segment per entry)
-    or
-    $r=new Reader();
-    followed by parse, load and/or unwrap
+Read from EDI file requested segment element values.
 
-OUTPUT
-    Errors $c->errors()
-    Array  $c->get()
+**INPUT**
+```php
+$r = new Reader($x);
+```
+Where X could be:
+* a url
+* a string (wrapped message)
+* an array of strings (a segment per entry)
+
+OR
+
+```php
+$r=new Reader();
+$r->parse();
+$r->load();
+// and/or
+$r->unwrap(); 
+```
+
+**OUTPUT**
+Errors
+```php
+$c->errors();
+```
+Array
+```php
+$c->get();
+```
 
 Example
 -------
 
-Edifact DTM+7:201309200717:203'
+**Edifact**
 
-Array ['DTM',['7','201309200717','203']]
+`DTM+7:201309200717:203'`
+
+**Array**
+```php
+['DTM',['7','201309200717','203']]
+```
 
 Syntax data
 ----------
