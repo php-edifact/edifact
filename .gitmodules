@@ -1,0 +1,3 @@
+[submodule "src/EDI/Mapping"]
+	path = src/EDI/Mapping
+	url = https://github.com/sabas/edifact-data.git

@@ -4,7 +4,6 @@
     "keywords": ["EDI", "EDIFACT", "message", "container"],
     "homepage": "https://github.com/sabas/edifact",
     "license": "LGPL-3.0+",
-    "version": "0.0.1-dev",
     "authors": [
         {
             "name": "Stefano Sabatini",
