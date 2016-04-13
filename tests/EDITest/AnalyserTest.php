@@ -65,7 +65,7 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
         $parsed = $parser->get();
         $segments = $parser->getRawSegments();
         $this->assertEquals(15, count($parsed));
-        $analyser = new Analyser(__DIR__."/../files/example.edi");
+        $analyser = new Analyser();
         $codesXml =  __DIR__."/../../src/EDI/Mapping/D07A/segments.xml";
         //$analyser->loadSegmentsXml($codesXml);
         $result = $analyser->process($parsed, $segments);
@@ -78,7 +78,7 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
         $parsed = $parser->get();
         $segments = $parser->getRawSegments();
         $this->assertEquals(15, count($parsed));
-        $analyser = new Analyser(__DIR__."/../files/example.edi");
+        $analyser = new Analyser();
         $codesXml =  __DIR__."/../../src/EDI/Mapping/D07A/segments.xml";
         //$analyser->loadSegmentsXml($codesXml);
         $result = $analyser->process($parsed, $segments);
