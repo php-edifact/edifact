@@ -8,6 +8,7 @@ namespace EDI;
 
 class Parser
 {
+    private $rawSegments;
     private $parsedfile;
     private $obj;
     private $errors;
@@ -24,6 +25,7 @@ class Parser
             if (count($url) == 1) {
                 $tmparr=$this->unwrap($url[0]);
             }
+            $this->rawSegments = $tmparr;
             $this->parse($tmparr);
         } elseif (file_exists($url)) {
             $this->load($url); //FILE URL
@@ -56,14 +58,14 @@ class Parser
         $this->parsedfile=array_values($file2); //reindex
         return $file2;
     }
-
+    
     //unwrap string splitting rows on terminator (if not escaped)
     private function unwrap($string)
     {
         $file2=array();
         $file=preg_split("/(?<!\?)'/i", $string);
         foreach ($file as &$line) {
-            $temp=trim($line)."'";
+            $temp=$line."'";
             if ($temp!="'") {
                 $file2[]=$temp;
             }
@@ -75,6 +77,7 @@ class Parser
     private function splitSegment($str)
     {
         $str = strrev(preg_replace("/'/", "", strrev($str), 1));//remove ending " ' "
+        $str = trim($str);
         $matches=preg_split("/(?<!\?)\+/", $str); //split on + if not escaped (negative lookbehind)
         foreach ($matches as &$value) {
             if (preg_match("/(?<!\?)'/", $value)) {
@@ -112,21 +115,25 @@ class Parser
         return $this->parsedfile;
     }
 
+    // Get raw segments array
+    public function getRawSegments()
+    {
+        return $this->rawSegments;
+    }
+
     //load the message from file
     public function load($url)
     {
-        $file=file($url);
-        if (count($file)==1) {
-            return $this->parse($this->unwrap($file[0]));
-        }
-        return $this->parse($file);
+        $file = file_get_contents($url);
+        return $this->loadString($file);
     }
 
     //load the message from a string
     public function loadString($string)
     {
-        $string = $this->unwrap($string);
-        return $this->parse($string);
+        $arr = $this->unwrap($string);
+        $this->rawSegments = $arr;
+        return $this->parse($arr);
     }
 
     // change the default regex used for stripping invalid characters

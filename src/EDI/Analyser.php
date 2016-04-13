@@ -10,20 +10,6 @@ class Analyser
 {
 
     public $segments;
-    public $edi_message;
-
-    public function __construct($url = null)
-    {
-        if ($url===null) {
-            return;
-        }
-        $this->loadEdiMessage($url);
-    }
-
-    public function loadEdiMessage($url)
-    {
-        $this->edi_message=file($url);
-    }
 
     /**
      * @param string $message_xml_file
@@ -164,10 +150,11 @@ class Analyser
 
     /**
      * create readable EDI MESSAGE with comments
-     * @param array $data by EDI\parser() created array from plain EDI message
+     * @param array $data by EDI\Parser:parse() created array from plain EDI message
+     * @param array $rawSegments (optional) List of raw segments from EDI\Parser::getRawSegments
      * @return string file
      */
-    public function process($data)
+    public function process($data, $rawSegments = null)
     {
         $r = array();
         foreach ($data as $nrow => $segment) {
@@ -175,7 +162,9 @@ class Analyser
             $id = $segment[0];
 
             $r[] = '';
-            $r[] = trim($this->edi_message[$nrow]);
+            if (isset($rawSegments, $rawSegments[$nrow])) {
+                $r[] = trim($rawSegments[$nrow]);
+            }
 
             if (isset($this->segments[$id])) {
 
