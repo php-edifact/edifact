@@ -69,7 +69,6 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
         $codesXml =  __DIR__."/../../src/EDI/Mapping/D07A/segments.xml";
         //$analyser->loadSegmentsXml($codesXml);
         $result = $analyser->process($parsed, $segments);
-        var_dump($result);
         $this->assertEquals(399, strlen($result));
     }
 
