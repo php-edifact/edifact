@@ -42,6 +42,15 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $test);
     }
 
+    public function testGetRawSegments()
+    {
+        $txt="LOC+11+ITGOA'MEA+WT++KGM:9040'";
+        $p=new Parser($txt);
+        $test=$p->getRawSegments();
+        $expected=array("LOC+11+ITGOA'","MEA+WT++KGM:9040'");
+        $this->assertEquals($expected, $test);
+    }
+
     public function testParseSimple()
     {
         $p=new Parser();

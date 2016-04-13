@@ -76,12 +76,12 @@ Create from EDI file readable structured text with comments from `segments.xml`.
 **INPUT**
 ```php
 $analyser = new EDI\Analyser();
-$analyser->loadEdiMessage($url);
 $analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml');
-$analyser->process($parsed);
+$analyser->process($parsed, $rawSegments);
 ```
 * `$url` is the path to orginal EDI message file
 * `$parsed` is a by `EDI\Parser()` created EDI messages array
+* `$rawSegments` (optional) is segments in raw format from `EDI\Parser::getRawSegments` to be printed before each segment in the analysed result
 
 **OUTPUT**
 ```php 
