@@ -63,11 +63,26 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = new Parser(__DIR__."/../files/example.edi");
         $parsed = $parser->get();
+        $segments = $parser->getRawSegments();
         $this->assertEquals(15, count($parsed));
         $analyser = new Analyser(__DIR__."/../files/example.edi");
         $codesXml =  __DIR__."/../../src/EDI/Mapping/D07A/segments.xml";
         //$analyser->loadSegmentsXml($codesXml);
-        $result = $analyser->process($parsed);
+        $result = $analyser->process($parsed, $segments);
+        var_dump($result);
+        $this->assertEquals(399, strlen($result));
+    }
+
+    public function testProcessWrapped()
+    {
+        $parser = new Parser(__DIR__."/../files/example_wrapped.edi");
+        $parsed = $parser->get();
+        $segments = $parser->getRawSegments();
+        $this->assertEquals(15, count($parsed));
+        $analyser = new Analyser(__DIR__."/../files/example.edi");
+        $codesXml =  __DIR__."/../../src/EDI/Mapping/D07A/segments.xml";
+        //$analyser->loadSegmentsXml($codesXml);
+        $result = $analyser->process($parsed, $segments);
         $this->assertEquals(399, strlen($result));
     }
 }
