@@ -33,12 +33,12 @@ Create from EDI file readable file with comments
     $file_name = 'demo.edi';
     $parser = new EDI\Parser();
     $parsed = $parser->load($file_name);
+    $segments = $parser->getRawSegments();
 
     $analyser = new EDI\Analyser();
-    $analyser->load_edi_message($file_name);
     $analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml'); 
     
-    $text = $analyser->process($parsed);
+    $text = $analyser->process($parsed, $segments);
 
 ```
 
