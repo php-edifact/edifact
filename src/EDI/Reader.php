@@ -145,12 +145,12 @@ class Reader
     /**
      * read data value from parsed EDI data
      *
-     * @param  array/string $filter
-     *  'AGR' - segment code
-     *  or ['AGR',['1'=>'BB']], where AGR segment code and first element equal 'BB'
-     *  or ['AGR',['1.0'=>'BB']], where AGR segment code and first element zero subelement  equal 'BB'
-     * @param  int          $l1     first level item number (start by 1)
-     * @param  int/false    $l2     second level item number (start by 0)
+     * @param  array/string $filter 'AGR' - segment code
+     *                              or ['AGR',['1'=>'BB']], where AGR segment code and first element equal 'BB'
+     *                              or ['AGR',['1.0'=>'BB']], where AGR segment code and first element zero subelement  equal 'BB'
+     * @param  int     $l1          first level item number (start by 1)
+     * @param  int     $l2/false    second level item number (start by 0)
+     * @param  bool    $required    if required, but no exist, register error
      * @return string/null
      */
     public function readEdiDataValue($filter, $l1, $l2 = false, $required = false)
@@ -255,6 +255,10 @@ class Reader
 
             case 203: //CCYYMMDDHHMM
                 return preg_replace('#(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)#', '$1-$2-$3 $4:$5:00', $date);
+                break;
+
+            case 102: //CCYYMMDD
+                return preg_replace('/(\d){4}(\d){2}(\d){2}/', '$1-$2-$3', $date);
                 break;
 
             default:
