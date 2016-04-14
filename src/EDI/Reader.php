@@ -9,11 +9,11 @@ namespace EDI;
 class Reader
 {
     private $parsedfile;
-    private $errors = array();
+    private $errors = [];
 
     public function __construct($url = null)
     {
-        $this->errors=array();
+        $this->errors=[];
         $this->load($url);
     }
 
@@ -42,11 +42,99 @@ class Reader
     {
         $Parser = new \EDI\Parser($url);
         $this->parsedfile = $Parser->get();
+        return $this->preValidate();
     }
 
     public function setParsedFile($parsed_file)
     {
         $this->parsedfile = $parsed_file;
+        return $this->preValidate();
+    }
+
+    /**
+     * Do initial validation
+     * @return bool
+     */
+    public function preValidate(){
+        $this->errors=[];
+        $r = $this->readUNHmessageNumber();
+        if(!$r && $this->errors[0] == 'Segment "UNH" is ambiguous'){
+            $this->errors=[];
+            $this->errors[] = 'File has multiple messages';
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Split multi messages to separate messages
+     * @param $ediMessage string
+     * @return array
+     */
+    public static function splitMultiMessage($ediMessage){
+        $splicedMessages = [];
+        $rawSegments = self::unwrap($ediMessage);
+        //var_dump($rawSegments);
+        $message = [];
+        $unb = false;
+        foreach($rawSegments as $segment){
+
+            if(substr($segment,0,3) == 'UNB'){
+                $unb = $segment;
+                continue;
+            }
+
+            if(substr($segment,0,3) == 'UNH'){
+                if($unb) {
+                    $message[] = $unb;
+                }
+                $message[] = $segment;
+                continue;
+            }
+
+            if(substr($segment,0,3) == 'UNT'){
+                $message[] = $segment;
+                $splicedMessages[] = $message;
+                $message = [];
+                continue;
+            }
+
+            if($message){
+                $message[] = $segment;
+                continue;
+            }
+
+        }
+
+        if(substr($segment,0,3) == 'UNZ'){
+            $segment = preg_replace('#UNZ\+\d+\+#', 'UNZ+1+',$segment);
+            foreach($splicedMessages as $k => $message){
+                $splicedMessages[$k][] = $segment;
+            }
+        }
+
+        foreach($splicedMessages as $k => $message) {
+            $splicedMessages[$k] = implode("\n", $splicedMessages[$k]);
+        }
+
+        return $splicedMessages;
+    }
+
+
+    //unwrap string splitting rows on terminator (if not escaped)
+    private static function unwrap($string)
+    {
+        $file2=array();
+        $file=preg_split("/(?<!\?)'/i", $string);
+        foreach ($file as &$line) {
+            $line = preg_replace('#[\x00\r\n]#', '', $line);
+            $temp=$line."'";
+            if ($temp!="'") {
+                $file2[]=$temp;
+            }
+        }
+        return $file2;
     }
 
     public function readEdiDataValueReq($filter, $l1, $l2 = false)
@@ -208,6 +296,11 @@ class Reader
     public function readUNHmessageType()
     {
         return $this->readEdiDataValue('UNH', 2, 0);
+    }
+
+    public function readUNHmessageNumber()
+    {
+        return $this->readEdiDataValue('UNH', 1);
     }
 
     /**
