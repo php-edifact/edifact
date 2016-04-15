@@ -190,36 +190,39 @@ class Analyser
                         $r[] = '  [' . $n . '] ' . implode(',', $detail);
                         $r[] = $l1;
                         $r[] = $l2;
-                        $sub_details_desc =  $details_desc[$n]['details'];
 
-                        foreach ($detail as $d_n => $d_detail) {
-                            $d_sub_desc_attr =  $sub_details_desc[$d_n]['attributes'];
-                            $r[] = '    [' . $d_n . '] ' . $d_detail;
-                            $r[] = '        id: ' . $d_sub_desc_attr['id'] . ' - ' . $d_sub_desc_attr['name'];
-                            $r[] = '        ' . wordwrap($d_sub_desc_attr['desc'], 69, PHP_EOL.'        ');
-                            $r[] = '        type: ' . $d_sub_desc_attr['type'];
-                            if (isset($d_sub_desc_attr['maxlength'])) {
-                                $r[] = '        maxlen: ' . $d_sub_desc_attr['maxlength'];
-                            }
-                            if (isset($d_sub_desc_attr['required'])) {
-                                $r[] = '        required: ' . $d_sub_desc_attr['required'];
-                            }
-                            if (isset($d_sub_desc_attr['length'])) {
-                                $r[] = '        length: ' . $d_sub_desc_attr['length'];
-                            }
+                        if(isset($details_desc[$n]['details'])){
+                            $sub_details_desc =  $details_desc[$n]['details'];
 
-                            //check for skipped data
-                            unset($d_sub_desc_attr['id']);
-                            unset($d_sub_desc_attr['name']);
-                            unset($d_sub_desc_attr['desc']);
-                            unset($d_sub_desc_attr['type']);
-                            unset($d_sub_desc_attr['maxlength']);
-                            unset($d_sub_desc_attr['required']);
-                            unset($d_sub_desc_attr['length']);
-                            if (!empty($d_sub_desc_attr)) {
-                                var_dump($d_sub_desc_attr);
-                            }
+                            foreach ($detail as $d_n => $d_detail) {
+                                $d_sub_desc_attr =  $sub_details_desc[$d_n]['attributes'];
+                                $r[] = '    [' . $d_n . '] ' . $d_detail;
+                                $r[] = '        id: ' . $d_sub_desc_attr['id'] . ' - ' . $d_sub_desc_attr['name'];
+                                $r[] = '        ' . wordwrap($d_sub_desc_attr['desc'], 69, PHP_EOL.'        ');
+                                $r[] = '        type: ' . $d_sub_desc_attr['type'];
+                                if (isset($d_sub_desc_attr['maxlength'])) {
+                                    $r[] = '        maxlen: ' . $d_sub_desc_attr['maxlength'];
+                                }
+                                if (isset($d_sub_desc_attr['required'])) {
+                                    $r[] = '        required: ' . $d_sub_desc_attr['required'];
+                                }
+                                if (isset($d_sub_desc_attr['length'])) {
+                                    $r[] = '        length: ' . $d_sub_desc_attr['length'];
+                                }
 
+                                //check for skipped data
+                                unset($d_sub_desc_attr['id']);
+                                unset($d_sub_desc_attr['name']);
+                                unset($d_sub_desc_attr['desc']);
+                                unset($d_sub_desc_attr['type']);
+                                unset($d_sub_desc_attr['maxlength']);
+                                unset($d_sub_desc_attr['required']);
+                                unset($d_sub_desc_attr['length']);
+                                if (!empty($d_sub_desc_attr)) {
+                                    var_dump($d_sub_desc_attr);
+                                }
+
+                            }
                         }
                         //exit;
                     }
