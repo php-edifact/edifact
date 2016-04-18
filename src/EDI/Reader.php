@@ -8,22 +8,37 @@ namespace EDI;
 
 class Reader
 {
+    /**
+     * @var array parsed EDI file
+     */
     private $parsedfile;
+
+    /**
+     * @var array
+     */
     private $errors = [];
 
+    /**
+     * Reader constructor.
+     * @param string $url url or path ur EDI message
+     */
     public function __construct($url = null)
     {
         $this->errors=[];
         $this->load($url);
     }
 
-    //Get errors
+    /**
+     * Get errors
+     */
     public function errors()
     {
         return $this->errors;
     }
 
-    // reset errors
+    /**
+     * reset errors
+     */
     public function resetErrors()
     {
         $this->errors = array();
@@ -38,6 +53,10 @@ class Reader
         return $this->parsedfile;
     }
 
+    /**
+     * @param $url string url to edi file, path to edi file or EDI message
+     * @return bool
+     */
     public function load($url)
     {
         $Parser = new \EDI\Parser($url);
@@ -45,6 +64,10 @@ class Reader
         return $this->preValidate();
     }
 
+    /**
+     * @param $parsed_file array
+     * @return bool
+     */
     public function setParsedFile($parsed_file)
     {
         $this->parsedfile = $parsed_file;
@@ -129,8 +152,12 @@ class Reader
         return $splicedMessages;
     }
 
-
-    //unwrap string splitting rows on terminator (if not escaped)
+    /**
+     * unwrap string splitting rows on terminator (if not escaped)
+     *
+     * @param $string string
+     * @return array
+     */
     private static function unwrap($string)
     {
         $file2=array();
@@ -145,6 +172,14 @@ class Reader
         return $file2;
     }
 
+    /**
+     * read required value. if no found, registre error
+     *
+     * @param $filter string|array segment filter by segment name and values
+     * @param $l1
+     * @param bool $l2
+     * @return string
+     */
     public function readEdiDataValueReq($filter, $l1, $l2 = false)
     {
         return $this->readEdiDataValue($filter, $l1, $l2, true);
@@ -275,6 +310,11 @@ class Reader
         }
     }
 
+    /**
+     * get message preparation time
+     *
+     * @return mixed|string
+     */
     public function readUNBDateTimeOfPpreperation()
     {
 
@@ -293,6 +333,12 @@ class Reader
         return $datetime;
     }
 
+    /**
+     * read transport identification number
+     *
+     * @param $transportStageQualifier
+     * @return string
+     */
     public function readTDTtransportIdentification($transportStageQualifier)
     {
 
@@ -305,11 +351,22 @@ class Reader
 
     }
 
+    /**
+     * read message type
+     *
+     * @return string
+     */
     public function readUNHmessageType()
     {
         return $this->readEdiDataValue('UNH', 2, 0);
     }
 
+
+    /**
+     * read message number
+     *
+     * @return string
+     */
     public function readUNHmessageNumber()
     {
         return $this->readEdiDataValue('UNH', 1);
