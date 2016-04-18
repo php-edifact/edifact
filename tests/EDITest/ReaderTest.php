@@ -65,6 +65,16 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
         $eddies = Reader::splitMultiMessage($multiEdi);
         $this->assertEquals(2, count($eddies));
 
+        $r = new Reader($eddies[0]);
+        $messageType = $r->readUNHmessageType();
+        $this->assertEquals('PAORES', $messageType);
+
+        $r = new Reader($eddies[1]);
+        $messageType = $r->readUNHmessageType();
+        $this->assertEquals('PAORES', $messageType);
+
+
+
     }
 
 
