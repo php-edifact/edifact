@@ -178,7 +178,7 @@ class Analyser
                 $r[] = $id . ' - ' . $attributes['name'];
                 $r[] = '  (' . wordwrap($attributes['desc'], 75, PHP_EOL.'  ') . ')';
 
-                $jsonelements = [];
+                $jsonelements = ["segmentCode" => $id];
                 foreach ($segment as $idx => $detail) {
                     $n = $idx-1;
                     if ($idx == 0 || !isset($details_desc[$n])) {

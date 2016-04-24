@@ -26,16 +26,17 @@ class Encoder
         foreach ($arr as $row) {
             $str='';
             $k++;
+            $row = array_values($row);
             $t=count($row);
-            foreach ($row as $i => $element) {
+            for ($i=0; $i<$t; $i++) {
                 $elm='';
-                if (!is_array($element)) {
-                    $elm=$this->escapeValue($element);
+                if (!is_array($row[$i])) {
+                    $elm=$this->escapeValue($row[$i]);
                 } else {
-                    foreach ($element as &$temp) {
+                    foreach ($row[$i] as &$temp) {
                         $temp=$this->escapeValue($temp);
                     }
-                    $elm=implode(":", $element);
+                    $elm=implode(":", $row[$i]);
                 }
                 $str.=$elm;
                 if ($i==$t-1) {

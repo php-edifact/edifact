@@ -46,7 +46,7 @@ class Parser
                 $this->errors[]="There's a not printable character on line ".$i.": ". $line;
             }
             $line = preg_replace($this->stripChars, '', $line); //basic sanitization, remove non printable chars
-            if (strlen($line)==0 || substr($line, 0, 3) === "UNA") {
+            if (strlen($line)<2 || substr($line, 0, 3) === "UNA") {
                 unset($file2[$x]);
                 continue;
             }
@@ -58,7 +58,7 @@ class Parser
         $this->parsedfile=array_values($file2); //reindex
         return $file2;
     }
-    
+
     //unwrap string splitting rows on terminator (if not escaped)
     private function unwrap($string)
     {
