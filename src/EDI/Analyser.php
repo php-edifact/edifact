@@ -10,6 +10,7 @@ class Analyser
 {
 
     public $segments;
+    private $jsonedi;
 
     /**
      * @param string $message_xml_file
@@ -164,6 +165,7 @@ class Analyser
             $id = $segment[0];
 
             $r[] = '';
+            $jsonsegment = [];
             if (isset($rawSegments, $rawSegments[$nrow])) {
                 $r[] = trim($rawSegments[$nrow]);
             }
@@ -175,6 +177,8 @@ class Analyser
 
                 $r[] = $id . ' - ' . $attributes['name'];
                 $r[] = '  (' . wordwrap($attributes['desc'], 75, PHP_EOL.'  ') . ')';
+
+                $jsonelements = [];
                 foreach ($segment as $idx => $detail) {
                     $n = $idx-1;
                     if ($idx == 0 || !isset($details_desc[$n])) {
@@ -188,12 +192,13 @@ class Analyser
                         $r[] = '  [' . $n . '] ' . $detail;
                         $r[] = $l1;
                         $r[] = $l2;
-
+                        $jsonelements[] = [$d_desc_attr['name'] => $detail];
                     } else {
                         $r[] = '  [' . $n . '] ' . implode(',', $detail);
                         $r[] = $l1;
                         $r[] = $l2;
 
+                        $jsoncomposite = [];
                         if(isset($details_desc[$n]['details'])){
                             $sub_details_desc =  $details_desc[$n]['details'];
 
@@ -203,6 +208,8 @@ class Analyser
                                 $r[] = '        id: ' . $d_sub_desc_attr['id'] . ' - ' . $d_sub_desc_attr['name'];
                                 $r[] = '        ' . wordwrap($d_sub_desc_attr['desc'], 69, PHP_EOL.'        ');
                                 $r[] = '        type: ' . $d_sub_desc_attr['type'];
+
+                                $jsoncomposite[] = [$d_sub_desc_attr['name'] => $d_detail];
                                 if (isset($d_sub_desc_attr['maxlength'])) {
                                     $r[] = '        maxlen: ' . $d_sub_desc_attr['maxlength'];
                                 }
@@ -227,15 +234,27 @@ class Analyser
 
                             }
                         }
+                        $jsonelements[] = [$d_desc_attr['name'] => $jsoncomposite];
                         //exit;
                     }
                 }
+                $jsonsegment[] = [$attributes['name'] => $jsonelements];
             } else {
                 $r[] = $id;
+                $jsonsegment[] = ["UnrecognisedType" => $segment];
             }
-
+            $this->jsonedi[] = $jsonsegment;
         }
 
         return implode(PHP_EOL, $r);
+    }
+
+    /**
+     * return the processed EDI in json format
+     * @return string json
+     */
+    public function getJson()
+    {
+        return json_encode($this->jsonedi);
     }
 }

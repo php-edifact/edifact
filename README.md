@@ -34,7 +34,7 @@ $c->loadString($string);
 
 **OUTPUT**
 
-Errors 
+Errors
 ```php
 $c->errors();
 ```
@@ -42,7 +42,7 @@ Array
 ```php
 $c->get();
 ```
-     
+
 
 EDI/Encoder
 ------------------
@@ -77,15 +77,25 @@ Create from EDI file readable structured text with comments from `segments.xml`.
 ```php
 $analyser = new EDI\Analyser();
 $analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml');
-$analyser->process($parsed, $rawSegments);
 ```
 * `$url` is the path to orginal EDI message file
 * `$parsed` is a by `EDI\Parser()` created EDI messages array
+
+**TEXT OUTPUT**
+```php
+$analyser->process($parsed); // returns text
+```
+Or
+```php
+$analyser->process($parsed, $rawSegments);
+```
 * `$rawSegments` (optional) is segments in raw format from `EDI\Parser::getRawSegments` to be printed before each segment in the analysed result
 
-**OUTPUT**
-```php 
-$analyser->process($parsed); // returns text
+**JSON OUTPUT**
+Get a json representation of the array, with the element names as key.
+```php
+$analyser->process($parsed);
+$json = $analyser->getJson();
 ```
 
 EDI/Reader
@@ -112,7 +122,7 @@ $c = new Parser($x);
 $r=new Reader();
 $r->setParsedFile($c);
 $sender = $r->readEdiDataValue('UNB', 2);
-$Dt = $r->readUNBDateTimeOfPpreperation(); 
+$Dt = $r->readUNBDateTimeOfPpreperation();
 ```
 
 **OUTPUT**
