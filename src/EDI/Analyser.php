@@ -123,6 +123,7 @@ class Analyser
      * convert segment definition from XML to array. Sequence of data_elements and
      * composite_data_element same as in XML
      * @param string $segment_xml_file
+     * @return array
      */
     public function loadSegmentsXml($segment_xml_file)
     {
@@ -146,6 +147,7 @@ class Analyser
             }
             $this->segments[$qualifier] = $segment;
         }
+        return $this->segments;
     }
 
     /**
@@ -173,8 +175,9 @@ class Analyser
 
                 $r[] = $id . ' - ' . $attributes['name'];
                 $r[] = '  (' . wordwrap($attributes['desc'], 75, PHP_EOL.'  ') . ')';
-                foreach ($segment as $n => $detail) {
-                    if ($n == 0 || !isset($details_desc[$n])) {
+                foreach ($segment as $idx => $detail) {
+                    $n = $idx-1;
+                    if ($idx == 0 || !isset($details_desc[$n])) {
                         continue;
                     }
                     $d_desc_attr =  $details_desc[$n]['attributes'];
