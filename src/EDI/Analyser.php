@@ -238,10 +238,10 @@ class Analyser
                         //exit;
                     }
                 }
-                $jsonsegment[] = [$attributes['name'] => $jsonelements];
+                $jsonsegment = [$attributes['name'] => $jsonelements];
             } else {
                 $r[] = $id;
-                $jsonsegment[] = ["UnrecognisedType" => $segment];
+                $jsonsegment = ["UnrecognisedType" => $segment];
             }
             $this->jsonedi[] = $jsonsegment;
         }
