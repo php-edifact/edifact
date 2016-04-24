@@ -192,7 +192,7 @@ class Analyser
                         $r[] = '  [' . $n . '] ' . $detail;
                         $r[] = $l1;
                         $r[] = $l2;
-                        $jsonelements[] = [$d_desc_attr['name'] => $detail];
+                        $jsonelements[$d_desc_attr['name']] = $detail;
                     } else {
                         $r[] = '  [' . $n . '] ' . implode(',', $detail);
                         $r[] = $l1;
@@ -209,7 +209,7 @@ class Analyser
                                 $r[] = '        ' . wordwrap($d_sub_desc_attr['desc'], 69, PHP_EOL.'        ');
                                 $r[] = '        type: ' . $d_sub_desc_attr['type'];
 
-                                $jsoncomposite[] = [$d_sub_desc_attr['name'] => $d_detail];
+                                $jsoncomposite[$d_sub_desc_attr['name']] = $d_detail;
                                 if (isset($d_sub_desc_attr['maxlength'])) {
                                     $r[] = '        maxlen: ' . $d_sub_desc_attr['maxlength'];
                                 }
@@ -234,14 +234,14 @@ class Analyser
 
                             }
                         }
-                        $jsonelements[] = [$d_desc_attr['name'] => $jsoncomposite];
+                        $jsonelements[$d_desc_attr['name']] = $jsoncomposite;
                         //exit;
                     }
                 }
-                $jsonsegment = [$attributes['name'] => $jsonelements];
+                $jsonsegment[$attributes['name']] = $jsonelements;
             } else {
                 $r[] = $id;
-                $jsonsegment = ["UnrecognisedType" => $segment];
+                $jsonsegment["UnrecognisedType"] = $segment;
             }
             $this->jsonedi[] = $jsonsegment;
         }

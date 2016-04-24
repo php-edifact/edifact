@@ -27,15 +27,15 @@ class Encoder
             $str='';
             $k++;
             $t=count($row);
-            for ($i=0; $i<$t; $i++) {
+            foreach ($row as $i => $element) {
                 $elm='';
-                if (!is_array($row[$i])) {
-                    $elm=$this->escapeValue($row[$i]);
+                if (!is_array($element)) {
+                    $elm=$this->escapeValue($element);
                 } else {
-                    foreach ($row[$i] as &$temp) {
+                    foreach ($element as &$temp) {
                         $temp=$this->escapeValue($temp);
                     }
-                    $elm=implode(":", $row[$i]);
+                    $elm=implode(":", $element);
                 }
                 $str.=$elm;
                 if ($i==$t-1) {
