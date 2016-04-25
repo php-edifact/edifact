@@ -135,6 +135,30 @@ Array
 $c->get();
 ```
 
+EDI/Interpreter
+---------------
+Organizes the data parsed by EDI/Parser using the xml description of the message and the xml segments.
+
+**INPUT**
+```php
+$p=new EDI\Parser($edifile);
+$edi = $p->get();
+
+$analyser = new EDI\Analyser();
+$segs =$analyser->loadSegmentsXml('vendor/sabas/edifact-data/D95B/segments.xml');
+
+$interpreter = new EDI\Interpreter('vendor/sabas/edifact-data/D95B/messages/codeco.xml', $segs);
+$prep = $interpreter->prepare($edifile);
+
+```
+
+**OUTPUT**
+
+Json
+```php
+$interpreter->getJson()
+```
+
 Example
 -------
 
