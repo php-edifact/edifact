@@ -11,7 +11,6 @@ class Interpreter
     private $xmlMsg;
     private $xmlSeg;
     private $ediGroups;
-    private $jsonedi;
 
     /**
    * Split multiple messages and process
@@ -88,7 +87,7 @@ class Interpreter
                 /* FIRST LEVEL GROUP */
                 $newGroup = [];
                 for ($g = 0; $g < $elm['maxrepeat']; $g++) {
-                     $grouptemp=[];
+                    $grouptemp=[];
                     if ($message[$segmentIdx][0] != $elm->children()[0]['id']) {
                         break;
                     }
@@ -105,7 +104,16 @@ class Interpreter
                                     for ($i = 0; $i < $elm3['maxrepeat']; $i++) {
                                         if ($message[$segmentIdx][0] == $elm3['id']) {
                                             $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg);
-                                            $group2temp[]=$jsonMessage;
+                                            if (!isset($group2temp[$jsonMessage['key']])) {
+                                                $group2temp[$jsonMessage['key']]=$jsonMessage['value'];
+                                            } else {
+                                                if (isset($group2temp[$jsonMessage['key']]['segmentCode'])) {
+                                                    $temp = $group2temp[$jsonMessage['key']];
+                                                    $group2temp[$jsonMessage['key']] = [];
+                                                    $group2temp[$jsonMessage['key']][]=$temp;
+                                                }
+                                                $group2temp[$jsonMessage['key']][]=$jsonMessage['value'];
+                                            }
                                             $segmentIdx++;
                                         } else {
                                             break;
@@ -120,13 +128,26 @@ class Interpreter
                             if (count($newGroup2) == 0) {
                                 continue;
                             }
-                            $grouptemp[] = [$elm2['id']->__toString() => $newGroup2];
+                            if (count($newGroup2) > 1) {
+                                $grouptemp[$elm2['id']->__toString()] = $newGroup2;
+                            } else {
+                                $grouptemp[$elm2['id']->__toString()] = $newGroup2[0];
+                            }
                         } else {
                             /* SEGMENT INSIDE A GROUP */
                             for ($i = 0; $i < $elm2['maxrepeat']; $i++) {
                                 if ($message[$segmentIdx][0] == $elm2['id']) {
                                     $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg);
-                                    $grouptemp[]=$jsonMessage;
+                                    if (!isset($grouptemp[$jsonMessage['key']])) {
+                                        $grouptemp[$jsonMessage['key']]=$jsonMessage['value'];
+                                    } else {
+                                        if (isset($grouptemp[$jsonMessage['key']]['segmentCode'])) {
+                                            $temp = $grouptemp[$jsonMessage['key']];
+                                            $grouptemp[$jsonMessage['key']] = [];
+                                            $grouptemp[$jsonMessage['key']][]=$temp;
+                                        }
+                                        $grouptemp[$jsonMessage['key']][]=$jsonMessage['value'];
+                                    }
                                     $segmentIdx++;
                                 } else {
                                     break;
@@ -134,21 +155,31 @@ class Interpreter
                             }
                         }
                     }
-                    if (count($grouptemp) == 0) {
-                        continue;
-                    }
                     $newGroup[] = $grouptemp;
                 }
                 if (count($newGroup) == 0) {
                     continue;
                 }
-                $groupedEdi[] = [$elm['id']->__toString() => $newGroup];
+                if (count($newGroup) > 1) {
+                    $groupedEdi[$elm['id']->__toString()] = $newGroup;
+                } else {
+                    $groupedEdi[$elm['id']->__toString()] = $newGroup[0];
+                }
             } elseif ($elm->getName()=="segment") {
                 /* FIRST LEVEL SEGMENT */
                 for ($i = 0; $i < $elm['maxrepeat']; $i++) {
                     if ($message[$segmentIdx][0] == $elm['id']) {
                         $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg);
-                        $groupedEdi[]=$jsonMessage;
+                        if (!isset($groupedEdi[$jsonMessage['key']])) {
+                            $groupedEdi[$jsonMessage['key']]=$jsonMessage['value'];
+                        } else {
+                            if (isset($groupedEdi[$jsonMessage['key']]['segmentCode'])) {
+                                $temp = $groupedEdi[$jsonMessage['key']];
+                                $groupedEdi[$jsonMessage['key']] = [];
+                                $groupedEdi[$jsonMessage['key']][]=$temp;
+                            }
+                            $groupedEdi[$jsonMessage['key']][]=$jsonMessage['value'];
+                        }
                         $segmentIdx++;
                     } else {
                         break;
@@ -202,20 +233,25 @@ class Interpreter
                     $jsonelements[$d_desc_attr['name']] = $jsoncomposite;
                 }
             }
-            $jsonsegment[$attributes['name']] = $jsonelements;
-        } else {
-            $jsonsegment["UnrecognisedType"] = $segment;
-        }
-        $this->jsonedi[] = $jsonsegment;
+            $jsonsegment['key'] = $attributes['name'];
+            $jsonsegment['value'] = $jsonelements;
 
+        } else {
+            $jsonsegment['key'] = $attributes['UnrecognisedType'];
+            $jsonsegment['value'] = $segment;
+        }
         return $jsonsegment;
     }
 
    /**
     * Get result as json
     */
-    public function getJson()
+    public function getJson($pretty = false)
     {
-        return json_encode($this->ediGroups);
+        if ($pretty) {
+            return json_encode($this->ediGroups, JSON_PRETTY_PRINT);
+        } else {
+            return json_encode($this->ediGroups);
+        }
     }
 }
