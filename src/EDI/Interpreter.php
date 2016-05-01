@@ -11,6 +11,7 @@ class Interpreter
     private $xmlMsg;
     private $xmlSeg;
     private $ediGroups;
+    private $errors;
 
     /**
    * Split multiple messages and process
@@ -22,6 +23,7 @@ class Interpreter
     {
         $this->xmlMsg = simplexml_load_file($xmlMsg);
         $this->xmlSeg = $xmlSeg;
+        $this->errors = [];
     }
 
   /**
@@ -101,9 +103,11 @@ class Interpreter
                                     break;
                                 }
                                 foreach ($elm2->children() as $elm3) {
+                                    $segmentVisited = false;
                                     for ($i = 0; $i < $elm3['maxrepeat']; $i++) {
                                         if ($message[$segmentIdx][0] == $elm3['id']) {
                                             $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg);
+                                            $segmentVisited = true;
                                             if (!isset($group2temp[$jsonMessage['key']])) {
                                                 $group2temp[$jsonMessage['key']]=$jsonMessage['value'];
                                             } else {
@@ -116,6 +120,9 @@ class Interpreter
                                             }
                                             $segmentIdx++;
                                         } else {
+                                            if (!$segmentVisited && isset($elm3['required'])) {
+                                                $this->errors[] = "Missing required segment: ".$elm3['id'];
+                                            }
                                             break;
                                         }
                                     }
@@ -135,9 +142,11 @@ class Interpreter
                             }
                         } else {
                             /* SEGMENT INSIDE A GROUP */
+                            $segmentVisited = false;
                             for ($i = 0; $i < $elm2['maxrepeat']; $i++) {
                                 if ($message[$segmentIdx][0] == $elm2['id']) {
                                     $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg);
+                                    $segmentVisited = true;
                                     if (!isset($grouptemp[$jsonMessage['key']])) {
                                         $grouptemp[$jsonMessage['key']]=$jsonMessage['value'];
                                     } else {
@@ -150,6 +159,9 @@ class Interpreter
                                     }
                                     $segmentIdx++;
                                 } else {
+                                    if (!$segmentVisited && isset($elm2['required'])) {
+                                        $this->errors[] = "Missing required segment: ".$elm2['id'];
+                                    }
                                     break;
                                 }
                             }
@@ -167,9 +179,11 @@ class Interpreter
                 }
             } elseif ($elm->getName()=="segment") {
                 /* FIRST LEVEL SEGMENT */
+                $segmentVisited = false;
                 for ($i = 0; $i < $elm['maxrepeat']; $i++) {
                     if ($message[$segmentIdx][0] == $elm['id']) {
                         $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg);
+                        $segmentVisited = true;
                         if (!isset($groupedEdi[$jsonMessage['key']])) {
                             $groupedEdi[$jsonMessage['key']]=$jsonMessage['value'];
                         } else {
@@ -182,6 +196,9 @@ class Interpreter
                         }
                         $segmentIdx++;
                     } else {
+                        if (!$segmentVisited && isset($elm['required'])) {
+                            $this->errors[] = "Missing required segment: ".$elm['id'];
+                        }
                         break;
                     }
                 }
@@ -191,6 +208,11 @@ class Interpreter
             }
         }
 
+        if ($segmentIdx != count($message)) {
+            $msgErr = "It looks like that this message isn't conformant to the mapping provided.";
+            $msgErr .= " (Not all segments were added)";
+            $this->errors[] = $msgErr;
+        }
         return $groupedEdi;
     }
 
@@ -253,5 +275,13 @@ class Interpreter
         } else {
             return json_encode($this->ediGroups);
         }
+    }
+
+    /**
+     * Get errors
+     */
+    public function getErrors()
+    {
+        return $this->errors;
     }
 }
