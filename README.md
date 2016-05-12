@@ -148,7 +148,7 @@ $analyser = new EDI\Analyser();
 $segs =$analyser->loadSegmentsXml('vendor/sabas/edifact-data/D95B/segments.xml');
 
 $interpreter = new EDI\Interpreter('vendor/sabas/edifact-data/D95B/messages/codeco.xml', $segs);
-$prep = $interpreter->prepare($edifile);
+$prep = $interpreter->prepare($edi);
 
 ```
 
@@ -157,6 +157,11 @@ $prep = $interpreter->prepare($edifile);
 Json
 ```php
 $interpreter->getJson()
+```
+
+Errors (per message)
+```php
+$interpreter->getErrors()
 ```
 
 Example

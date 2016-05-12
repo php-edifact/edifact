@@ -12,6 +12,7 @@ class Interpreter
     private $xmlSeg;
     private $ediGroups;
     private $errors;
+    private $msgs;
 
     /**
    * Split multiple messages and process
@@ -23,7 +24,6 @@ class Interpreter
     {
         $this->xmlMsg = simplexml_load_file($xmlMsg);
         $this->xmlSeg = $xmlSeg;
-        $this->errors = [];
     }
 
   /**
@@ -34,14 +34,16 @@ class Interpreter
    */
     public function prepare($parsed)
     {
-        $msgs = $this->splitMessages($parsed);
+        $this->msgs = $this->splitMessages($parsed);
         $groups = [];
-        foreach ($msgs as $msg) {
+        $errors = [];
+        foreach ($this->msgs as $msg) {
             $grouped = $this->loopMessage($msg, $this->xmlMsg);
-            $groups[] = $grouped;
+            $groups[] = $grouped['message'];
+            $errors[] = $grouped['errors'];
         }
         $this->ediGroups = $groups;
-
+        $this->errors = $errors;
         return $groups;
     }
 
@@ -121,7 +123,7 @@ class Interpreter
                                             $segmentIdx++;
                                         } else {
                                             if (!$segmentVisited && isset($elm3['required'])) {
-                                                $this->errors[] = "Missing required segment: ".$elm3['id'];
+                                                $errors[] = "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm3['id'];
                                             }
                                             break;
                                         }
@@ -160,7 +162,7 @@ class Interpreter
                                     $segmentIdx++;
                                 } else {
                                     if (!$segmentVisited && isset($elm2['required'])) {
-                                        $this->errors[] = "Missing required segment: ".$elm2['id'];
+                                        $errors[] = "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm2['id'];
                                     }
                                     break;
                                 }
@@ -197,7 +199,7 @@ class Interpreter
                         $segmentIdx++;
                     } else {
                         if (!$segmentVisited && isset($elm['required'])) {
-                            $this->errors[] = "Missing required segment: ".$elm['id'];
+                            $errors[] = "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm['id'];
                         }
                         break;
                     }
@@ -211,9 +213,9 @@ class Interpreter
         if ($segmentIdx != count($message)) {
             $msgErr = "It looks like that this message isn't conformant to the mapping provided.";
             $msgErr .= " (Not all segments were added)";
-            $this->errors[] = $msgErr;
+            $errors[] = $msgErr;
         }
-        return $groupedEdi;
+        return ['message' => $groupedEdi, 'errors' => $errors];
     }
 
   /**
@@ -283,5 +285,13 @@ class Interpreter
     public function getErrors()
     {
         return $this->errors;
+    }
+
+    /**
+     * Get splitted messages
+     */
+    public function getMessages()
+    {
+        return $this->msgs;
     }
 }
