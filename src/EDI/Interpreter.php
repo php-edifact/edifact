@@ -85,6 +85,7 @@ class Interpreter
     private function loopMessage($message, $xml)
     {
         $groupedEdi = [];
+        $errors = [];
         $segmentIdx = 0;
         foreach ($xml->children() as $elm) {
             if ($elm->getName()=="group") {
@@ -123,7 +124,10 @@ class Interpreter
                                             $segmentIdx++;
                                         } else {
                                             if (!$segmentVisited && isset($elm3['required'])) {
-                                                $errors[] = "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm3['id'];
+                                                $errors[] = [
+                                                        "text" => "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm3['id'],
+                                                        "position" => $segmentIdx
+                                                    ];
                                             }
                                             break;
                                         }
@@ -162,7 +166,10 @@ class Interpreter
                                     $segmentIdx++;
                                 } else {
                                     if (!$segmentVisited && isset($elm2['required'])) {
-                                        $errors[] = "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm2['id'];
+                                        $errors[] = [
+                                                "text" => "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm2['id'],
+                                                "position" => $segmentIdx
+                                            ];
                                     }
                                     break;
                                 }
@@ -199,7 +206,10 @@ class Interpreter
                         $segmentIdx++;
                     } else {
                         if (!$segmentVisited && isset($elm['required'])) {
-                            $errors[] = "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm['id'];
+                            $errors[] = [
+                                    "text" => "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm['id'],
+                                    "position" => $segmentIdx
+                                ];
                         }
                         break;
                     }
@@ -213,7 +223,7 @@ class Interpreter
         if ($segmentIdx != count($message)) {
             $msgErr = "It looks like that this message isn't conformant to the mapping provided.";
             $msgErr .= " (Not all segments were added)";
-            $errors[] = $msgErr;
+            $errors[] = ["text" => $msgErr];
         }
         return ['message' => $groupedEdi, 'errors' => $errors];
     }
