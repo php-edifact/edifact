@@ -125,8 +125,9 @@ class Interpreter
                                         } else {
                                             if (!$segmentVisited && isset($elm3['required'])) {
                                                 $errors[] = [
-                                                        "text" => "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm3['id'],
-                                                        "position" => $segmentIdx
+                                                        "text" => "Missing required segment",
+                                                        "position" => $segmentIdx,
+                                                        "segmentId" => $elm3['id']->__toString()
                                                     ];
                                             }
                                             break;
@@ -167,8 +168,9 @@ class Interpreter
                                 } else {
                                     if (!$segmentVisited && isset($elm2['required'])) {
                                         $errors[] = [
-                                                "text" => "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm2['id'],
-                                                "position" => $segmentIdx
+                                                "text" => "Missing required segment",
+                                                "position" => $segmentIdx,
+                                                "segmentId" => $elm2['id']->__toString()
                                             ];
                                     }
                                     break;
@@ -207,8 +209,9 @@ class Interpreter
                     } else {
                         if (!$segmentVisited && isset($elm['required'])) {
                             $errors[] = [
-                                    "text" => "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm['id'],
-                                    "position" => $segmentIdx
+                                    "text" => "Missing required segment",
+                                    "position" => $segmentIdx,
+                                    "segmentId" => $elm['id']->__toString()
                                 ];
                         }
                         break;
