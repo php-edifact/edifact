@@ -146,10 +146,10 @@ $edi = $p->get();
 
 $analyser = new EDI\Analyser();
 $segs =$analyser->loadSegmentsXml('vendor/sabas/edifact-data/D95B/segments.xml');
+$svc =$analyser->loadSegmentsXml('vendor/sabas/edifact-data/Service_V3/segments.xml');
 
-$interpreter = new EDI\Interpreter('vendor/sabas/edifact-data/D95B/messages/codeco.xml', $segs);
+$interpreter = new EDI\Interpreter('vendor/sabas/edifact-data/D95B/messages/codeco.xml', $segs, $svc);
 $prep = $interpreter->prepare($edi);
-
 ```
 
 **OUTPUT**
@@ -157,6 +157,11 @@ $prep = $interpreter->prepare($edi);
 Json
 ```php
 $interpreter->getJson()
+```
+
+Json for interchange service segments (UNB / UNZ)
+```php
+$interpreter->getJsonServiceSegments()
 ```
 
 Errors (per message)

@@ -10,27 +10,24 @@ class Interpreter
 {
     private $xmlMsg;
     private $xmlSeg;
+    private $xmlSvc;
     private $ediGroups;
     private $errors;
     private $msgs;
-    public $messageTextConf = [
-        'MISSINGREQUIREDSEGMENT' => "Missing required segment",
-        'NOTCONFORMANT' => "It looks like that this message isn't conformant to the mapping provided. (Not all segments were added)"
-    ];
+    private $serviceSeg;
 
     /**
    * Split multiple messages and process
    *
    * @param string $xmlMsg Path to XML Message representation
    * @param array $xmlSeg Segments processed by EDI\Analyser::loadSegmentsXml
+   * @param string $xmlSvc Service segments processed by EDI\Analyser::loadSegmentsXml
    */
-    public function __construct($xmlMsg, $xmlSeg, $messageTextConf = null)
+    public function __construct($xmlMsg, $xmlSeg, $xmlSvc)
     {
         $this->xmlMsg = simplexml_load_file($xmlMsg);
         $this->xmlSeg = $xmlSeg;
-        if ($messageTextConf !== null) {
-            $this->messageTextConf = array_replace($this->messageTextConf, $messageTextConf);
-        }
+        $this->xmlSvc = $xmlSvc;
     }
 
   /**
@@ -44,7 +41,13 @@ class Interpreter
         $this->msgs = $this->splitMessages($parsed);
         $groups = [];
         $errors = [];
-        foreach ($this->msgs as $msg) {
+        $service = $this->msgs['service'];
+        $this->serviceSeg = $this->processService($service);
+
+        foreach ($this->msgs as $k => $msg) {
+            if ($k === 'service') {
+                continue;
+            }
             $grouped = $this->loopMessage($msg, $this->xmlMsg);
             $groups[] = $grouped['message'];
             $errors[] = $grouped['errors'];
@@ -64,13 +67,21 @@ class Interpreter
     {
         $messages = [];
         $tmpmsg = [];
+        $service = [];
 
         foreach ($parsed as $segment) {
             switch ($segment[0]) {
                 case 'UNB':
-                    $tmpmsg = [];
+                    $service['UNB'] = $segment;
                     break;
                 case 'UNZ':
+                    $service['UNZ'] = $segment;
+                    break;
+                case 'UNH':
+                    $tmpmsg = [$segment];
+                    break;
+                case 'UNT':
+                    $tmpmsg[] = $segment;
                     $messages[] = $tmpmsg;
                     break;
                 default:
@@ -78,6 +89,7 @@ class Interpreter
                     break;
             }
         }
+        $messages['service'] = $service;
 
         return $messages;
     }
@@ -131,11 +143,7 @@ class Interpreter
                                             $segmentIdx++;
                                         } else {
                                             if (!$segmentVisited && isset($elm3['required'])) {
-                                                $errors[] = [
-                                                        "text" => $this->messageTextConf['MISSINGREQUIREDSEGMENT'],
-                                                        "position" => $segmentIdx,
-                                                        "segmentId" => $elm3['id']->__toString()
-                                                    ];
+                                                $errors[] = "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm3['id'];
                                             }
                                             break;
                                         }
@@ -175,9 +183,8 @@ class Interpreter
                                 } else {
                                     if (!$segmentVisited && isset($elm2['required'])) {
                                         $errors[] = [
-                                                "text" => $this->messageTextConf['MISSINGREQUIREDSEGMENT'],
-                                                "position" => $segmentIdx,
-                                                "segmentId" => $elm2['id']->__toString()
+                                                "text" => "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm['id'],
+                                                "position" => $segmentIdx
                                             ];
                                     }
                                     break;
@@ -216,9 +223,8 @@ class Interpreter
                     } else {
                         if (!$segmentVisited && isset($elm['required'])) {
                             $errors[] = [
-                                    "text" => $this->messageTextConf['MISSINGREQUIREDSEGMENT'],
-                                    "position" => $segmentIdx,
-                                    "segmentId" => $elm['id']->__toString()
+                                    "text" => "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm['id'],
+                                    "position" => $segmentIdx
                                 ];
                         }
                         break;
@@ -231,9 +237,9 @@ class Interpreter
         }
 
         if ($segmentIdx != count($message)) {
-            $errors[] = [
-                    "text" => $this->messageTextConf['NOTCONFORMANT']
-                ];
+            $msgErr = "It looks like that this message isn't conformant to the mapping provided.";
+            $msgErr .= " (Not all segments were added)";
+            $errors[] = ["text" => $msgErr];
         }
         return ['message' => $groupedEdi, 'errors' => $errors];
     }
@@ -243,15 +249,15 @@ class Interpreter
    *
    * @param $segment
    */
-    private function processSegment($segment)
+    private function processSegment($segment, $xmlMap)
     {
         $id = $segment[0];
 
         $jsonsegment = [];
-        if (isset($this->xmlSeg[$id])) {
+        if (isset($xmlMap[$id])) {
 
-            $attributes = $this->xmlSeg[$id]['attributes'];
-            $details_desc = $this->xmlSeg[$id]['details'];
+            $attributes = $xmlMap[$id]['attributes'];
+            $details_desc = $xmlMap[$id]['details'];
 
             $jsonelements = ["segmentCode" => $id];
             foreach ($segment as $idx => $detail) {
@@ -288,6 +294,19 @@ class Interpreter
     }
 
    /**
+    * Process UNB / UNZ segments
+    */
+    private function processService($segments)
+    {
+        $processed = [];
+        foreach ($segments as $seg) {
+            $jsonsegment = $this->processSegment($seg, $this->xmlSvc);
+            $processed[$jsonsegment['key']]=$jsonsegment['value'];
+        }
+        return $processed;
+    }
+
+   /**
     * Get result as json
     */
     public function getJson($pretty = false)
@@ -313,5 +332,25 @@ class Interpreter
     public function getMessages()
     {
         return $this->msgs;
+    }
+
+    /**
+     * Get service segments
+     */
+    public function getServiceSegments()
+    {
+        return $this->serviceSeg;
+    }
+
+    /**
+     * Get json service segments
+     */
+    public function getJsonServiceSegments($pretty = false)
+    {
+        if ($pretty) {
+            return json_encode($this->serviceSeg, JSON_PRETTY_PRINT);
+        } else {
+            return json_encode($this->serviceSeg);
+        }
     }
 }
