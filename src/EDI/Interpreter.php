@@ -15,6 +15,10 @@ class Interpreter
     private $errors;
     private $msgs;
     private $serviceSeg;
+    public $messageTextConf = [
+        'MISSINGREQUIREDSEGMENT' => "Missing required segment",
+        'NOTCONFORMANT' => "It looks like that this message isn't conformant to the mapping provided. (Not all segments were added)"
+    ];
 
     /**
    * Split multiple messages and process
@@ -22,12 +26,16 @@ class Interpreter
    * @param string $xmlMsg Path to XML Message representation
    * @param array $xmlSeg Segments processed by EDI\Analyser::loadSegmentsXml
    * @param string $xmlSvc Service segments processed by EDI\Analyser::loadSegmentsXml
+   * @param array $messageTextConf Personalisation of error messages
    */
-    public function __construct($xmlMsg, $xmlSeg, $xmlSvc)
+    public function __construct($xmlMsg, $xmlSeg, $xmlSvc, $messageTextConf = null)
     {
         $this->xmlMsg = simplexml_load_file($xmlMsg);
         $this->xmlSeg = $xmlSeg;
         $this->xmlSvc = $xmlSvc;
+        if ($messageTextConf !== null) {
+            $this->messageTextConf = array_replace($this->messageTextConf, $messageTextConf);
+        }
     }
 
   /**
@@ -143,7 +151,11 @@ class Interpreter
                                             $segmentIdx++;
                                         } else {
                                             if (!$segmentVisited && isset($elm3['required'])) {
-                                                $errors[] = "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm3['id'];
+                                                $errors[] = [
+                                                    "text" => $this->messageTextConf['MISSINGREQUIREDSEGMENT'],
+                                                    "position" => $segmentIdx,
+                                                    "segmentId" => $elm3['id']->__toString()
+                                                ];
                                             }
                                             break;
                                         }
@@ -183,8 +195,9 @@ class Interpreter
                                 } else {
                                     if (!$segmentVisited && isset($elm2['required'])) {
                                         $errors[] = [
-                                                "text" => "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm['id'],
-                                                "position" => $segmentIdx
+                                                "text" => $this->messageTextConf['MISSINGREQUIREDSEGMENT'],
+                                                "position" => $segmentIdx,
+                                                "segmentId" => $elm2['id']->__toString()
                                             ];
                                     }
                                     break;
@@ -223,8 +236,9 @@ class Interpreter
                     } else {
                         if (!$segmentVisited && isset($elm['required'])) {
                             $errors[] = [
-                                    "text" => "Missing required segment (it should be in the message at position ".$segmentIdx."): ".$elm['id'],
-                                    "position" => $segmentIdx
+                                    "text" => $this->messageTextConf['MISSINGREQUIREDSEGMENT'],
+                                    "position" => $segmentIdx,
+                                    "segmentId" => $elm['id']->__toString()
                                 ];
                         }
                         break;
@@ -237,9 +251,9 @@ class Interpreter
         }
 
         if ($segmentIdx != count($message)) {
-            $msgErr = "It looks like that this message isn't conformant to the mapping provided.";
-            $msgErr .= " (Not all segments were added)";
-            $errors[] = ["text" => $msgErr];
+            $errors[] = [
+                "text" => $this->messageTextConf['NOTCONFORMANT']
+            ];
         }
         return ['message' => $groupedEdi, 'errors' => $errors];
     }
