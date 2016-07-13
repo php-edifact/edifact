@@ -281,21 +281,22 @@ class Interpreter
                 }
                 $d_desc_attr =  $details_desc[$n]['attributes'];
 
-                if (!is_array($detail)) {
-                    $jsonelements[$d_desc_attr['name']] = $detail;
-                } else {
-                    $jsoncomposite = [];
-                    if (isset($details_desc[$n]['details'])) {
-                        $sub_details_desc =  $details_desc[$n]['details'];
-
+                $jsoncomposite = [];
+                if (isset($details_desc[$n]['details'])) {
+                    $sub_details_desc =  $details_desc[$n]['details'];
+                    if (!is_array($detail)) {
+                        $d_sub_desc_attr =  $sub_details_desc[0]['attributes'];
+                        $jsoncomposite[$d_sub_desc_attr['name']] = $detail;
+                    } else {
                         foreach ($detail as $d_n => $d_detail) {
                             $d_sub_desc_attr =  $sub_details_desc[$d_n]['attributes'];
-
                             $jsoncomposite[$d_sub_desc_attr['name']] = $d_detail;
                         }
                     }
-                    $jsonelements[$d_desc_attr['name']] = $jsoncomposite;
+                } else {
+                    $jsoncomposite = $detail;
                 }
+                $jsonelements[$d_desc_attr['name']] = $jsoncomposite;
             }
             $jsonsegment['key'] = $attributes['name'];
             $jsonsegment['value'] = $jsonelements;
