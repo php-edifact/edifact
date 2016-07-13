@@ -289,10 +289,6 @@ class Interpreter
                         $jsoncomposite[$d_sub_desc_attr['name']] = $detail;
                     } else {
                         foreach ($detail as $d_n => $d_detail) {
-                            if (!isset($sub_details_desc[$d_n])) {
-                                d($sub_details_desc);
-                                d($detail);
-                            }
                             $d_sub_desc_attr =  $sub_details_desc[$d_n]['attributes'];
                             $jsoncomposite[$d_sub_desc_attr['name']] = $d_detail;
                         }
