@@ -136,7 +136,7 @@ class Interpreter
                                     $segmentVisited = false;
                                     for ($i = 0; $i < $elm3['maxrepeat']; $i++) {
                                         if ($message[$segmentIdx][0] == $elm3['id']) {
-                                            $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg);
+                                            $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx);
                                             $segmentVisited = true;
                                             if (!isset($group2temp[$jsonMessage['key']])) {
                                                 $group2temp[$jsonMessage['key']]=$jsonMessage['value'];
@@ -179,7 +179,7 @@ class Interpreter
                             $segmentVisited = false;
                             for ($i = 0; $i < $elm2['maxrepeat']; $i++) {
                                 if ($message[$segmentIdx][0] == $elm2['id']) {
-                                    $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg);
+                                    $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx);
                                     $segmentVisited = true;
                                     if (!isset($grouptemp[$jsonMessage['key']])) {
                                         $grouptemp[$jsonMessage['key']]=$jsonMessage['value'];
@@ -220,7 +220,7 @@ class Interpreter
                 $segmentVisited = false;
                 for ($i = 0; $i < $elm['maxrepeat']; $i++) {
                     if ($message[$segmentIdx][0] == $elm['id']) {
-                        $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg);
+                        $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx);
                         $segmentVisited = true;
                         if (!isset($groupedEdi[$jsonMessage['key']])) {
                             $groupedEdi[$jsonMessage['key']]=$jsonMessage['value'];
@@ -263,7 +263,7 @@ class Interpreter
    *
    * @param $segment
    */
-    private function processSegment($segment, $xmlMap)
+    private function processSegment($segment, $xmlMap, $segmentIdx)
     {
         $id = $segment[0];
 
@@ -273,7 +273,7 @@ class Interpreter
             $attributes = $xmlMap[$id]['attributes'];
             $details_desc = $xmlMap[$id]['details'];
 
-            $jsonelements = ["segmentCode" => $id];
+            $jsonelements = ["segmentIdx" => $segmentIdx, "segmentCode" => $id];
             foreach ($segment as $idx => $detail) {
                 $n = $idx-1;
                 if ($idx == 0 || !isset($details_desc[$n])) {
@@ -315,7 +315,7 @@ class Interpreter
     {
         $processed = [];
         foreach ($segments as $seg) {
-            $jsonsegment = $this->processSegment($seg, $this->xmlSvc);
+            $jsonsegment = $this->processSegment($seg, $this->xmlSvc, null);
             $processed[$jsonsegment['key']]=$jsonsegment['value'];
         }
         return $processed;
