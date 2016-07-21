@@ -1,1 +1,3 @@
 codeCoverage/*
+/vendor
+composer.lock

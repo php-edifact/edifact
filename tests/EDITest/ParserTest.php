@@ -106,16 +106,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertContains($experror, $error);
     }
 
-    public function testNotTerminatedSegment()
-    {
-
-        $arr= ["LOC+9+VNSGN","LOC+11+ITGOA'"];
-        $error="Segment not ended correctly at line 1=>LOC+9+VNSGN";
-        $p=new Parser($arr);
-        $result=$p->errors();
-        $this->assertContains($error, $result);
-    }
-
     public function testArrayInputNoErrors()
     {
         $arr= ["LOC+9+VNSGN'","LOC+11+ITGOA'"];
