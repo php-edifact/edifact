@@ -4,15 +4,14 @@ Load a message and dump a json
 ------------------------------
 Loading from file:
 ```php
-	use EDI\Parser;
-	$fn="example.edi"; //it's a path!
-	$p=new EDI\Parser($fn);
-	if (count($p->errors())>0)
-	{
-		echo json_encode($p->errors());
-		return;
-	}
-	echo json_encode($p->get());
+use EDI\Parser;
+$fn = "example.edi"; //it's a path!
+$p = new EDI\Parser($fn);
+if (count($p->errors()) > 0) {
+	echo json_encode($p->errors());
+	return;
+}
+echo json_encode($p->get());
 ```
 Same example works for ```$fn``` containing a wrapped string (seg'seg) or an array ([seg,seg])
 
@@ -20,26 +19,25 @@ Convert a formatted array to EDIFACT message
 --------------------------------------------
 Loading from a php array:
 ```php
-	use EDI\Encoder;
-	$arr=[]; //array
-	$p=new EDI\Encoder($arr,false); //one segment per line
-	echo $p->get();
+use EDI\Encoder;
+$arr = []; //array
+$p = new EDI\Encoder($arr, false); //one segment per line
+echo $p->get();
 ```
 
 Create from EDI file readable file with comments
 ------------------------------------------------
 
 ```php
-    $file_name = 'demo.edi';
-    $parser = new EDI\Parser();
-    $parsed = $parser->load($file_name);
-    $segments = $parser->getRawSegments();
+$fileName = 'demo.edi';
+$parser = new EDI\Parser();
+$parsed = $parser->load($fileName);
+$segments = $parser->getRawSegments();
 
-    $analyser = new EDI\Analyser();
-    $analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml'); 
-    
-    $text = $analyser->process($parsed, $segments);
+$analyser = new EDI\Analyser();
+$analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml');
 
+$text = $analyser->process($parsed, $segments);
 ```
 
 Readable EDI file
@@ -93,27 +91,27 @@ EDI data element reading
 -----------------
 
 ```php
-    $file_name = 'files/truck_out_176699.edi';
-    $reader = new EDI\Reader($file_name);
+$fileName = 'files/truck_out_176699.edi';
+$reader = new EDI\Reader($fileName);
 
-    $record = array(
-            'interchangeSender' => $reader->readEdiDataValue('UNB',2),
-            'arrivalDateTimeEstimated' => $reader->$EdiReader->readEdiSegmentDTM('132'),
-            'messageReferenceNumber' => $reader->readEdiDataValue('UNH',1),
-            'TareWeight' => $reader->readEdiDataValue(['MEA',['2'=>'T']],3,0) 
-                                . ' ' 
-                                . $reader->readEdiDataValue(['MEA',['2'=>'T']],3,1),
-            'GrossWeight' => $reader->readEdiDataValue(['MEA',['2'=>'G']],3,0) 
-                                . ' ' 
-                                . $reader->readEdiDataValue(['MEA',['2'=>'G']],3,1),
-    );
+$record = [
+	'interchangeSender' => $reader->readEdiDataValue('UNB', 2),
+	'arrivalDateTimeEstimated' => $reader->$EdiReader->readEdiSegmentDTM('132'),
+	'messageReferenceNumber' => $reader->readEdiDataValue('UNH', 1),
+	'TareWeight' => $reader->readEdiDataValue(['MEA', ['2' => 'T']], 3, 0)
+	. ' '
+	. $reader->readEdiDataValue(['MEA', ['2' => 'T']], 3, 1),
+	'GrossWeight' => $reader->readEdiDataValue(['MEA', ['2' => 'G']], 3, 0)
+	. ' '
+	. $reader->readEdiDataValue(['MEA', ['2' => 'G']], 3, 1),
+];
 
-    //error processing
-    $reader_errors = $EdiReader->errors();
-    if(!empty($reader_errors)){
-        var_dump($reader_errors);
-    }  
-    var_dump($record);
+//error processing
+$readerErrors = $EdiReader->errors();
+if (!empty($readerErrors)) {
+	var_dump($readerErrors);
+}
+var_dump($record);
 ```
 
 Demo
