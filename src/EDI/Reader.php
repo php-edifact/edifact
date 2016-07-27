@@ -315,7 +315,7 @@ class Reader
      *
      * @return mixed|string
      */
-    public function readUNBDateTimeOfPpreperation()
+    public function readUNBDateTimeOfPreperation()
     {
 
         //separate date (YYMMDD) and time (HHMM)
