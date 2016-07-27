@@ -119,7 +119,7 @@ OR
 ```php
 $c = new Parser($x);
 
-$r=new Reader();
+$r = new Reader();
 $r->setParsedFile($c);
 $sender = $r->readEdiDataValue('UNB', 2);
 $Dt = $r->readUNBDateTimeOfPpreperation();
@@ -141,12 +141,12 @@ Organizes the data parsed by EDI/Parser using the xml description of the message
 
 **INPUT**
 ```php
-$p=new EDI\Parser($edifile);
+$p = new EDI\Parser($edifile);
 $edi = $p->get();
 
 $analyser = new EDI\Analyser();
-$segs =$analyser->loadSegmentsXml('vendor/sabas/edifact-data/D95B/segments.xml');
-$svc =$analyser->loadSegmentsXml('vendor/sabas/edifact-data/Service_V3/segments.xml');
+$segs = $analyser->loadSegmentsXml('vendor/sabas/edifact-data/D95B/segments.xml');
+$svc = $analyser->loadSegmentsXml('vendor/sabas/edifact-data/Service_V3/segments.xml');
 
 $interpreter = new EDI\Interpreter('vendor/sabas/edifact-data/D95B/messages/codeco.xml', $segs, $svc);
 $prep = $interpreter->prepare($edi);
