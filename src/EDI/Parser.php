@@ -129,7 +129,7 @@ class Parser
         if(substr($string, 0, 3) === "UNA")
     		$this->analyseUNA(substr($string, 0, 9));
         $file2=array();
-        $file=preg_split("/(?<!".preg_quote($this->symb_rel).")".$this->symb_end."/i", $string);
+        $file=preg_split("/(?<!".$this->symb_rel.")".$this->symb_end."/i", $string);
         $end = stripslashes($this->symb_end);
         foreach ($file as &$line) {
             $temp=$line.$end;
@@ -145,12 +145,12 @@ class Parser
     {
         $str = strrev(preg_replace("/".$this->symb_end."/", "", strrev($str), 1));//remove ending " ' "
         $str = trim($str);
-        $matches=preg_split("/(?<!".preg_quote($this->symb_rel).")".preg_quote($this->sep_data)."/", $str); //split on sep_data if not escaped (negative lookbehind)
+        $matches=preg_split("/(?<!".$this->symb_rel.")".$this->sep_data."/", $str); //split on sep_data if not escaped (negative lookbehind)
         foreach ($matches as &$value) {
-            if (preg_match("/(?<!".preg_quote($this->symb_rel).")".$this->symb_end."/", $value)) {
+            if (preg_match("/(?<!".$this->symb_rel.")".$this->symb_end."/", $value)) {
                 $this->errors[]="There's a ".stripslashes($this->symb_end)." not escaped in the data; string ". $str;
             }
-            if (preg_match("/(?<!".preg_quote($this->symb_rel).")".preg_quote($this->symb_rel)."(?!".preg_quote($this->symb_rel).")(?!".preg_quote($this->sep_data).")(?!".$this->sep_comp.")(?!".$this->symb_end.")/", $value)) {
+            if (preg_match("/(?<!".$this->symb_rel.")".$this->symb_rel."(?!".$this->symb_rel.")(?!".$this->sep_data.")(?!".$this->sep_comp.")(?!".$this->symb_end.")/", $value)) {
                 $this->errors[]="There's a character not escaped with ".$this->symb_rel." in the data; string ". $value;
             }
             $value=$this->splitData($value); //split on sep_comp
@@ -161,11 +161,11 @@ class Parser
     //Composite data element
     private function splitData($str)
     {
-        $arr=preg_split("/(?<!".preg_quote($this->symb_rel).")".preg_quote($this->sep_comp)."/", $str); //split on sep_comp if not escaped (negative lookbehind)
+        $arr=preg_split("/(?<!".preg_quote($this->symb_rel).")".$this->sep_comp."/", $str); //split on sep_comp if not escaped (negative lookbehind)
         if (count($arr)==1) {
-            return preg_replace("/".preg_quote($this->symb_rel)."(?=".preg_quote($this->symb_rel).")|".preg_quote($this->symb_rel)."(?=".preg_quote($this->sep_data).")|".preg_quote($this->symb_rel)."(?=".preg_quote($this->sep_comp).")|".preg_quote($this->symb_rel)."(?=".$this->symb_end.")/", "", $str); //remove ? if not escaped
+            return preg_replace("/".preg_quote($this->symb_rel)."(?=".preg_quote($this->symb_rel).")|".preg_quote($this->symb_rel)."(?=".$this->sep_data.")|".preg_quote($this->symb_rel)."(?=".$this->sep_comp.")|".preg_quote($this->symb_rel)."(?=".$this->symb_end.")/", "", $str); //remove ? if not escaped
         }     foreach ($arr as &$value) {
-              $value=preg_replace("/".preg_quote($this->symb_rel)."(?=".preg_quote($this->symb_rel).")|".preg_quote($this->symb_rel)."(?=".preg_quote($this->sep_data).")|".preg_quote($this->symb_rel)."(?=".preg_quote($this->sep_comp).")|".preg_quote($this->symb_rel)."(?=".$this->symb_end.")/", "", $value);
+              $value=preg_replace("/".preg_quote($this->symb_rel)."(?=".preg_quote($this->symb_rel).")|".preg_quote($this->symb_rel)."(?=".$this->sep_data.")|".preg_quote($this->symb_rel)."(?=".$this->sep_comp.")|".preg_quote($this->symb_rel)."(?=".$this->symb_end.")/", "", $value);
         }
         return $arr;
     }
