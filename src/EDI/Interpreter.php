@@ -169,11 +169,7 @@ class Interpreter
                             if (count($newGroup2) == 0) {
                                 continue;
                             }
-                            if (count($newGroup2) > 1) {
-                                $grouptemp[$elm2['id']->__toString()] = $newGroup2;
-                            } else {
-                                $grouptemp[$elm2['id']->__toString()] = $newGroup2[0];
-                            }
+                            $grouptemp[$elm2['id']->__toString()] = $newGroup2;
                         } else {
                             /* SEGMENT INSIDE A GROUP */
                             $segmentVisited = false;
@@ -210,11 +206,7 @@ class Interpreter
                 if (count($newGroup) == 0) {
                     continue;
                 }
-                if (count($newGroup) > 1) {
-                    $groupedEdi[$elm['id']->__toString()] = $newGroup;
-                } else {
-                    $groupedEdi[$elm['id']->__toString()] = $newGroup[0];
-                }
+                $groupedEdi[$elm['id']->__toString()] = $newGroup;
             } elseif ($elm->getName()=="segment") {
                 /* FIRST LEVEL SEGMENT */
                 $segmentVisited = false;
