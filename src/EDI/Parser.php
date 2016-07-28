@@ -150,7 +150,7 @@ class Parser
             if (preg_match("/(?<!".preg_quote($this->symb_rel).")".$this->symb_end."/", $value)) {
                 $this->errors[]="There's a ".stripslashes($this->symb_end)." not escaped in the data; string ". $str;
             }
-            if (preg_match("/(?<!".preg_quote($this->symb_rel).")".preg_quote($this->symb_rel)."(?!".preg_quote($this->symb_rel).")(?!".preg_quote($this->sep_data).")(?!".preg_quote($this->sep_comp).")(?!".$this->symb_end.")/", $value)) {
+            if (preg_match("/(?<!".preg_quote($this->symb_rel).")".preg_quote($this->symb_rel)."(?!".preg_quote($this->symb_rel).")(?!".preg_quote($this->sep_data).")(?!".$this->sep_comp.")(?!".$this->symb_end.")/", $value)) {
                 $this->errors[]="There's a character not escaped with ".$this->symb_rel." in the data; string ". $value;
             }
             $value=$this->splitData($value); //split on sep_comp
