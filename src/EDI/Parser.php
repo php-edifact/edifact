@@ -105,17 +105,22 @@ class Parser
     	$line = preg_replace("#^UNA#", "", $line);
     	if(isset($line{0})) {
     		$this->sep_comp = $line{0};
-    	if(isset($line{1})) {
-    		$this->sep_data = $line{1};
-    	if(isset($line{2})) {
-    		$this->sep_dec = $line{2};
-    	if(isset($line{3})) {
-    		$this->symb_rel = $line{3};
-    	if(isset($line{4})) {
-    		$this->symb_rep = $line{4};
-    	if(isset($line{5})) {
-    		$this->symb_end = $line{5};
-    	} } } } } }
+    	    if(isset($line{1})) {
+        		$this->sep_data = $line{1};
+    	        if(isset($line{2})) {
+            		$this->sep_dec = $line{2};
+                	if(isset($line{3})) {
+                		$this->symb_rel = $line{3};
+    	                if(isset($line{4})) {
+    		                $this->symb_rep = $line{4};
+    	                    if(isset($line{5})) {
+    		                    $this->symb_end = $line{5};
+    	                    }
+    	                }
+                	}
+    	        }
+    	    }
+    	}
     }
     
     //unwrap string splitting rows on terminator (if not escaped)
