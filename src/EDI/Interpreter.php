@@ -17,17 +17,17 @@ class Interpreter
     private $serviceSeg;
     public $messageTextConf = [
         'MISSINGREQUIREDSEGMENT' => "Missing required segment",
-        'NOTCONFORMANT' => "It looks like that this message isn't conformant to the mapping provided. (Not all segments were added)"
+        'NOTCONFORMANT' => "It looks like that this message isn't conformant to the mapping provided. (Not all segments were added)",
     ];
 
     /**
-   * Split multiple messages and process
-   *
-   * @param string $xmlMsg Path to XML Message representation
-   * @param array $xmlSeg Segments processed by EDI\Analyser::loadSegmentsXml
-   * @param string $xmlSvc Service segments processed by EDI\Analyser::loadSegmentsXml
-   * @param array $messageTextConf Personalisation of error messages
-   */
+     * Split multiple messages and process
+     *
+     * @param string $xmlMsg Path to XML Message representation
+     * @param array $xmlSeg Segments processed by EDI\Analyser::loadSegmentsXml
+     * @param string $xmlSvc Service segments processed by EDI\Analyser::loadSegmentsXml
+     * @param array $messageTextConf Personalisation of error messages
+     */
     public function __construct($xmlMsg, $xmlSeg, $xmlSvc, $messageTextConf = null)
     {
         $this->xmlMsg = simplexml_load_file($xmlMsg);
@@ -38,12 +38,12 @@ class Interpreter
         }
     }
 
-  /**
-   * Split multiple messages and process
-   *
-   * @param  $parsed An array coming from EDI\Parser
-   * @return array
-   */
+    /**
+     * Split multiple messages and process
+     *
+     * @param  $parsed An array coming from EDI\Parser
+     * @return array
+     */
     public function prepare($parsed)
     {
         $this->msgs = $this->splitMessages($parsed);
@@ -65,12 +65,12 @@ class Interpreter
         return $groups;
     }
 
-  /**
-   * Split multiple messages
-   *
-   * @param  $parsed An array coming from EDI\Parser
-   * @return array
-   */
+    /**
+     * Split multiple messages
+     *
+     * @param  $parsed An array coming from EDI\Parser
+     * @return array
+     */
     private function splitMessages($parsed)
     {
         $messages = [];
@@ -102,33 +102,33 @@ class Interpreter
         return $messages;
     }
 
-  /**
-   * Transform a parsed edi in its groupings
-   *
-   * @param  $message Single message (Without UNB and UNZ)
-   * @param  $xml The xml representation of the message
-   * @return array
-   */
+    /**
+     * Transform a parsed edi in its groupings
+     *
+     * @param  $message Single message (Without UNB and UNZ)
+     * @param  $xml The xml representation of the message
+     * @return array
+     */
     private function loopMessage($message, $xml)
     {
         $groupedEdi = [];
         $errors = [];
         $segmentIdx = 0;
         foreach ($xml->children() as $elm) {
-            if ($elm->getName()=="group") {
+            if ($elm->getName() == "group") {
                 /* FIRST LEVEL GROUP */
                 $newGroup = [];
                 for ($g = 0; $g < $elm['maxrepeat']; $g++) {
-                    $grouptemp=[];
+                    $grouptemp = [];
                     if ($message[$segmentIdx][0] != $elm->children()[0]['id']) {
                         break;
                     }
                     foreach ($elm->children() as $elm2) {
-                        if ($elm2->getName()=="group") {
+                        if ($elm2->getName() == "group") {
                             /* GROUP INSIDE A GROUP */
                             $newGroup2 = [];
                             for ($g2 = 0; $g2 < $elm2['maxrepeat']; $g2++) {
-                                $group2temp=[];
+                                $group2temp = [];
                                 if ($message[$segmentIdx][0] != $elm2->children()[0]['id']) {
                                     break;
                                 }
@@ -139,14 +139,14 @@ class Interpreter
                                             $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx);
                                             $segmentVisited = true;
                                             if (!isset($group2temp[$jsonMessage['key']])) {
-                                                $group2temp[$jsonMessage['key']]=$jsonMessage['value'];
+                                                $group2temp[$jsonMessage['key']] = $jsonMessage['value'];
                                             } else {
                                                 if (isset($group2temp[$jsonMessage['key']]['segmentCode'])) {
                                                     $temp = $group2temp[$jsonMessage['key']];
                                                     $group2temp[$jsonMessage['key']] = [];
-                                                    $group2temp[$jsonMessage['key']][]=$temp;
+                                                    $group2temp[$jsonMessage['key']][] = $temp;
                                                 }
-                                                $group2temp[$jsonMessage['key']][]=$jsonMessage['value'];
+                                                $group2temp[$jsonMessage['key']][] = $jsonMessage['value'];
                                             }
                                             $segmentIdx++;
                                         } else {
@@ -154,7 +154,7 @@ class Interpreter
                                                 $errors[] = [
                                                     "text" => $this->messageTextConf['MISSINGREQUIREDSEGMENT'],
                                                     "position" => $segmentIdx,
-                                                    "segmentId" => $elm3['id']->__toString()
+                                                    "segmentId" => $elm3['id']->__toString(),
                                                 ];
                                             }
                                             break;
@@ -182,23 +182,23 @@ class Interpreter
                                     $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx);
                                     $segmentVisited = true;
                                     if (!isset($grouptemp[$jsonMessage['key']])) {
-                                        $grouptemp[$jsonMessage['key']]=$jsonMessage['value'];
+                                        $grouptemp[$jsonMessage['key']] = $jsonMessage['value'];
                                     } else {
                                         if (isset($grouptemp[$jsonMessage['key']]['segmentCode'])) {
                                             $temp = $grouptemp[$jsonMessage['key']];
                                             $grouptemp[$jsonMessage['key']] = [];
-                                            $grouptemp[$jsonMessage['key']][]=$temp;
+                                            $grouptemp[$jsonMessage['key']][] = $temp;
                                         }
-                                        $grouptemp[$jsonMessage['key']][]=$jsonMessage['value'];
+                                        $grouptemp[$jsonMessage['key']][] = $jsonMessage['value'];
                                     }
                                     $segmentIdx++;
                                 } else {
                                     if (!$segmentVisited && isset($elm2['required'])) {
                                         $errors[] = [
-                                                "text" => $this->messageTextConf['MISSINGREQUIREDSEGMENT'],
-                                                "position" => $segmentIdx,
-                                                "segmentId" => $elm2['id']->__toString()
-                                            ];
+                                            "text" => $this->messageTextConf['MISSINGREQUIREDSEGMENT'],
+                                            "position" => $segmentIdx,
+                                            "segmentId" => $elm2['id']->__toString(),
+                                        ];
                                     }
                                     break;
                                 }
@@ -215,7 +215,7 @@ class Interpreter
                 } else {
                     $groupedEdi[$elm['id']->__toString()] = $newGroup[0];
                 }
-            } elseif ($elm->getName()=="segment") {
+            } elseif ($elm->getName() == "segment") {
                 /* FIRST LEVEL SEGMENT */
                 $segmentVisited = false;
                 for ($i = 0; $i < $elm['maxrepeat']; $i++) {
@@ -223,46 +223,46 @@ class Interpreter
                         $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx);
                         $segmentVisited = true;
                         if (!isset($groupedEdi[$jsonMessage['key']])) {
-                            $groupedEdi[$jsonMessage['key']]=$jsonMessage['value'];
+                            $groupedEdi[$jsonMessage['key']] = $jsonMessage['value'];
                         } else {
                             if (isset($groupedEdi[$jsonMessage['key']]['segmentCode'])) {
                                 $temp = $groupedEdi[$jsonMessage['key']];
                                 $groupedEdi[$jsonMessage['key']] = [];
-                                $groupedEdi[$jsonMessage['key']][]=$temp;
+                                $groupedEdi[$jsonMessage['key']][] = $temp;
                             }
-                            $groupedEdi[$jsonMessage['key']][]=$jsonMessage['value'];
+                            $groupedEdi[$jsonMessage['key']][] = $jsonMessage['value'];
                         }
                         $segmentIdx++;
                     } else {
                         if (!$segmentVisited && isset($elm['required'])) {
                             $errors[] = [
-                                    "text" => $this->messageTextConf['MISSINGREQUIREDSEGMENT'],
-                                    "position" => $segmentIdx,
-                                    "segmentId" => $elm['id']->__toString()
-                                ];
+                                "text" => $this->messageTextConf['MISSINGREQUIREDSEGMENT'],
+                                "position" => $segmentIdx,
+                                "segmentId" => $elm['id']->__toString(),
+                            ];
                         }
                         break;
                     }
                 }
 
-            } elseif ($elm->getName()=="defaults") {
+            } elseif ($elm->getName() == "defaults") {
 
             }
         }
 
         if ($segmentIdx != count($message)) {
             $errors[] = [
-                "text" => $this->messageTextConf['NOTCONFORMANT']
+                "text" => $this->messageTextConf['NOTCONFORMANT'],
             ];
         }
         return ['message' => $groupedEdi, 'errors' => $errors];
     }
 
-  /**
-   * Add human readable keys as in Analyser
-   *
-   * @param $segment
-   */
+    /**
+     * Add human readable keys as in Analyser
+     *
+     * @param $segment
+     */
     private function processSegment($segment, $xmlMap, $segmentIdx)
     {
         $id = $segment[0];
@@ -275,21 +275,21 @@ class Interpreter
 
             $jsonelements = ["segmentIdx" => $segmentIdx, "segmentCode" => $id];
             foreach ($segment as $idx => $detail) {
-                $n = $idx-1;
+                $n = $idx - 1;
                 if ($idx == 0 || !isset($details_desc[$n])) {
                     continue;
                 }
-                $d_desc_attr =  $details_desc[$n]['attributes'];
+                $d_desc_attr = $details_desc[$n]['attributes'];
 
                 $jsoncomposite = [];
                 if (isset($details_desc[$n]['details']) && $detail !== '') {
-                    $sub_details_desc =  $details_desc[$n]['details'];
+                    $sub_details_desc = $details_desc[$n]['details'];
                     if (!is_array($detail)) {
-                        $d_sub_desc_attr =  $sub_details_desc[0]['attributes'];
+                        $d_sub_desc_attr = $sub_details_desc[0]['attributes'];
                         $jsoncomposite[$d_sub_desc_attr['name']] = $detail;
                     } else {
                         foreach ($detail as $d_n => $d_detail) {
-                            $d_sub_desc_attr =  $sub_details_desc[$d_n]['attributes'];
+                            $d_sub_desc_attr = $sub_details_desc[$d_n]['attributes'];
                             $jsoncomposite[$d_sub_desc_attr['name']] = $d_detail;
                         }
                     }
@@ -308,22 +308,22 @@ class Interpreter
         return $jsonsegment;
     }
 
-   /**
-    * Process UNB / UNZ segments
-    */
+    /**
+     * Process UNB / UNZ segments
+     */
     private function processService($segments)
     {
         $processed = [];
         foreach ($segments as $seg) {
             $jsonsegment = $this->processSegment($seg, $this->xmlSvc, null);
-            $processed[$jsonsegment['key']]=$jsonsegment['value'];
+            $processed[$jsonsegment['key']] = $jsonsegment['value'];
         }
         return $processed;
     }
 
-   /**
-    * Get result as json
-    */
+    /**
+     * Get result as json
+     */
     public function getJson($pretty = false)
     {
         if ($pretty) {
