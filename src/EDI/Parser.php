@@ -143,7 +143,7 @@ class Parser
     //Segments
     private function splitSegment($str)
     {
-        $str = strrev(preg_replace("/".$this->symb_end."/", "", strrev($str), 1));//remove ending " ' "
+        $str = strrev(preg_replace("/".$this->symb_end."/", "", strrev($str), 1));//remove ending symb_end
         $str = trim($str);
         $matches=preg_split("/(?<!".$this->symb_rel.")".$this->sep_data."/", $str); //split on sep_data if not escaped (negative lookbehind)
         foreach ($matches as &$value) {
@@ -151,7 +151,7 @@ class Parser
                 $this->errors[]="There's a ".stripslashes($this->symb_end)." not escaped in the data; string ". $str;
             }
             if (preg_match("/(?<!".$this->symb_rel.")".$this->symb_rel."(?!".$this->symb_rel.")(?!".$this->sep_data.")(?!".$this->sep_comp.")(?!".$this->symb_end.")/", $value)) {
-                $this->errors[]="There's a character not escaped with ".$this->symb_rel." in the data; string ". $value;
+                $this->errors[]="There's a character not escaped with ".stripslashes($this->symb_rel)." in the data; string ". $value;
             }
             $value=$this->splitData($value); //split on sep_comp
         }
@@ -163,9 +163,9 @@ class Parser
     {
         $arr=preg_split("/(?<!".$this->symb_rel.")".$this->sep_comp."/", $str); //split on sep_comp if not escaped (negative lookbehind)
         if (count($arr)==1) {
-            return preg_replace("/".preg_quote($this->symb_rel)."(?=".preg_quote($this->symb_rel).")|".preg_quote($this->symb_rel)."(?=".$this->sep_data.")|".preg_quote($this->symb_rel)."(?=".$this->sep_comp.")|".preg_quote($this->symb_rel)."(?=".$this->symb_end.")/", "", $str); //remove ? if not escaped
+            return preg_replace("/".$this->symb_rel."(?=".$this->symb_rel.")|".$this->symb_rel."(?=".$this->sep_data.")|".$this->symb_rel."(?=".$this->sep_comp.")|".$this->symb_rel."(?=".$this->symb_end.")/", "", $str); //remove symb_rel if not escaped
         }     foreach ($arr as &$value) {
-              $value=preg_replace("/".preg_quote($this->symb_rel)."(?=".preg_quote($this->symb_rel).")|".preg_quote($this->symb_rel)."(?=".$this->sep_data.")|".preg_quote($this->symb_rel)."(?=".$this->sep_comp.")|".preg_quote($this->symb_rel)."(?=".$this->symb_end.")/", "", $value);
+              $value=preg_replace("/".$this->symb_rel."(?=".$this->symb_rel.")|".$this->symb_rel."(?=".$this->sep_data.")|".$this->symb_rel."(?=".$this->sep_comp.")|".$this->symb_rel."(?=".$this->symb_end.")/", "", $value);
         }
         return $arr;
     }
