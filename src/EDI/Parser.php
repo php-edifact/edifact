@@ -161,7 +161,7 @@ class Parser
     //Composite data element
     private function splitData($str)
     {
-        $arr=preg_split("/(?<!".preg_quote($this->symb_rel).")".$this->sep_comp."/", $str); //split on sep_comp if not escaped (negative lookbehind)
+        $arr=preg_split("/(?<!".$this->symb_rel.")".$this->sep_comp."/", $str); //split on sep_comp if not escaped (negative lookbehind)
         if (count($arr)==1) {
             return preg_replace("/".preg_quote($this->symb_rel)."(?=".preg_quote($this->symb_rel).")|".preg_quote($this->symb_rel)."(?=".$this->sep_data.")|".preg_quote($this->symb_rel)."(?=".$this->sep_comp.")|".preg_quote($this->symb_rel)."(?=".$this->symb_end.")/", "", $str); //remove ? if not escaped
         }     foreach ($arr as &$value) {
