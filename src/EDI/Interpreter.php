@@ -46,7 +46,7 @@ class Interpreter
    */
     public function prepare($parsed)
     {
-        $this->msgs = $this->splitMessages($parsed);
+        $this->msgs = self::splitMessages($parsed);
         $groups = [];
         $errors = [];
         $service = $this->msgs['service'];
@@ -71,7 +71,7 @@ class Interpreter
    * @param  $parsed An array coming from EDI\Parser
    * @return array
    */
-    private function splitMessages($parsed)
+    private static function splitMessages($parsed)
     {
         $messages = [];
         $tmpmsg = [];
@@ -136,7 +136,7 @@ class Interpreter
                                     $segmentVisited = false;
                                     for ($i = 0; $i < $elm3['maxrepeat']; $i++) {
                                         if ($message[$segmentIdx][0] == $elm3['id']) {
-                                            $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx);
+                                            $jsonMessage = self::processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx);
                                             $segmentVisited = true;
                                             if (!isset($group2temp[$jsonMessage['key']])) {
                                                 $group2temp[$jsonMessage['key']]=$jsonMessage['value'];
@@ -179,7 +179,7 @@ class Interpreter
                             $segmentVisited = false;
                             for ($i = 0; $i < $elm2['maxrepeat']; $i++) {
                                 if ($message[$segmentIdx][0] == $elm2['id']) {
-                                    $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx);
+                                    $jsonMessage = self::processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx);
                                     $segmentVisited = true;
                                     if (!isset($grouptemp[$jsonMessage['key']])) {
                                         $grouptemp[$jsonMessage['key']]=$jsonMessage['value'];
@@ -220,7 +220,7 @@ class Interpreter
                 $segmentVisited = false;
                 for ($i = 0; $i < $elm['maxrepeat']; $i++) {
                     if ($message[$segmentIdx][0] == $elm['id']) {
-                        $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx);
+                        $jsonMessage = self::processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx);
                         $segmentVisited = true;
                         if (!isset($groupedEdi[$jsonMessage['key']])) {
                             $groupedEdi[$jsonMessage['key']]=$jsonMessage['value'];
@@ -263,7 +263,7 @@ class Interpreter
    *
    * @param $segment
    */
-    private function processSegment($segment, $xmlMap, $segmentIdx)
+    private static function processSegment($segment, $xmlMap, $segmentIdx)
     {
         $id = $segment[0];
 
@@ -290,7 +290,7 @@ class Interpreter
                     } else {
                         foreach ($detail as $d_n => $d_detail) {
                             $d_sub_desc_attr =  $sub_details_desc[$d_n]['attributes'];
-                            $jsoncomposite[$d_sub_desc_attr['name']] = $d_detail;
+                            $jsoncomposite[$d_sub_desc_attr['name']][$d_n] = $d_detail;
                         }
                     }
                 } else {
@@ -302,7 +302,7 @@ class Interpreter
             $jsonsegment['value'] = $jsonelements;
 
         } else {
-            $jsonsegment['key'] = $attributes['UnrecognisedType'];
+            $jsonsegment['key'] = 'UnrecognisedType';
             $jsonsegment['value'] = $segment;
         }
         return $jsonsegment;
@@ -315,7 +315,7 @@ class Interpreter
     {
         $processed = [];
         foreach ($segments as $seg) {
-            $jsonsegment = $this->processSegment($seg, $this->xmlSvc, null);
+            $jsonsegment = self::processSegment($seg, $this->xmlSvc, null);
             $processed[$jsonsegment['key']]=$jsonsegment['value'];
         }
         return $processed;
