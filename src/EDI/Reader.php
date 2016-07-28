@@ -82,7 +82,7 @@ class Reader
         $this->errors=[];
         
         if(!is_array($this->parsedfile)){
-            $this->errors[] = 'Incorect format parsed file';
+            $this->errors[] = 'Incorrect format parsed file';
             return false;            
         }
         
@@ -224,8 +224,10 @@ class Reader
                                 break;
                             }
                         } else {
-                            if (isset($edi_row[$f_el_list[0]]) && isset($edi_row[$f_el_list[0]][$f_el_list[1]])
-                                && $edi_row[$f_el_list[0]][$f_el_list[1]] == $el_value) {
+                            if (isset($edi_row[$f_el_list[0]]) && (
+                            		   (isset($edi_row[$f_el_list[0]][$f_el_list[1]]) && is_array($edi_row[$f_el_list[0]]) && $edi_row[$f_el_list[0]][$f_el_list[1]] == $el_value)
+                            		|| (isset($edi_row[$f_el_list[0]]) && is_string($edi_row[$f_el_list[0]]) && $edi_row[$f_el_list[0]] == $el_value))) 
+                            {
                                 $filter_ok = true;
                                 break;
                             }
