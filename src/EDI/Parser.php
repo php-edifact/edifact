@@ -13,9 +13,35 @@ class Parser
     private $obj;
     private $errors;
     private $stripChars="/[\x01-\x1F\x80-\xFF]/";
+    
+    /**
+     * @var string : component separator character (default :)
+     */
+    private $sep_comp;
+    /**
+     * @var string : data separator character (default +)
+     */
+    private $sep_data;
+    /**
+     * @var string : dec separator character (no use but here) (default .)
+     */
+    private $sep_dec;
+    /**
+     * @var string : release character (default ?)
+     */
+    private $symb_rel;
+    /**
+     * @var string : repetition character (no use but here) (default *)
+     */
+    private $symb_rep;
+    /**
+     * @var string : end character (default ')
+     */
+    private $symb_end;
 
     public function __construct($url = null)
     {
+        $this->resetUNA();
         $this->errors=array();
         if ($url===null) {
             return;
@@ -55,35 +81,73 @@ class Parser
         $this->parsedfile=array_values($file2); //reindex
         return $file2;
     }
-
+    
+    
+    /**
+     * Reset UNA's characters definition
+     */
+    private function resetUNA()
+    {
+    	$this->sep_comp = ":";
+    	$this->sep_data = "+";
+    	$this->sep_dec = ".";
+    	$this->symb_rel = "?";
+    	$this->symb_rep = "*";
+    	$this->symb_end = "'";
+    }
+    
+    /**
+     * Read UNA's characters definition  
+     * @param string $line : UNA definition line
+     */
+    private function analyseUNA($line)
+    {
+    	$line = preg_replace("#^UNA#", "", $line);
+    	if(isset($line{0})) {
+    		$this->sep_comp = $line{0};
+    	if(isset($line{1})) {
+    		$this->sep_data = $line{1};
+    	if(isset($line{2})) {
+    		$this->sep_dec = $line{2};
+    	if(isset($line{3})) {
+    		$this->symb_rel = $line{3};
+    	if(isset($line{4})) {
+    		$this->symb_rep = $line{4};
+    	if(isset($line{5})) {
+    		$this->symb_end = $line{5};
+    	} } } } } }
+    }
+    
     //unwrap string splitting rows on terminator (if not escaped)
     private function unwrap($string)
     {
+        if(substr($string, 0, 3) === "UNA")
+    		$this->analyseUNA(substr($string, 0, 9));
         $file2=array();
-        $file=preg_split("/(?<!\?)'/i", $string);
+        $file=preg_split("/(?<!".preg_quote($this->symb_rel).")".preg_quote($this->symb_end)."/i", $string);
         foreach ($file as &$line) {
-            $temp=$line."'";
-            if ($temp!="'") {
+            $temp=$line.$this->symb_end;
+            if ($temp!=$this->symb_end) {
                 $file2[]=$temp;
             }
         }
         return $file2;
     }
-
+    
     //Segments
     private function splitSegment($str)
     {
-        $str = strrev(preg_replace("/'/", "", strrev($str), 1));//remove ending " ' "
+        $str = strrev(preg_replace("/".$this->symb_end."/", "", strrev($str), 1));//remove ending " ' "
         $str = trim($str);
-        $matches=preg_split("/(?<!\?)\+/", $str); //split on + if not escaped (negative lookbehind)
+        $matches=preg_split("/(?<!".preg_quote($this->symb_rel).")".preg_quote($this->sep_data)."/", $str); //split on sep_data if not escaped (negative lookbehind)
         foreach ($matches as &$value) {
-            if (preg_match("/(?<!\?)'/", $value)) {
-                $this->errors[]="There's a ' not escaped in the data; string ". $str;
+            if (preg_match("/(?<!".preg_quote($this->symb_rel).")".preg_quote($this->symb_end)."/", $value)) {
+                $this->errors[]="There's a ".$this->symb_end." not escaped in the data; string ". $str;
             }
-            if (preg_match("/(?<!\?)\?(?!\?)(?!\+)(?!:)(?!')/", $value)) {
-                $this->errors[]="There's a character not escaped with ? in the data; string ". $value;
+            if (preg_match("/(?<!".preg_quote($this->symb_rel).")".preg_quote($this->symb_rel)."(?!".preg_quote($this->symb_rel).")(?!".preg_quote($this->sep_data).")(?!".preg_quote($this->sep_comp).")(?!".preg_quote($this->symb_end).")/", $value)) {
+                $this->errors[]="There's a character not escaped with ".$this->symb_rel." in the data; string ". $value;
             }
-            $value=$this->splitData($value); //split on :
+            $value=$this->splitData($value); //split on sep_comp
         }
         return $matches;
     }
@@ -91,11 +155,11 @@ class Parser
     //Composite data element
     private function splitData($str)
     {
-        $arr=preg_split("/(?<!\?):/", $str); //split on : if not escaped (negative lookbehind)
+        $arr=preg_split("/(?<!".preg_quote($this->symb_rel).")".preg_quote($this->sep_comp)."/", $str); //split on sep_comp if not escaped (negative lookbehind)
         if (count($arr)==1) {
-            return preg_replace("/\?(?=\?)|\?(?=\+)|\?(?=:)|\?(?=')/", "", $str); //remove ? if not escaped
+            return preg_replace("/".preg_quote($this->symb_rel)."(?=".preg_quote($this->symb_rel).")|".preg_quote($this->symb_rel)."(?=".preg_quote($this->sep_data).")|".preg_quote($this->symb_rel)."(?=".preg_quote($this->sep_comp).")|".preg_quote($this->symb_rel)."(?=".preg_quote($this->symb_end).")/", "", $str); //remove ? if not escaped
         }     foreach ($arr as &$value) {
-              $value=preg_replace("/\?(?=\?)|\?(?=\+)|\?(?=:)|\?(?=')/", "", $value);
+              $value=preg_replace("/".preg_quote($this->symb_rel)."(?=".preg_quote($this->symb_rel).")|".preg_quote($this->symb_rel)."(?=".preg_quote($this->sep_data).")|".preg_quote($this->symb_rel)."(?=".preg_quote($this->sep_comp).")|".preg_quote($this->symb_rel)."(?=".preg_quote($this->symb_end).")/", "", $value);
         }
         return $arr;
     }
