@@ -25,6 +25,18 @@ class InterpreterTest extends \PHPUnit_Framework_TestCase
         $interpreter = new Interpreter(__DIR__ . "/../../src/EDI/Mapping/D95B/messages/coarri.xml", $segs, $svc);
         $interpreter->prepare($parser->get());
 
+        $this->assertJsonStringEqualsJsonFile(
+            __DIR__ . "/../files/D95BCOARRI.json",
+            $interpreter->getJson(),
+            "JSON does not match expected output"
+        );
+
+        $this->assertEquals(
+            include __DIR__."/../files/messages/coarri.php",
+            $interpreter->getMessages(),
+            "Unable to get the correct message structure array"
+        );
+
         $this->assertCount(5, $interpreter->getMessages());
         $this->assertCount(4, $interpreter->getErrors());
         $this->assertCount(2, $interpreter->getServiceSegments());
