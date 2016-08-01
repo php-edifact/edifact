@@ -282,7 +282,12 @@ class Interpreter
                     } else {
                         foreach ($detail as $d_n => $d_detail) {
                             $d_sub_desc_attr =  $sub_details_desc[$d_n]['attributes'];
-                            $jsoncomposite[$d_sub_desc_attr['name']][$d_n] = $d_detail;
+                            if(!isset($jsoncomposite[$d_sub_desc_attr['name']])) // New
+                            	$jsoncomposite[$d_sub_desc_attr['name']] = $d_detail;
+                            else if(is_string($jsoncomposite[$d_sub_desc_attr['name']])) // More data than one string
+                            	$jsoncomposite[$d_sub_desc_attr['name']] = array($jsoncomposite[$d_sub_desc_attr['name']], $d_detail);
+                            else // More and more
+                            	$jsoncomposite[$d_sub_desc_attr['name']][] = $d_detail;
                         }
                     }
                 } else {
