@@ -38,10 +38,16 @@ class Parser
      * @var string : end character (default ')
      */
     private $symb_end;
+    
+    /**
+     * @var bool : true when UNA's characters are known
+     */
+    private $una_checked = false;
 
     public function __construct($url = null)
     {
-        $this->resetUNA();
+        if($this->una_checked)
+            $this->resetUNA();
         $this->errors=array();
         if ($url===null) {
             return;
@@ -72,7 +78,13 @@ class Parser
                 $this->errors[]="There's a not printable character on line ".$i.": ". $line;
             }
             $line = preg_replace($this->stripChars, '', $line); //basic sanitization, remove non printable chars
-            if (strlen($line)<2 || substr($line, 0, 3) === "UNA") {
+            if (strlen($line)<2) {
+                unset($file2[$x]);
+                continue;
+            }
+            else if(substr($line, 0, 3) === "UNA") {
+                if(!$this->una_checked)
+                    $this->analyseUNA($line);
                 unset($file2[$x]);
                 continue;
             }
@@ -88,12 +100,13 @@ class Parser
      */
     private function resetUNA()
     {
-    	$this->sep_comp = ":";
-    	$this->sep_data = "+";
-    	$this->sep_dec = ".";
-    	$this->symb_rel = "?";
-    	$this->symb_rep = "*";
+    	$this->sep_comp = "\:";
+    	$this->sep_data = "\+";
+    	$this->sep_dec = "\.";
+    	$this->symb_rel = "\?";
+    	$this->symb_rep = "\*";
     	$this->symb_end = "'";
+    	$this->una_checked = false;
     }
     
     /**
@@ -121,12 +134,13 @@ class Parser
     	        }
     	    }
     	}
+    	$this->una_checked = true;
     }
     
     //unwrap string splitting rows on terminator (if not escaped)
     private function unwrap($string)
     {
-        if(substr($string, 0, 3) === "UNA")
+        if(!$this->una_checked && substr($string, 0, 3) === "UNA")
     		$this->analyseUNA(substr($string, 0, 9));
         $file2=array();
         $file=preg_split("/(?<!".$this->symb_rel.")".$this->symb_end."/i", $string);
