@@ -102,9 +102,9 @@ class Parser
     {
     	$this->sep_comp = "\:";
     	$this->sep_data = "\+";
-    	$this->sep_dec = "\.";
+    	$this->sep_dec = "."; // See later if a preg_quote is needed
     	$this->symb_rel = "\?";
-    	$this->symb_rep = "\*";
+    	$this->symb_rep = "*"; // See later if a preg_quote is needed
     	$this->symb_end = "'";
     	$this->una_checked = false;
     }
