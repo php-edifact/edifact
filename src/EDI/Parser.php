@@ -84,7 +84,7 @@ class Parser
             }
             else if(substr($line, 0, 3) === "UNA") {
                 if(!$this->una_checked)
-                    $this->analyseUNA($line);
+                    $this->analyseUNA(preg_replace("#^UNA#", "", substr($string, 0, 9)));
                 unset($file2[$x]);
                 continue;
             }
@@ -115,7 +115,7 @@ class Parser
      */
     private function analyseUNA($line)
     {
-    	$line = preg_replace("#^UNA#", "", $line);
+    	$line = substr($line, 0, 6);
     	if(isset($line{0})) {
     	    $this->sep_comp = preg_quote($line{0});
     	    if(isset($line{1})) {
@@ -141,7 +141,7 @@ class Parser
     private function unwrap($string)
     {
         if(!$this->una_checked && substr($string, 0, 3) === "UNA")
-    		$this->analyseUNA(substr($string, 0, 9));
+    		$this->analyseUNA(preg_replace("#^UNA#", "", substr($string, 0, 9)));
         $file2=array();
         $file=preg_split("/(?<!".$this->symb_rel.")".$this->symb_end."/i", $string);
         $end = stripslashes($this->symb_end);
