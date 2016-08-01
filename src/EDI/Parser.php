@@ -40,13 +40,13 @@ class Parser
     private $symb_end;
     
     /**
-     * @var bool : true when UNA's characters are known
+     * @var bool : TRUE when UNA's characters are known, FALSE when they are not. NULL means no initialization
      */
     private $una_checked = false;
 
     public function __construct($url = null)
     {
-        if($this->una_checked)
+        if($this->una_checked !== false)
             $this->resetUNA();
         $this->errors=array();
         if ($url===null) {
