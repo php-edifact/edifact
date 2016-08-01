@@ -146,7 +146,6 @@ class Parser
     		$this->analyseUNA(preg_replace("#^UNA#", "", substr($string, 0, 9)));
         $file2=array();
         $file=preg_split(self::$DELIMITER."(?<!".$this->symb_rel.")".$this->symb_end.self::$DELIMITER."i", $string);
-        echo count($file);
         $end = stripslashes($this->symb_end);
         foreach ($file as &$line) {
             $temp=$line.$end;
