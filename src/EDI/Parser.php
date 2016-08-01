@@ -133,8 +133,8 @@ class Parser
     	            }
     	        }
     	    }
+    	    $this->una_checked = true;
     	}
-    	$this->una_checked = true;
     }
     
     //unwrap string splitting rows on terminator (if not escaped)
