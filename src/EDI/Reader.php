@@ -311,6 +311,14 @@ class Reader
     }
 
     /**
+     * @deprecated
+     */
+    public function readUNBDateTimeOfPpreperation()
+    {
+        return readUNBDateTimeOfPreperation();
+    }
+
+    /**
      * get message preparation time
      *
      * @return mixed|string
