@@ -32,7 +32,7 @@ class InterpreterTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals(
-            include __DIR__."/../files/messages/coarri.php",
+            include __DIR__ . "/../files/messages/coarri.php",
             $interpreter->getMessages(),
             "Unable to get the correct message structure array"
         );
@@ -54,6 +54,30 @@ class InterpreterTest extends \PHPUnit_Framework_TestCase
 
         $interpreter = new Interpreter(__DIR__ . "/../../src/EDI/Mapping/D95B/messages/baplie.xml", $segs, $svc);
         $interpreter->prepare($parser->get());
+
+        $this->assertCount(2, $interpreter->getMessages());
+        $this->assertCount(1, $interpreter->getErrors());
+        $this->assertCount(2, $interpreter->getServiceSegments());
+
+        $this->assertEquals([[]], $interpreter->getErrors());
+    }
+
+    public function testDESADV()
+    {
+        $parser = new Parser(__DIR__ . "/../files/D96ADESADV.edi");
+
+        $analyser = new Analyser();
+        $segs = $analyser->loadSegmentsXml(__DIR__ . "/../../src/EDI/Mapping/D96A/segments.xml");
+        $svc = $analyser->loadSegmentsXml(__DIR__ . "/../../src/EDI/Mapping/Service_V3/segments.xml");
+
+        $interpreter = new Interpreter(__DIR__ . "/../../src/EDI/Mapping/D96A/messages/desadv.xml", $segs, $svc);
+        $interpreter->prepare($parser->get());
+
+        $this->assertJsonStringEqualsJsonFile(
+            __DIR__ . "/../files/D96ADESADV.json",
+            $interpreter->getJson(true),
+            "JSON does not match expected output"
+        );
 
         $this->assertCount(2, $interpreter->getMessages());
         $this->assertCount(1, $interpreter->getErrors());
