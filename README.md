@@ -106,7 +106,7 @@ Read from EDI file requested segment element values.
 ```php
 $r = new Reader($x);
 $sender = $r->readEdiDataValue('UNB', 2);
-$Dt = $r->readUNBDateTimeOfPpreperation();
+$Dt = $r->readUNBDateTimeOfPreperation();
 
 ```
 Where X could be:
@@ -122,7 +122,7 @@ $c = new Parser($x);
 $r = new Reader();
 $r->setParsedFile($c);
 $sender = $r->readEdiDataValue('UNB', 2);
-$Dt = $r->readUNBDateTimeOfPpreperation();
+$Dt = $r->readUNBDateTimeOfPreperation();
 ```
 
 **OUTPUT**

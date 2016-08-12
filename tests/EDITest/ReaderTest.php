@@ -25,11 +25,11 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('1', $unh1);
     }
 
-    public function testReadUNBDateTimeOfPpreperation()
+    public function testReadUNBDateTimeOfPreperation()
     {
         $r = new Reader(__DIR__ . "/../files/example.edi");
 
-        $Dt = $r->readUNBDateTimeOfPpreperation();
+        $Dt = $r->readUNBDateTimeOfPreperation();
         $this->assertEquals('2094-01-01 09:50:00', $Dt);
     }
 
