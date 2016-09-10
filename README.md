@@ -9,9 +9,11 @@ It's provided in a Composer package:
 
 `composer require sabas/edifact`
 
-The mapping xml files are provided in a separate repository (https://github.com/sabas/edifact-data). To get them within the repository remember to clone with the ```--recursive``` flag, or download them with ```git submodule update --init --recursive```
+The mapping xml files are provided in a separate package:
 
-EDI/Parser
+`composer require php-edifact/edifact-mapping`
+
+EDI\Parser
 ------------------
 Given an edi message checks the syntax, outputs errors and returns the message as a multidimensional array.
 
@@ -44,7 +46,7 @@ $c->get();
 ```
 
 
-EDI/Encoder
+EDI\Encoder
 ------------------
 Given a multidimensional array (formatted as the output of the parser), returns an EDI string, optionally one segment per line.
 
@@ -69,17 +71,20 @@ $c->encode($array, $wrap);
 $c->get(); // returns String
 ```
 
-EDI/Analyser
+EDI\Analyser
 ------------------
 Create from EDI file readable structured text with comments from `segments.xml`.
+Requires the EDI\Mapping package.
 
 **INPUT**
 ```php
+$mapping = new EDI\Mapping\MappingProvider('D95B');
 $analyser = new EDI\Analyser();
-$analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml');
+$analyser->loadMessageXml($mapping->getMessage('CODECO'));
+$analyser->loadSegmentsXml($mapping->getSegments());
 ```
 * `$url` is the path to orginal EDI message file
-* `$parsed` is a by `EDI\Parser()` created EDI messages array
+* `$parsed` is an EDI message array created by `EDI\Parser()`
 
 **TEXT OUTPUT**
 ```php
@@ -89,7 +94,7 @@ Or
 ```php
 $analyser->process($parsed, $rawSegments);
 ```
-* `$rawSegments` (optional) is segments in raw format from `EDI\Parser::getRawSegments` to be printed before each segment in the analysed result
+* `$rawSegments` (optional) contains the segments in raw format from `EDI\Parser::getRawSegments()` to be printed before each segment in the analysed result
 
 **JSON OUTPUT**
 Get a json representation of the array, with the element names as key.
@@ -98,7 +103,7 @@ $analyser->process($parsed);
 $json = $analyser->getJson();
 ```
 
-EDI/Reader
+EDI\Reader
 ------------------
 Read from EDI file requested segment element values.
 
@@ -135,7 +140,7 @@ Array
 $c->get();
 ```
 
-EDI/Interpreter
+EDI\Interpreter
 ---------------
 Organizes the data parsed by EDI/Parser using the xml description of the message and the xml segments.
 
@@ -144,11 +149,13 @@ Organizes the data parsed by EDI/Parser using the xml description of the message
 $p = new EDI\Parser($edifile);
 $edi = $p->get();
 
-$analyser = new EDI\Analyser();
-$segs = $analyser->loadSegmentsXml('vendor/sabas/edifact-data/D95B/segments.xml');
-$svc = $analyser->loadSegmentsXml('vendor/sabas/edifact-data/Service_V3/segments.xml');
+$mapping = new EDI\Mapping\MappingProvider('D95B');
 
-$interpreter = new EDI\Interpreter('vendor/sabas/edifact-data/D95B/messages/codeco.xml', $segs, $svc);
+$analyser = new EDI\Analyser();
+$segs = $analyser->loadSegmentsXml($mapping->getSegments());
+$svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+
+$interpreter = new EDI\Interpreter($mapping->getMessage('CODECO'), $segs, $svc);
 $prep = $interpreter->prepare($edi);
 ```
 
@@ -180,11 +187,6 @@ Example
 ```php
 ['DTM',['7','201309200717','203']]
 ```
-
-Syntax data
-----------
-Processed from EDI PEAR Package by David JEAN LOUIS (izi), downloadable from [https://code.google.com/p/izi-sandbox/source/browse/trunk/php/php_edi/](IZISandbox).
-
 
 Notes
 ------
