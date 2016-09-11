@@ -5,6 +5,7 @@ namespace EDITest;
 use EDI\Analyser;
 use EDI\Interpreter;
 use EDI\Parser;
+use EDI\Mapping;
 
 /**
  * Class InterpreterTest
@@ -14,15 +15,17 @@ use EDI\Parser;
  */
 class InterpreterTest extends \PHPUnit_Framework_TestCase
 {
+
     public function testCOARRI()
     {
         $parser = new Parser(__DIR__ . "/../files/D95BCOARRI.edi");
 
+        $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
-        $segs = $analyser->loadSegmentsXml(__DIR__ . "/../../src/EDI/Mapping/D95B/segments.xml");
-        $svc = $analyser->loadSegmentsXml(__DIR__ . "/../../src/EDI/Mapping/Service_V3/segments.xml");
+        $segs = $analyser->loadSegmentsXml($mapping->getSegments());
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
 
-        $interpreter = new Interpreter(__DIR__ . "/../../src/EDI/Mapping/D95B/messages/coarri.xml", $segs, $svc);
+        $interpreter = new Interpreter($mapping->getMessage('coarri'), $segs, $svc);
         $interpreter->prepare($parser->get());
 
         $this->assertJsonStringEqualsJsonFile(
@@ -48,11 +51,12 @@ class InterpreterTest extends \PHPUnit_Framework_TestCase
     {
         $parser = new Parser(__DIR__ . "/../files/D95BBAPLIE.edi");
 
+        $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
-        $segs = $analyser->loadSegmentsXml(__DIR__ . "/../../src/EDI/Mapping/D95B/segments.xml");
-        $svc = $analyser->loadSegmentsXml(__DIR__ . "/../../src/EDI/Mapping/Service_V3/segments.xml");
+        $segs = $analyser->loadSegmentsXml($mapping->getSegments());
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
 
-        $interpreter = new Interpreter(__DIR__ . "/../../src/EDI/Mapping/D95B/messages/baplie.xml", $segs, $svc);
+        $interpreter = new Interpreter($mapping->getMessage('baplie'), $segs, $svc);
         $interpreter->prepare($parser->get());
 
         $this->assertCount(2, $interpreter->getMessages());
@@ -66,11 +70,12 @@ class InterpreterTest extends \PHPUnit_Framework_TestCase
     {
         $parser = new Parser(__DIR__ . "/../files/D96ADESADV.edi");
 
+        $mapping = new \EDI\Mapping\MappingProvider('D96A');
         $analyser = new Analyser();
-        $segs = $analyser->loadSegmentsXml(__DIR__ . "/../../src/EDI/Mapping/D96A/segments.xml");
-        $svc = $analyser->loadSegmentsXml(__DIR__ . "/../../src/EDI/Mapping/Service_V3/segments.xml");
+        $segs = $analyser->loadSegmentsXml($mapping->getSegments());
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
 
-        $interpreter = new Interpreter(__DIR__ . "/../../src/EDI/Mapping/D96A/messages/desadv.xml", $segs, $svc);
+        $interpreter = new Interpreter($mapping->getMessage('desadv'), $segs, $svc);
         $interpreter->prepare($parser->get());
 
         $this->assertJsonStringEqualsJsonFile(

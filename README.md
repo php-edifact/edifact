@@ -188,6 +188,10 @@ Example
 ['DTM',['7','201309200717','203']]
 ```
 
+Testing
+-------
+The package should be required with composer, alongside edifact-mapping. The tests then can be run simply with phpunit in the root of the package.
+
 Notes
 ------
 Valid characters are: A-Za-z0-9.,-()/'+:=?!"%&*;<> [UNECE](http://www.unece.org/trade/untdid/texts/d422_d.htm#p5.1)
