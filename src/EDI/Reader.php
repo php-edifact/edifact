@@ -1,13 +1,14 @@
 <?php
+
 /**
-EDIFACT Messages Reader
-(c)2016 Uldis Nelsons
-*/
+  EDIFACT Messages Reader
+  (c)2016 Uldis Nelsons
+ */
 
 namespace EDI;
 
-class Reader
-{
+class Reader {
+
     /**
      * @var array parsed EDI file
      */
@@ -22,25 +23,22 @@ class Reader
      * Reader constructor.
      * @param string $url url or path ur EDI message
      */
-    public function __construct($url = null)
-    {
-        $this->errors=[];
+    public function __construct($url = null) {
+        $this->errors = [];
         $this->load($url);
     }
 
     /**
      * Get errors
      */
-    public function errors()
-    {
+    public function errors() {
         return $this->errors;
     }
 
     /**
      * reset errors
      */
-    public function resetErrors()
-    {
+    public function resetErrors() {
         $this->errors = array();
     }
 
@@ -48,8 +46,7 @@ class Reader
      * Returns the parsed file contained within.
      * @returns array
      */
-    public function getParsedFile()
-    {
+    public function getParsedFile() {
         return $this->parsedfile;
     }
 
@@ -57,8 +54,7 @@ class Reader
      * @param $url string url to edi file, path to edi file or EDI message
      * @return bool
      */
-    public function load($url)
-    {
+    public function load($url) {
         $Parser = new \EDI\Parser($url);
         $this->parsedfile = $Parser->get();
         return $this->preValidate();
@@ -68,8 +64,7 @@ class Reader
      * @param $parsed_file array
      * @return bool
      */
-    public function setParsedFile($parsed_file)
-    {
+    public function setParsedFile($parsed_file) {
         $this->parsedfile = $parsed_file;
         return $this->preValidate();
     }
@@ -78,19 +73,17 @@ class Reader
      * Do initial validation
      * @return bool
      */
-    public function preValidate(){
-        $this->errors=[];
-        
-        if(!is_array($this->parsedfile)){
+    public function preValidate() {
+        $this->errors = [];
+
+        if (!is_array($this->parsedfile)) {
             $this->errors[] = 'Incorrect format parsed file';
-            return false;            
+            return false;
         }
-        
+
         $r = $this->readUNHmessageNumber();
-        if(!$r 
-                && isset($this->errors[0]) 
-                && $this->errors[0] == 'Segment "UNH" is ambiguous'){
-            $this->errors=[];
+        if (!$r && isset($this->errors[0]) && $this->errors[0] == 'Segment "UNH" is ambiguous') {
+            $this->errors = [];
             $this->errors[] = 'File has multiple messages';
             return false;
         }
@@ -103,49 +96,48 @@ class Reader
      * @param $ediMessage string
      * @return array
      */
-    public static function splitMultiMessage($ediMessage){
+    public static function splitMultiMessage($ediMessage) {
         $splicedMessages = [];
         $rawSegments = self::unwrap($ediMessage);
         //var_dump($rawSegments);
         $message = [];
         $unb = false;
-        foreach($rawSegments as $segment){
+        foreach ($rawSegments as $segment) {
 
-            if(substr($segment,0,3) == 'UNB'){
+            if (substr($segment, 0, 3) == 'UNB') {
                 $unb = $segment;
                 continue;
             }
 
-            if(substr($segment,0,3) == 'UNH'){
-                if($unb) {
+            if (substr($segment, 0, 3) == 'UNH') {
+                if ($unb) {
                     $message[] = $unb;
                 }
                 $message[] = $segment;
                 continue;
             }
 
-            if(substr($segment,0,3) == 'UNT'){
+            if (substr($segment, 0, 3) == 'UNT') {
                 $message[] = $segment;
                 $splicedMessages[] = $message;
                 $message = [];
                 continue;
             }
 
-            if($message){
+            if ($message) {
                 $message[] = $segment;
                 continue;
             }
-
         }
 
-        if(substr($segment,0,3) == 'UNZ'){
-            $segment = preg_replace('#UNZ\+\d+\+#', 'UNZ+1+',$segment);
-            foreach($splicedMessages as $k => $message){
+        if (substr($segment, 0, 3) == 'UNZ') {
+            $segment = preg_replace('#UNZ\+\d+\+#', 'UNZ+1+', $segment);
+            foreach ($splicedMessages as $k => $message) {
                 $splicedMessages[$k][] = $segment;
             }
         }
 
-        foreach($splicedMessages as $k => $message) {
+        foreach ($splicedMessages as $k => $message) {
             $splicedMessages[$k] = implode(PHP_EOL, $splicedMessages[$k]);
         }
 
@@ -158,15 +150,14 @@ class Reader
      * @param $string string
      * @return array
      */
-    private static function unwrap($string)
-    {
-        $file2=array();
-        $file=preg_split("/(?<!\?)'/i", $string);
+    private static function unwrap($string) {
+        $file2 = array();
+        $file = preg_split("/(?<!\?)'/i", $string);
         foreach ($file as &$line) {
             $line = preg_replace('#[\x00\r\n]#', '', $line);
-            $temp=$line."'";
-            if ($temp!="'") {
-                $file2[]=$temp;
+            $temp = $line . "'";
+            if ($temp != "'") {
+                $file2[] = $temp;
             }
         }
         return $file2;
@@ -180,8 +171,7 @@ class Reader
      * @param bool $l2
      * @return string
      */
-    public function readEdiDataValueReq($filter, $l1, $l2 = false)
-    {
+    public function readEdiDataValueReq($filter, $l1, $l2 = false) {
         return $this->readEdiDataValue($filter, $l1, $l2, true);
     }
 
@@ -196,8 +186,7 @@ class Reader
      * @param  bool    $required    if required, but no exist, register error
      * @return string/null
      */
-    public function readEdiDataValue($filter, $l1, $l2 = false, $required = false)
-    {
+    public function readEdiDataValue($filter, $l1, $l2 = false, $required = false) {
 
         //interpret filter arameters
         if (!is_array($filter)) {
@@ -225,9 +214,7 @@ class Reader
                             }
                         } else {
                             if (isset($edi_row[$f_el_list[0]]) && (
-                            		   (isset($edi_row[$f_el_list[0]][$f_el_list[1]]) && is_array($edi_row[$f_el_list[0]]) && $edi_row[$f_el_list[0]][$f_el_list[1]] == $el_value)
-                            		|| (isset($edi_row[$f_el_list[0]]) && is_string($edi_row[$f_el_list[0]]) && $edi_row[$f_el_list[0]] == $el_value))) 
-                            {
+                                    (isset($edi_row[$f_el_list[0]][$f_el_list[1]]) && is_array($edi_row[$f_el_list[0]]) && $edi_row[$f_el_list[0]][$f_el_list[1]] == $el_value) || (isset($edi_row[$f_el_list[0]]) && is_string($edi_row[$f_el_list[0]]) && $edi_row[$f_el_list[0]] == $el_value))) {
                                 $filter_ok = true;
                                 break;
                             }
@@ -260,7 +247,7 @@ class Reader
         //validate elements
         if (!isset($segment[$l1])) {
             if ($required) {
-                $this->errors[] = 'Segment value "' . $segment_name . '['.$l1.']" no exist';
+                $this->errors[] = 'Segment value "' . $segment_name . '[' . $l1 . ']" no exist';
             }
             return null;
         }
@@ -273,7 +260,7 @@ class Reader
         //requestd second level element, but not exist
         if (!is_array($segment[$l1]) || !isset($segment[$l1][$l2])) {
             if ($required) {
-                $this->errors[] = 'Segment value "' . $segment_name . '['.$l1.']['.$l2.']" no exist';
+                $this->errors[] = 'Segment value "' . $segment_name . '[' . $l1 . '][' . $l2 . ']" no exist';
             }
             return null;
         }
@@ -282,14 +269,12 @@ class Reader
         return $segment[$l1][$l2];
     }
 
-
     /**
      * read date from DTM segment period qualifier - codelist 2005
      * @param int $PeriodQualifier period qualifier (codelist/2005)
      * @return string YYYY-MM-DD HH:MM:SS
      */
-    public function readEdiSegmentDTM($PeriodQualifier)
-    {
+    public function readEdiSegmentDTM($PeriodQualifier) {
 
         $date = $this->readEdiDataValue(['DTM', ['1.0' => $PeriodQualifier]], 1, 1);
         $format = $this->readEdiDataValue(['DTM', ['1.0' => $PeriodQualifier]], 1, 2);
@@ -315,8 +300,7 @@ class Reader
     /**
      * @deprecated
      */
-    public function readUNBDateTimeOfPpreperation()
-    {
+    public function readUNBDateTimeOfPpreperation() {
         return readUNBDateTimeOfPreperation();
     }
 
@@ -325,14 +309,13 @@ class Reader
      *
      * @return mixed|string
      */
-    public function readUNBDateTimeOfPreperation()
-    {
+    public function readUNBDateTimeOfPreperation() {
 
         //separate date (YYMMDD) and time (HHMM)
         $date = $this->readEdiDataValue('UNB', 4, 0);
         if (!empty($date)) {
             $time = $this->readEdiDataValue('UNB', 4, 1);
-            $datetime = preg_replace('#(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)#', '20$1-$2-$3 $4:$5:00', $date.$time);
+            $datetime = preg_replace('#(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)#', '20$1-$2-$3 $4:$5:00', $date . $time);
             return $datetime;
         }
 
@@ -349,8 +332,7 @@ class Reader
      * @param $transportStageQualifier
      * @return string
      */
-    public function readTDTtransportIdentification($transportStageQualifier)
-    {
+    public function readTDTtransportIdentification($transportStageQualifier) {
 
         $transportIdentification = $this->readEdiDataValue(['TDT', ['1' => $transportStageQualifier]], 8, 0);
         if (!empty($transportIdentification)) {
@@ -358,7 +340,6 @@ class Reader
         }
 
         return $this->readEdiDataValue(['TDT', ['1' => $transportStageQualifier]], 8);
-
     }
 
     /**
@@ -366,19 +347,16 @@ class Reader
      *
      * @return string
      */
-    public function readUNHmessageType()
-    {
+    public function readUNHmessageType() {
         return $this->readEdiDataValue('UNH', 2, 0);
     }
-
 
     /**
      * read message number
      *
      * @return string
      */
-    public function readUNHmessageNumber()
-    {
+    public function readUNHmessageNumber() {
         return $this->readEdiDataValue('UNH', 1);
     }
 
@@ -390,14 +368,12 @@ class Reader
      * @param type $after  segment after groups
      * @return boolean/array
      */
-    public function readGroups($before, $start, $end, $after)
-    {
+    public function readGroups($before, $start, $end, $after) {
         $groups = [];
         $group = [];
         $position = 'before_search';
         foreach ($this->parsedfile as $edi_row) {
             //echo $edi_row[0].' '.$position.PHP_EOL;
-
             //search before group segment
             if ($position == 'before_search' && $edi_row[0] == $before) {
                 $position = 'before_is';
@@ -452,12 +428,44 @@ class Reader
                 break;
             }
 
-            $this->errors[] = 'Reading group ' . $before.'/'.$start.'/'.$end.'/'.$after
-                    .'. Error on position: ' . $position;
+            $this->errors[] = 'Reading group ' . $before . '/' . $start . '/' . $end . '/' . $after
+                    . '. Error on position: ' . $position;
             return false;
-
         }
 
         return $groups;
     }
+
+    /**
+     * get groups from message when last segment is unknown but you know the barrier
+     * useful for invoices by default
+     * @param type $start  first segment start a new group
+     * @param type $barrier    barrier segment (NOT in group)
+     * @return boolean/array
+     */
+    public function groupsExtract($start = 'LIN', $barrier = array('UNS')) {
+        $groups = array();
+        $group = array();
+        $position = 'before_search';
+        foreach ($this->getParsedFile() as $edi_row) {
+            $segment = $edi_row[0];
+            if ($position == 'group_is' && ( $segment == $start || in_array($segment, $barrier) )) {
+                // end of group
+                $groups[] = $group;
+                // start new group
+                $group = array();
+                $position = 'group_finish';
+            }
+            if ($segment == $start) {
+                $position = 'group_is';
+            }
+            // add element to group
+            if ($position == 'group_is') {
+                $group[] = $edi_row;
+            }
+            //echo $edi_row[0] . ' ' . $position . PHP_EOL;
+        }
+        return $groups;
+    }
+
 }
