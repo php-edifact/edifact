@@ -18,6 +18,8 @@ class Interpreter
     public $messageTextConf = [
         'MISSINGREQUIREDSEGMENT' => "Missing required segment",
         'NOTCONFORMANT' => "It looks like that this message isn't conformant to the mapping provided. (Not all segments were added)",
+        'TOOMANYELEMENTS_COMPOSITE' => "This composite data element has more elements than expected",
+        'TOOMANYELEMENTS' => "This segment has more data elements than expected"
     ];
 
     /**
@@ -169,7 +171,7 @@ class Interpreter
         $segmentVisited = false;
         for ($i = 0; $i < $elm['maxrepeat']; $i++) {
             if ($message[$segmentIdx][0] == $elm['id']) {
-                $jsonMessage = self::processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx);
+                $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx, $errors);
                 $segmentVisited = true;
                 if (!isset($array[$jsonMessage['key']])) {
                     $array[$jsonMessage['key']] = $jsonMessage['value'];
@@ -200,7 +202,7 @@ class Interpreter
      *
      * @param $segment
      */
-    private static function processSegment($segment, $xmlMap, $segmentIdx)
+    private function processSegment($segment, $xmlMap, $segmentIdx, &$errors = null)
     {
         $id = $segment[0];
 
@@ -213,9 +215,20 @@ class Interpreter
             $jsonelements = ["segmentIdx" => $segmentIdx, "segmentCode" => $id];
             foreach ($segment as $idx => $detail) {
                 $n = $idx - 1;
-                if ($idx == 0 || !isset($details_desc[$n])) {
+                if ($idx == 0) {
                     continue;
                 }
+
+                if (!isset($details_desc[$n])) {
+                    $errors[] = [
+                        "text" => $this->messageTextConf['TOOMANYELEMENTS'],
+                        "position" => $segmentIdx,
+                        "segmentId" => $id,
+                    ];
+                    $jsonelements["Extension".$n] = $detail;
+                    continue;
+                }
+
                 $d_desc_attr = $details_desc[$n]['attributes'];
 
                 $jsoncomposite = [];
@@ -226,15 +239,21 @@ class Interpreter
                         $jsoncomposite[$d_sub_desc_attr['name']] = $detail;
                     } else {
                         foreach ($detail as $d_n => $d_detail) {
+                            if (!isset($sub_details_desc[$d_n])) {
+                                $errors[] = [
+                                    "text" => $this->messageTextConf['TOOMANYELEMENTS_COMPOSITE'],
+                                    "position" => $segmentIdx."/".$idx,
+                                    "segmentId" => $id,
+                                ];
+                                $jsoncomposite["CompositeExtension".$d_n] = $d_detail;
+                                continue;
+                            }
                             $d_sub_desc_attr = $sub_details_desc[$d_n]['attributes'];
-                            if (!isset($jsoncomposite[$d_sub_desc_attr['name']])) // New
-                            {
+                            if (!isset($jsoncomposite[$d_sub_desc_attr['name']])) { //New
                                 $jsoncomposite[$d_sub_desc_attr['name']] = $d_detail;
-                            } else if (is_string($jsoncomposite[$d_sub_desc_attr['name']])) // More data than one string
-                            {
+                            } elseif (is_string($jsoncomposite[$d_sub_desc_attr['name']])) { // More data than one string
                                 $jsoncomposite[$d_sub_desc_attr['name']] = array($jsoncomposite[$d_sub_desc_attr['name']], $d_detail);
-                            } else // More and more
-                            {
+                            } else { // More and more
                                 $jsoncomposite[$d_sub_desc_attr['name']][] = $d_detail;
                             }
 
@@ -262,7 +281,7 @@ class Interpreter
     {
         $processed = [];
         foreach ($segments as $seg) {
-            $jsonsegment = self::processSegment($seg, $this->xmlSvc, null);
+            $jsonsegment = $this->processSegment($seg, $this->xmlSvc, null);
             $processed[$jsonsegment['key']] = $jsonsegment['value'];
         }
         return $processed;
