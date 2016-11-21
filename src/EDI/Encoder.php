@@ -11,7 +11,7 @@ class Encoder {
 
     private $output = '';
     private $UNAActive = false; // disable by default to preserve backward compatibility 
-    private $array = array();
+    private $originalArray = [];
 
     /**
      * @var string : component separator character (default :)
@@ -52,7 +52,7 @@ class Encoder {
     }
 
     public function encode($arr, $wrap = true) {
-        $this->array = $arr;
+        $this->originalArray = $arr;
         $edistring = '';
         $count = count($arr);
         $k = 0;
@@ -126,7 +126,7 @@ class Encoder {
                 $this->enableUNA();
             }
             if ($this->output != '') {
-                $this->output = $this->encode($this->array);
+                $this->output = $this->encode($this->originalArray);
             }
             return TRUE;
         } else {
