@@ -44,7 +44,7 @@ class Encoder {
     private $symb_end;
 
     public function __construct($array = null, $wrap = true) {
-        $this->setUNA();
+        $this->setUNA(":+.? '", false);
         if ($array === null) {
             return;
         }
@@ -114,7 +114,7 @@ class Encoder {
         }
     }
 
-    public function setUNA($chars = ":+.? '") {
+    public function setUNA($chars, $user_call = true) {
         if (is_string($chars) && strlen($chars) == 6) {
             $this->sep_comp = $chars[0];
             $this->sep_data = $chars[1];
@@ -122,6 +122,9 @@ class Encoder {
             $this->symb_rel = $chars[3];
             $this->symb_rep = $chars[4];
             $this->symb_end = $chars[5];
+            if ($user_call) {
+                $this->enableUNA();
+            }
             if ($this->output != '') {
                 $this->output = $this->encode($this->array);
             }
