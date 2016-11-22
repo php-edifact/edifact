@@ -16,32 +16,32 @@ class Encoder {
     /**
      * @var string : component separator character (default :)
      */
-    private $sep_comp;
+    private $sepComp;
 
     /**
      * @var string : data separator character (default +)
      */
-    private $sep_data;
+    private $sepData;
 
     /**
      * @var string : dec separator character (no use but here) (default .)
      */
-    private $sep_dec;
+    private $sepDec;
 
     /**
      * @var string : release character (default ?)
      */
-    private $symb_rel;
+    private $symbRel;
 
     /**
-     * @var string : repetition character (no use but here) (default *)
+     * @var string : repetition character (no use but here) (default space)
      */
-    private $symb_rep;
+    private $symbRep;
 
     /**
      * @var string : end character (default ')
      */
-    private $symb_end;
+    private $symbEnd;
 
     public function __construct($array = null, $wrap = true) {
         $this->setUNA(":+.? '", false);
@@ -80,35 +80,42 @@ class Encoder {
                     $temp = $this->escapeValue($temp);
                     //var_dump($temp);
                 }
-                $elm = implode($this->sep_comp, $row[$i]);
+                $elm = implode($this->sepComp, $row[$i]);
             }
             $str .= $elm;
             if ($i == $t - 1) {
                 break;
             }
-            $str .= $this->sep_data;
+            $str .= $this->sepData;
         }
-        $str .= $this->symb_end;
+        $str .= $this->symbEnd;
         return $str;
     }
 
-//    private function escapeValue($str) {
-//        $str = preg_replace('/(' . $this->symb_end . '|\\'.$this->sep_data.'|' . $this->sep_comp . '|\\'.$this->symb_rel.')/', '?$1', $str, -1);
-//        return $str;
-//    }
     private function escapeValue($str) {
-        $str = preg_replace('/(\'|\\+|:|\\?)/', '?$1', $str, -1);
-        return $str;
+        $search = [
+            $this->sepComp,
+            $this->sepData,
+            $this->symbRel,
+            $this->symbEnd
+        ];
+        $replace = [
+            $this->symbRel . $this->sepComp,
+            $this->symbRel . $this->sepData,
+            $this->symbRel . $this->symbRel,
+            $this->symbRel . $this->symbEnd
+        ];
+        return str_replace($search, $replace, $str);
     }
 
     public function get() {
         if ($this->UNAActive) {
-            return "UNA" . $this->sep_comp .
-                    $this->sep_data .
-                    $this->sep_dec .
-                    $this->symb_rel .
-                    $this->symb_rep .
-                    $this->symb_end . $this->output;
+            return "UNA" . $this->sepComp .
+                    $this->sepData .
+                    $this->sepDec .
+                    $this->symbRel .
+                    $this->symbRep .
+                    $this->symbEnd . $this->output;
         } else {
             return $this->output;
         }
@@ -116,31 +123,30 @@ class Encoder {
 
     public function setUNA($chars, $user_call = true) {
         if (is_string($chars) && strlen($chars) == 6) {
-            $this->sep_comp = $chars[0];
-            $this->sep_data = $chars[1];
-            $this->sep_dec = $chars[2];
-            $this->symb_rel = $chars[3];
-            $this->symb_rep = $chars[4];
-            $this->symb_end = $chars[5];
+            $this->sepComp = $chars[0];
+            $this->sepData = $chars[1];
+            $this->sepDec = $chars[2];
+            $this->symbRel = $chars[3];
+            $this->symbRep = $chars[4];
+            $this->symbEnd = $chars[5];
             if ($user_call) {
                 $this->enableUNA();
             }
             if ($this->output != '') {
                 $this->output = $this->encode($this->originalArray);
             }
-            return TRUE;
+            return true;
         } else {
-            return FALSE;
+            return false;
         }
     }
 
     public function enableUNA() {
-        $this->UNAActive = TRUE;
+        $this->UNAActive = true;
     }
 
     public function disableUNA() {
-        $this->UNAActive = FALSE;
+        $this->UNAActive = false;
     }
 
 }
-
