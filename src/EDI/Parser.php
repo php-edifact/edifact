@@ -18,33 +18,33 @@ class Parser
     /**
      * @var string : component separator character (default :)
      */
-    private $sep_comp;
+    private $sepComp;
     /**
      * @var string : data separator character (default +)
      */
-    private $sep_data;
+    private $sepData;
     /**
      * @var string : dec separator character (no use but here) (default .)
      */
-    private $sep_dec;
+    private $sepDec;
     /**
      * @var string : release character (default ?)
      */
-    private $symb_rel;
+    private $symbRel;
     /**
      * @var string : repetition character (no use but here) (default *)
      */
-    private $symb_rep;
+    private $symbRep;
     /**
      * @var string : end character (default ')
      */
-    private $symb_end;
+    private $symbEnd;
     /**
-     * @var string : encoding (default UNOA)
+     * @var string : encoding (default UNOB)
      */
     private $encoding;
     
-    private $encodintToStripChars = [
+    private $encodingToStripChars = [
         "UNOA" => "/[\x01-\x1F\x80-\xFF]/", // not as restrictive as it should be
         "UNOB" => "/[\x01-\x1F\x80-\xFF]/",
         "UNOC" => "/[\x01-\x1F\x7F-\x9F]/"
@@ -54,18 +54,18 @@ class Parser
     /**
      * @var bool : TRUE when UNA's characters are known, FALSE when they are not. NULL means no initialization
      */
-    private $una_checked;
+    private $unaChecked;
     
     /**
      * @var bool : TRUE when UNB encoding is known, FALSE when it's not. NULL means no initialization
      */
-    private $unb_checked;
+    private $unbChecked;
 
     public function __construct($url = null)
     {
-        if($this->una_checked !== false)
+        if($this->unaChecked !== false)
             $this->resetUNA();        
-        if($this->unb_checked !== false)
+        if($this->unbChecked !== false)
             $this->resetUNB();
         $this->errors=array();
         if ($url===null) {
@@ -102,13 +102,13 @@ class Parser
                 continue;
             }
             else if(substr($line, 0, 3) === "UNA") {
-                if(!$this->una_checked)
+                if(!$this->unaChecked)
                     $this->analyseUNA(substr($line, 4, 6));
                 unset($file2[$x]);
                 continue;
             }
             else if(substr($line, 0, 3) === "UNB") {
-                if(!$this->unb_checked)
+                if(!$this->unbChecked)
                     $this->analyseUNB(substr($line, 4));
             }
             $line=$this->splitSegment($line);
@@ -123,13 +123,13 @@ class Parser
      */
     private function resetUNA()
     {
-    	$this->sep_comp = "\:";
-    	$this->sep_data = "\+";
-    	$this->sep_dec = "."; // See later if a preg_quote is needed
-    	$this->symb_rel = "\?";
-    	$this->symb_rep = "*"; // See later if a preg_quote is needed
-    	$this->symb_end = "'";
-    	$this->una_checked = false;
+    	$this->sepComp = "\:";
+    	$this->sepData = "\+";
+    	$this->sepDec = "."; // See later if a preg_quote is needed
+    	$this->symbRel = "\?";
+    	$this->symbRep = "*"; // See later if a preg_quote is needed
+    	$this->symbEnd = "'";
+    	$this->unaChecked = false;
     }    
     
     /**
@@ -138,7 +138,7 @@ class Parser
     private function resetUNB()
     {
     	$this->encoding ="UNOB";
-    	$this->unb_checked = false;
+    	$this->unbChecked = false;
     }
     
     /**
@@ -149,23 +149,23 @@ class Parser
     {
     	$line = substr($line, 0, 6);
     	if(isset($line{0})) {
-    	    $this->sep_comp = preg_quote($line{0}, self::$DELIMITER);
+    	    $this->sepComp = preg_quote($line{0}, self::$DELIMITER);
     	    if(isset($line{1})) {
-    	        $this->sep_data = preg_quote($line{1}, self::$DELIMITER);
+    	        $this->sepData = preg_quote($line{1}, self::$DELIMITER);
     	        if(isset($line{2})) {
-    	            $this->sep_dec = $line{2}; // See later if a preg_quote is needed
+    	            $this->sepDec = $line{2}; // See later if a preg_quote is needed
     	            if(isset($line{3})) {
-    	                $this->symb_rel = preg_quote($line{3}, self::$DELIMITER);
+    	                $this->symbRel = preg_quote($line{3}, self::$DELIMITER);
     	                if(isset($line{4})) {
-    	                    $this->symb_rep = $line{4}; // See later if a preg_quote is needed
+    	                    $this->symbRep = $line{4}; // See later if a preg_quote is needed
     	                    if(isset($line{5})) {
-    	                        $this->symb_end = preg_quote($line{5}, self::$DELIMITER);
+    	                        $this->symbEnd = preg_quote($line{5}, self::$DELIMITER);
     	                    }
     	                }
     	            }
     	        }
     	    }
-	    	$this->una_checked = true;
+	    	$this->unaChecked = true;
     	}
     }
     
@@ -176,22 +176,22 @@ class Parser
     public function analyseUNB($line)
     {
         $encoding= substr($line,0, 4);
-        if(isset($this->encodintToStripChars[$encoding])){ // we have a normed char set for your content
-            $this->setStripRegex($this->encodintToStripChars[$encoding]);        
+        if(isset($this->encodingToStripChars[$encoding])){ // we have a normed char set for your content
+            $this->setStripRegex($this->encodingToStripChars[$encoding]);        
         }
-        $this->unb_checked = true;
+        $this->unbChecked = true;
     }
     
     //unwrap string splitting rows on terminator (if not escaped)
     private function unwrap($string)
     {
-        if(!$this->una_checked && substr($string, 0, 3) === "UNA")
+        if(!$this->unaChecked && substr($string, 0, 3) === "UNA")
     		$this->analyseUNA(preg_replace("#^UNA#", "", substr($string, 0, 9)));
-        if(!$this->unb_checked && substr($string, 0, 3) === "UNB")
+        if(!$this->unbChecked && substr($string, 0, 3) === "UNB")
     		$this->analyseUNB(preg_replace("#^UNB#", "", substr($string, 0, 8)));
         $file2=array();
-        $file=preg_split(self::$DELIMITER."(?<!".$this->symb_rel.")".$this->symb_end.self::$DELIMITER."i", $string);
-        $end = stripslashes($this->symb_end);
+        $file=preg_split(self::$DELIMITER."(?<!".$this->symbRel.")".$this->symbEnd.self::$DELIMITER."i", $string);
+        $end = stripslashes($this->symbEnd);
         foreach ($file as &$line) {
             $temp=$line.$end;
             if ($temp!=$end) {
@@ -204,17 +204,17 @@ class Parser
     //Segments
     private function splitSegment($str)
     {
-        $str = strrev(preg_replace(self::$DELIMITER.$this->symb_end.self::$DELIMITER, "", strrev($str), 1));//remove ending symb_end
+        $str = strrev(preg_replace(self::$DELIMITER.$this->symbEnd.self::$DELIMITER, "", strrev($str), 1));//remove ending symbEnd
         $str = trim($str);
-        $matches=preg_split(self::$DELIMITER."(?<!".$this->symb_rel.")".$this->sep_data.self::$DELIMITER, $str); //split on sep_data if not escaped (negative lookbehind)
+        $matches=preg_split(self::$DELIMITER."(?<!".$this->symbRel.")".$this->sepData.self::$DELIMITER, $str); //split on sepData if not escaped (negative lookbehind)
         foreach ($matches as &$value) {
-            if (preg_match(self::$DELIMITER."(?<!".$this->symb_rel.")".$this->symb_end.self::$DELIMITER, $value)) {
-                $this->errors[]="There's a ".stripslashes($this->symb_end)." not escaped in the data; string ". $str;
+            if (preg_match(self::$DELIMITER."(?<!".$this->symbRel.")".$this->symbEnd.self::$DELIMITER, $value)) {
+                $this->errors[]="There's a ".stripslashes($this->symbEnd)." not escaped in the data; string ". $str;
             }
-            if (preg_match(self::$DELIMITER."(?<!".$this->symb_rel.")".$this->symb_rel."(?!".$this->symb_rel.")(?!".$this->sep_data.")(?!".$this->sep_comp.")(?!".$this->symb_end.")".self::$DELIMITER, $value)) {
-                $this->errors[]="There's a character not escaped with ".stripslashes($this->symb_rel)." in the data; string ". $value;
+            if (preg_match(self::$DELIMITER."(?<!".$this->symbRel.")".$this->symbRel."(?!".$this->symbRel.")(?!".$this->sepData.")(?!".$this->sepComp.")(?!".$this->symbEnd.")".self::$DELIMITER, $value)) {
+                $this->errors[]="There's a character not escaped with ".stripslashes($this->symbRel)." in the data; string ". $value;
             }
-            $value=$this->splitData($value); //split on sep_comp
+            $value=$this->splitData($value); //split on sepComp
         }
         return $matches;
     }
@@ -222,11 +222,11 @@ class Parser
     //Composite data element
     private function splitData($str)
     {
-        $arr=preg_split(self::$DELIMITER."(?<!".$this->symb_rel.")".$this->sep_comp.self::$DELIMITER, $str); //split on sep_comp if not escaped (negative lookbehind)
+        $arr=preg_split(self::$DELIMITER."(?<!".$this->symbRel.")".$this->sepComp.self::$DELIMITER, $str); //split on sepComp if not escaped (negative lookbehind)
         if (count($arr)==1) {
-            return preg_replace(self::$DELIMITER.$this->symb_rel."(?=".$this->symb_rel.")|".$this->symb_rel."(?=".$this->sep_data.")|".$this->symb_rel."(?=".$this->sep_comp.")|".$this->symb_rel."(?=".$this->symb_end.")".self::$DELIMITER, "", $str); //remove symb_rel if not escaped
+            return preg_replace(self::$DELIMITER.$this->symbRel."(?=".$this->symbRel.")|".$this->symbRel."(?=".$this->sepData.")|".$this->symbRel."(?=".$this->sepComp.")|".$this->symbRel."(?=".$this->symbEnd.")".self::$DELIMITER, "", $str); //remove symbRel if not escaped
         }     foreach ($arr as &$value) {
-              $value=preg_replace(self::$DELIMITER.$this->symb_rel."(?=".$this->symb_rel.")|".$this->symb_rel."(?=".$this->sep_data.")|".$this->symb_rel."(?=".$this->sep_comp.")|".$this->symb_rel."(?=".$this->symb_end.")".self::$DELIMITER, "", $value);
+              $value=preg_replace(self::$DELIMITER.$this->symbRel."(?=".$this->symbRel.")|".$this->symbRel."(?=".$this->sepData.")|".$this->symbRel."(?=".$this->sepComp.")|".$this->symbRel."(?=".$this->symbEnd.")".self::$DELIMITER, "", $value);
         }
         return $arr;
     }
@@ -270,4 +270,3 @@ class Parser
         $this->stripChars=$regex;
     }
 }
-
