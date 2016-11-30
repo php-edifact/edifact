@@ -64,7 +64,7 @@ class Reader {
      * @param $parsed_file array
      * @return bool
      */
-    public function setParsedFile($parsed_file) {
+    public function setParsedFile(array $parsed_file) {
         $this->parsedfile = $parsed_file;
         return $this->preValidate();
     }
