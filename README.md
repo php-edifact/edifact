@@ -125,7 +125,7 @@ OR
 $c = new Parser($x);
 
 $r = new Reader();
-$r->setParsedFile($c);
+$r->setParsedFile($c->get());
 $sender = $r->readEdiDataValue('UNB', 2);
 $Dt = $r->readUNBDateTimeOfPreperation();
 ```
