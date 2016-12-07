@@ -109,14 +109,21 @@ class Parser
                         $this->analyseUNA(substr($line, 4, 6));
                     }
                     unset($file2[$x]);
-                    continue;
+                    break;
                 case "UNB":
                     if (!$this->unbChecked) {
-                        $this->analyseUNB(substr($line, 4));
+                        $line=$this->splitSegment($line);
+                        $this->analyseUNB($line[1]);
                     }
                     break;
+                case "UNH":
+                    $line=$this->splitSegment($line);
+                    $this->analyseUNH($line);
+                    break;
+                default:
+                    $line=$this->splitSegment($line);
+                    break;
             }
-            $line=$this->splitSegment($line);
         }
         $this->parsedfile=array_values($file2); //reindex
         return $file2;
@@ -174,17 +181,29 @@ class Parser
         }
     }
 
-        /**
+    /**
      * Read UNA's characters definition
-     * @param string $line : UNB definition line (without UNA tag). Example : :+.? '
+     * @param string $line : UNB definition line (without UNB tag). Example : :+.? '
      */
-    public function analyseUNB($line)
+    public function analyseUNB($encoding)
     {
-        $encoding= substr($line, 0, 4);
+        if (is_array($encoding)) {
+            $encoding = $encoding[0];
+        }
+        $this->encoding = $encoding;
         if (isset($this->encodingToStripChars[$encoding])) { // we have a normed char set for your content
             $this->setStripRegex($this->encodingToStripChars[$encoding]);
         }
         $this->unbChecked = true;
+    }
+
+    /**
+     * Identify message type
+     * @param string $line : UNH segment
+     */
+    public function analyseUNH($line)
+    {
+        
     }
 
     //unwrap string splitting rows on terminator (if not escaped)
