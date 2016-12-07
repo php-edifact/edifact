@@ -1,8 +1,8 @@
 <?php
 /**
-EDIFACT Messages Parser
-(c)2016 Uldis Nelsons
-*/
+ * EDIFACT Messages Parser
+ * (c)2016 Uldis Nelsons
+ */
 
 namespace EDI;
 
@@ -199,7 +199,7 @@ class Analyser
                         $r[] = $l2;
 
                         $jsoncomposite = [];
-                        if(isset($details_desc[$n]['details'])){
+                        if (isset($details_desc[$n]['details'])) {
                             $sub_details_desc =  $details_desc[$n]['details'];
 
                             foreach ($detail as $d_n => $d_detail) {

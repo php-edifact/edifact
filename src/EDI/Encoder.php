@@ -1,5 +1,4 @@
 <?php
-
 /**
  * EDIFACT Messages Encoder
  * (c)2016 Stefano Sabatini
@@ -7,10 +6,11 @@
 
 namespace EDI;
 
-class Encoder {
+class Encoder
+{
 
     private $output = '';
-    private $UNAActive = false; // disable by default to preserve backward compatibility 
+    private $UNAActive = false; // disable by default to preserve backward compatibility
     private $originalArray = [];
 
     /**
@@ -43,7 +43,8 @@ class Encoder {
      */
     private $symbEnd;
 
-    public function __construct($array = null, $wrap = true) {
+    public function __construct($array = null, $wrap = true)
+    {
         $this->setUNA(":+.? '", false);
         if ($array === null) {
             return;
@@ -51,7 +52,8 @@ class Encoder {
         $this->encode($array, $wrap);
     }
 
-    public function encode($arr, $wrap = true) {
+    public function encode($arr, $wrap = true)
+    {
         $this->originalArray = $arr;
         $edistring = '';
         $count = count($arr);
@@ -68,7 +70,8 @@ class Encoder {
         return $edistring;
     }
 
-    public function encodeSegment($row) {
+    public function encodeSegment($row)
+    {
         $str = '';
         $t = count($row);
         for ($i = 0; $i < $t; $i++) {
@@ -92,7 +95,8 @@ class Encoder {
         return $str;
     }
 
-    private function escapeValue($str) {
+    private function escapeValue($str)
+    {
         $search = [
             $this->sepComp,
             $this->sepData,
@@ -108,7 +112,8 @@ class Encoder {
         return str_replace($search, $replace, $str);
     }
 
-    public function get() {
+    public function get()
+    {
         if ($this->UNAActive) {
             return "UNA" . $this->sepComp .
                     $this->sepData .
@@ -121,7 +126,8 @@ class Encoder {
         }
     }
 
-    public function setUNA($chars, $user_call = true) {
+    public function setUNA($chars, $user_call = true)
+    {
         if (is_string($chars) && strlen($chars) == 6) {
             $this->sepComp = $chars[0];
             $this->sepData = $chars[1];
@@ -141,12 +147,13 @@ class Encoder {
         }
     }
 
-    public function enableUNA() {
+    public function enableUNA()
+    {
         $this->UNAActive = true;
     }
 
-    public function disableUNA() {
+    public function disableUNA()
+    {
         $this->UNAActive = false;
     }
-
 }

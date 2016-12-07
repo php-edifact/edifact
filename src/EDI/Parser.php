@@ -12,9 +12,9 @@ class Parser
     private $parsedfile;
     private $errors;
     private $stripChars="/[\x01-\x1F\x80-\xFF]/"; //UNOB encoding set
-    
+
     private static $DELIMITER = "/";
-    
+
     /**
      * @var string : component separator character (default :)
      */
@@ -43,7 +43,7 @@ class Parser
      * @var string : encoding (default UNOB)
      */
     private $encoding;
-    
+
     private $encodingToStripChars = [
         "UNOA" => "/[\x01-\x1F\x80-\xFF]/", // not as restrictive as it should be
         "UNOB" => "/[\x01-\x1F\x80-\xFF]/",
@@ -55,7 +55,7 @@ class Parser
      * @var bool : TRUE when UNA's characters are known, FALSE when they are not. NULL means no initialization
      */
     private $unaChecked;
-    
+
     /**
      * @var bool : TRUE when UNB encoding is known, FALSE when it's not. NULL means no initialization
      */
@@ -63,10 +63,12 @@ class Parser
 
     public function __construct($url = null)
     {
-        if($this->unaChecked !== false)
-            $this->resetUNA();        
-        if($this->unbChecked !== false)
+        if ($this->unaChecked !== false) {
+            $this->resetUNA();
+        }
+        if ($this->unbChecked !== false) {
             $this->resetUNB();
+        }
         $this->errors=array();
         if ($url===null) {
             return;
@@ -101,94 +103,100 @@ class Parser
                 unset($file2[$x]);
                 continue;
             }
-            else if(substr($line, 0, 3) === "UNA") {
-                if(!$this->unaChecked)
-                    $this->analyseUNA(substr($line, 4, 6));
-                unset($file2[$x]);
-                continue;
-            }
-            else if(substr($line, 0, 3) === "UNB") {
-                if(!$this->unbChecked)
-                    $this->analyseUNB(substr($line, 4));
+            switch (substr($line, 0, 3)) {
+                case "UNA":
+                    if (!$this->unaChecked) {
+                        $this->analyseUNA(substr($line, 4, 6));
+                    }
+                    unset($file2[$x]);
+                    continue;
+                case "UNB":
+                    if (!$this->unbChecked) {
+                        $this->analyseUNB(substr($line, 4));
+                    }
+                    break;
             }
             $line=$this->splitSegment($line);
         }
         $this->parsedfile=array_values($file2); //reindex
         return $file2;
     }
-    
-    
+
+
     /**
      * Reset UNA's characters definition
      */
     private function resetUNA()
     {
-    	$this->sepComp = "\:";
-    	$this->sepData = "\+";
-    	$this->sepDec = "."; // See later if a preg_quote is needed
-    	$this->symbRel = "\?";
-    	$this->symbRep = "*"; // See later if a preg_quote is needed
-    	$this->symbEnd = "'";
-    	$this->unaChecked = false;
-    }    
-    
+        $this->sepComp = "\:";
+        $this->sepData = "\+";
+        $this->sepDec = "."; // See later if a preg_quote is needed
+        $this->symbRel = "\?";
+        $this->symbRep = "*"; // See later if a preg_quote is needed
+        $this->symbEnd = "'";
+        $this->unaChecked = false;
+    }
+
     /**
      * Reset UNB's encoding definition
      */
     private function resetUNB()
     {
-    	$this->encoding ="UNOB";
-    	$this->unbChecked = false;
+        $this->encoding ="UNOB";
+        $this->unbChecked = false;
     }
-    
+
     /**
-     * Read UNA's characters definition  
+     * Read UNA's characters definition
      * @param string $line : UNA definition line (without UNA tag). Example : :+.? '
      */
     public function analyseUNA($line)
     {
-    	$line = substr($line, 0, 6);
-    	if(isset($line{0})) {
-    	    $this->sepComp = preg_quote($line{0}, self::$DELIMITER);
-    	    if(isset($line{1})) {
-    	        $this->sepData = preg_quote($line{1}, self::$DELIMITER);
-    	        if(isset($line{2})) {
-    	            $this->sepDec = $line{2}; // See later if a preg_quote is needed
-    	            if(isset($line{3})) {
-    	                $this->symbRel = preg_quote($line{3}, self::$DELIMITER);
-    	                if(isset($line{4})) {
-    	                    $this->symbRep = $line{4}; // See later if a preg_quote is needed
-    	                    if(isset($line{5})) {
-    	                        $this->symbEnd = preg_quote($line{5}, self::$DELIMITER);
-    	                    }
-    	                }
-    	            }
-    	        }
-    	    }
-	    	$this->unaChecked = true;
-    	}
+        $line = substr($line, 0, 6);
+        if (isset($line{0})) {
+            $this->sepComp = preg_quote($line{0}, self::$DELIMITER);
+            if (isset($line{1})) {
+                $this->sepData = preg_quote($line{1}, self::$DELIMITER);
+                if (isset($line{2})) {
+                    $this->sepDec = $line{2}; // See later if a preg_quote is needed
+                    if (isset($line{3})) {
+                        $this->symbRel = preg_quote($line{3}, self::$DELIMITER);
+                        if (isset($line{4})) {
+                            $this->symbRep = $line{4}; // See later if a preg_quote is needed
+                            if (isset($line{5})) {
+                                $this->symbEnd = preg_quote($line{5}, self::$DELIMITER);
+                            }
+                        }
+                    }
+                }
+            }
+            $this->unaChecked = true;
+        }
     }
-    
+
         /**
-     * Read UNA's characters definition  
+     * Read UNA's characters definition
      * @param string $line : UNB definition line (without UNA tag). Example : :+.? '
      */
     public function analyseUNB($line)
     {
-        $encoding= substr($line,0, 4);
-        if(isset($this->encodingToStripChars[$encoding])){ // we have a normed char set for your content
-            $this->setStripRegex($this->encodingToStripChars[$encoding]);        
+        $encoding= substr($line, 0, 4);
+        if (isset($this->encodingToStripChars[$encoding])) { // we have a normed char set for your content
+            $this->setStripRegex($this->encodingToStripChars[$encoding]);
         }
         $this->unbChecked = true;
     }
-    
+
     //unwrap string splitting rows on terminator (if not escaped)
     private function unwrap($string)
     {
-        if(!$this->unaChecked && substr($string, 0, 3) === "UNA")
-    		$this->analyseUNA(preg_replace("#^UNA#", "", substr($string, 0, 9)));
-        if(!$this->unbChecked && substr($string, 0, 3) === "UNB")
-    		$this->analyseUNB(preg_replace("#^UNB#", "", substr($string, 0, 8)));
+        if (!$this->unaChecked && substr($string, 0, 3) === "UNA") {
+            $this->analyseUNA(preg_replace("#^UNA#", "", substr($string, 0, 9)));
+        }
+        if (!$this->unbChecked && substr($string, 0, 3) === "UNB") {
+            $this->analyseUNB(preg_replace("#^UNB#", "", substr($string, 0, 8)));
+        }
+
         $file2=array();
         $file=preg_split(self::$DELIMITER."(?<!".$this->symbRel.")".$this->symbEnd.self::$DELIMITER."i", $string);
         $end = stripslashes($this->symbEnd);
@@ -200,7 +208,7 @@ class Parser
         }
         return $file2;
     }
-    
+
     //Segments
     private function splitSegment($str)
     {

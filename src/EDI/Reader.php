@@ -1,13 +1,13 @@
 <?php
-
 /**
-  EDIFACT Messages Reader
-  (c)2016 Uldis Nelsons
+ *  EDIFACT Messages Reader
+ * (c)2016 Uldis Nelsons
  */
 
 namespace EDI;
 
-class Reader {
+class Reader
+{
 
     /**
      * @var array parsed EDI file
@@ -23,7 +23,8 @@ class Reader {
      * Reader constructor.
      * @param string $url url or path ur EDI message
      */
-    public function __construct($url = null) {
+    public function __construct($url = null)
+    {
         $this->errors = [];
         $this->load($url);
     }
@@ -31,14 +32,16 @@ class Reader {
     /**
      * Get errors
      */
-    public function errors() {
+    public function errors()
+    {
         return $this->errors;
     }
 
     /**
      * reset errors
      */
-    public function resetErrors() {
+    public function resetErrors()
+    {
         $this->errors = array();
     }
 
@@ -46,7 +49,8 @@ class Reader {
      * Returns the parsed file contained within.
      * @returns array
      */
-    public function getParsedFile() {
+    public function getParsedFile()
+    {
         return $this->parsedfile;
     }
 
@@ -54,7 +58,8 @@ class Reader {
      * @param $url string url to edi file, path to edi file or EDI message
      * @return bool
      */
-    public function load($url) {
+    public function load($url)
+    {
         $Parser = new \EDI\Parser($url);
         $this->parsedfile = $Parser->get();
         return $this->preValidate();
@@ -64,7 +69,8 @@ class Reader {
      * @param $parsed_file array
      * @return bool
      */
-    public function setParsedFile(array $parsed_file) {
+    public function setParsedFile(array $parsed_file)
+    {
         $this->parsedfile = $parsed_file;
         return $this->preValidate();
     }
@@ -73,7 +79,8 @@ class Reader {
      * Do initial validation
      * @return bool
      */
-    public function preValidate() {
+    public function preValidate()
+    {
         $this->errors = [];
 
         if (!is_array($this->parsedfile)) {
@@ -96,7 +103,8 @@ class Reader {
      * @param $ediMessage string
      * @return array
      */
-    public static function splitMultiMessage($ediMessage) {
+    public static function splitMultiMessage($ediMessage)
+    {
         $splicedMessages = [];
         $rawSegments = self::unwrap($ediMessage);
         //var_dump($rawSegments);
@@ -150,7 +158,8 @@ class Reader {
      * @param $string string
      * @return array
      */
-    private static function unwrap($string) {
+    private static function unwrap($string)
+    {
         $file2 = array();
         $file = preg_split("/(?<!\?)'/i", $string);
         foreach ($file as &$line) {
@@ -171,7 +180,8 @@ class Reader {
      * @param bool $l2
      * @return string
      */
-    public function readEdiDataValueReq($filter, $l1, $l2 = false) {
+    public function readEdiDataValueReq($filter, $l1, $l2 = false)
+    {
         return $this->readEdiDataValue($filter, $l1, $l2, true);
     }
 
@@ -186,7 +196,8 @@ class Reader {
      * @param  bool    $required    if required, but no exist, register error
      * @return string/null
      */
-    public function readEdiDataValue($filter, $l1, $l2 = false, $required = false) {
+    public function readEdiDataValue($filter, $l1, $l2 = false, $required = false)
+    {
 
         //interpret filter arameters
         if (!is_array($filter)) {
@@ -274,7 +285,8 @@ class Reader {
      * @param int $PeriodQualifier period qualifier (codelist/2005)
      * @return string YYYY-MM-DD HH:MM:SS
      */
-    public function readEdiSegmentDTM($PeriodQualifier) {
+    public function readEdiSegmentDTM($PeriodQualifier)
+    {
 
         $date = $this->readEdiDataValue(['DTM', ['1.0' => $PeriodQualifier]], 1, 1);
         $format = $this->readEdiDataValue(['DTM', ['1.0' => $PeriodQualifier]], 1, 2);
@@ -300,7 +312,8 @@ class Reader {
     /**
      * @deprecated
      */
-    public function readUNBDateTimeOfPpreperation() {
+    public function readUNBDateTimeOfPpreperation()
+    {
         return readUNBDateTimeOfPreperation();
     }
 
@@ -309,7 +322,8 @@ class Reader {
      *
      * @return mixed|string
      */
-    public function readUNBDateTimeOfPreperation() {
+    public function readUNBDateTimeOfPreperation()
+    {
 
         //separate date (YYMMDD) and time (HHMM)
         $date = $this->readEdiDataValue('UNB', 4, 0);
@@ -332,7 +346,8 @@ class Reader {
      * @param $transportStageQualifier
      * @return string
      */
-    public function readTDTtransportIdentification($transportStageQualifier) {
+    public function readTDTtransportIdentification($transportStageQualifier)
+    {
 
         $transportIdentification = $this->readEdiDataValue(['TDT', ['1' => $transportStageQualifier]], 8, 0);
         if (!empty($transportIdentification)) {
@@ -347,7 +362,8 @@ class Reader {
      *
      * @return string
      */
-    public function readUNHmessageType() {
+    public function readUNHmessageType()
+    {
         return $this->readEdiDataValue('UNH', 2, 0);
     }
 
@@ -356,7 +372,8 @@ class Reader {
      *
      * @return string
      */
-    public function readUNHmessageNumber() {
+    public function readUNHmessageNumber()
+    {
         return $this->readEdiDataValue('UNH', 1);
     }
 
@@ -368,7 +385,8 @@ class Reader {
      * @param type $after  segment after groups
      * @return boolean/array
      */
-    public function readGroups($before, $start, $end, $after) {
+    public function readGroups($before, $start, $end, $after)
+    {
         $groups = [];
         $group = [];
         $position = 'before_search';
@@ -443,7 +461,8 @@ class Reader {
      * @param type $barrier    barrier segment (NOT in group)
      * @return boolean/array
      */
-    public function groupsExtract($start = 'LIN', $barrier = array('UNS')) {
+    public function groupsExtract($start = 'LIN', $barrier = array('UNS'))
+    {
         $groups = array();
         $group = array();
         $position = 'before_search';
@@ -467,5 +486,4 @@ class Reader {
         }
         return $groups;
     }
-
 }
