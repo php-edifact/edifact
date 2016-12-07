@@ -43,6 +43,14 @@ class Parser
      * @var string : encoding (default UNOB)
      */
     private $encoding;
+    /**
+     * @var string : message format from UNH
+     */
+    private $messageFormat;
+    /**
+     * @var string : message directory
+     */
+    private $messageDirectory;
 
     private $encodingToStripChars = [
         "UNOA" => "/[\x01-\x1F\x80-\xFF]/", // not as restrictive as it should be
@@ -203,7 +211,16 @@ class Parser
      */
     public function analyseUNH($line)
     {
-        
+        if (count($line)<3) {
+            return;
+        }
+        $lineElement = $line[2];
+        if (!is_array($lineElement)) {
+            $this->messageFormat = $lineElement;
+            return;
+        }
+        $this->messageFormat = $lineElement[0];
+        $this->messageDirectory = $lineElement[2];
     }
 
     //unwrap string splitting rows on terminator (if not escaped)
@@ -295,5 +312,15 @@ class Parser
     public function setStripRegex($regex)
     {
         $this->stripChars=$regex;
+    }
+
+    public function getMessageFormat()
+    {
+        return $this->messageFormat;
+    }
+
+    public function getMessageDirectory()
+    {
+        return $this->messageDirectory;
     }
 }
