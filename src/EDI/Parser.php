@@ -119,8 +119,8 @@ class Parser
                     unset($file2[$x]);
                     break;
                 case "UNB":
+                    $line=$this->splitSegment($line);
                     if (!$this->unbChecked) {
-                        $line=$this->splitSegment($line);
                         $this->analyseUNB($line[1]);
                     }
                     break;
@@ -191,7 +191,7 @@ class Parser
 
     /**
      * Read UNA's characters definition
-     * @param string $line : UNB definition line (without UNB tag). Example : :+.? '
+     * @param string $line : UNB definition line (without UNB tag). Example UNOA:2
      */
     public function analyseUNB($encoding)
     {
