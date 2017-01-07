@@ -176,7 +176,7 @@ class Interpreter
                 if (!isset($array[$jsonMessage['key']])) {
                     $array[$jsonMessage['key']] = $jsonMessage['value'];
                 } else {
-                    if (isset($array[$jsonMessage['key']]['segmentCode'])) {
+                    if (isset($array[$jsonMessage['key']]['segmentCode']) || $jsonMessage['key'] === 'UnrecognisedType') {
                         $temp = $array[$jsonMessage['key']];
                         $array[$jsonMessage['key']] = [];
                         $array[$jsonMessage['key']][] = $temp;
@@ -202,13 +202,12 @@ class Interpreter
      *
      * @param $segment
      */
-    private function processSegment($segment, $xmlMap, $segmentIdx, &$errors = null)
+    private function processSegment($segment, &$xmlMap, $segmentIdx, &$errors = null)
     {
         $id = $segment[0];
 
         $jsonsegment = [];
         if (isset($xmlMap[$id])) {
-
             $attributes = $xmlMap[$id]['attributes'];
             $details_desc = $xmlMap[$id]['details'];
 
@@ -267,10 +266,13 @@ class Interpreter
             $jsonsegment['key'] = $attributes['name'];
             $jsonsegment['value'] = $jsonelements;
 
+        } elseif ($xmlMap !== $this->xmlSvc) {
+            $jsonsegment = $this->processSegment($segment, $this->xmlSvc, $segmentIdx, $errors);
         } else {
             $jsonsegment['key'] = 'UnrecognisedType';
             $jsonsegment['value'] = $segment;
         }
+
         return $jsonsegment;
     }
 
