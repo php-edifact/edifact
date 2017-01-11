@@ -19,7 +19,9 @@ class Interpreter
         'MISSINGREQUIREDSEGMENT' => "Missing required segment",
         'NOTCONFORMANT' => "It looks like that this message isn't conformant to the mapping provided. (Not all segments were added)",
         'TOOMANYELEMENTS_COMPOSITE' => "This composite data element has more elements than expected",
-        'TOOMANYELEMENTS' => "This segment has more data elements than expected"
+        'TOOMANYELEMENTS' => "This segment has more data elements than expected",
+        'MISSINGINTERCHANGEDELIMITER' => "The file has at least one UNB or UNZ missing",
+        'MISSINGMESSAGEDELIMITER' => "The message has at least one UNH or UNT missing",
     ];
 
     /**
@@ -38,6 +40,7 @@ class Interpreter
         if ($messageTextConf !== null) {
             $this->messageTextConf = array_replace($this->messageTextConf, $messageTextConf);
         }
+        $this->errors = [];
     }
 
     /**
@@ -48,9 +51,8 @@ class Interpreter
      */
     public function prepare($parsed)
     {
-        $this->msgs = self::splitMessages($parsed);
+        $this->msgs = $this->splitMessages($parsed, $this->errors);
         $groups = [];
-        $errors = [];
         $service = $this->msgs['service'];
         $this->serviceSeg = $this->processService($service);
 
@@ -58,12 +60,10 @@ class Interpreter
             if ($k === 'service') {
                 continue;
             }
-            $grouped = $this->loopMessage($msg, $this->xmlMsg);
+            $grouped = $this->loopMessage($msg, $this->xmlMsg, $this->errors);
             $groups[] = $grouped['message'];
-            $errors[] = $grouped['errors'];
         }
         $this->ediGroups = $groups;
-        $this->errors = $errors;
         return $groups;
     }
 
@@ -73,34 +73,74 @@ class Interpreter
      * @param  $parsed An array coming from EDI\Parser
      * @return array
      */
-    private static function splitMessages($parsed)
+    private function splitMessages($parsed, &$errors)
     {
         $messages = [];
         $tmpmsg = [];
         $service = [];
+        $hasInterchangeDelimiters = 0;
+        $hasMessageDelimiters = 0;
 
-        foreach ($parsed as $segment) {
+        foreach ($parsed as $c => $segment) {
             switch ($segment[0]) {
                 case 'UNB':
+                    $hasInterchangeDelimiters = 0;
+                    $hasInterchangeDelimiters++;
                     $service['UNB'] = $segment;
                     break;
                 case 'UNZ':
+                    $hasInterchangeDelimiters--;
+                    if ($hasInterchangeDelimiters != 0) {
+                        $sid = ($hasInterchangeDelimiters < 0) ? "UNB": "UNZ";
+                        $errors[] = [
+                            "text" => $this->messageTextConf['MISSINGINTERCHANGEDELIMITER'],
+                            "position" => $c,
+                            "segmentId" => $sid
+                        ];
+                    }
                     $service['UNZ'] = $segment;
                     break;
                 case 'UNH':
+                    $hasMessageDelimiters = 0;
+                    $hasMessageDelimiters++;
                     $tmpmsg = [$segment];
                     break;
                 case 'UNT':
+                    $hasMessageDelimiters--;
                     $tmpmsg[] = $segment;
                     $messages[] = $tmpmsg;
+                    if ($hasMessageDelimiters != 0) {
+                        $sid = ($hasMessageDelimiters < 0) ? "UNH": "UNT";
+                        $errors[] = [
+                            "text" => $this->messageTextConf['MISSINGMESSAGEDELIMITER'],
+                            "position" => $c,
+                            "segmentId" => $sid
+                        ];
+                    }
                     break;
                 default:
                     $tmpmsg[] = $segment;
                     break;
             }
         }
-        $messages['service'] = $service;
 
+        if ($hasInterchangeDelimiters != 0) {
+            $sid = ($hasInterchangeDelimiters < 0) ? "UNB": "UNZ";
+            $errors[] = [
+                "text" => $this->messageTextConf['MISSINGINTERCHANGEDELIMITER'],
+                "position" => $c,
+                "segmentId" => $sid
+            ];
+        }
+        if ($hasMessageDelimiters != 0) {
+            $sid = ($hasMessageDelimiters < 0) ? "UNH": "UNT";
+            $errors[] = [
+                "text" => $this->messageTextConf['MISSINGMESSAGEDELIMITER'],
+                "position" => $c,
+                "segmentId" => $sid
+            ];
+        }
+        $messages['service'] = $service;
         return $messages;
     }
 
@@ -111,7 +151,7 @@ class Interpreter
      * @param  $xml The xml representation of the message
      * @return array
      */
-    private function loopMessage($message, $xml)
+    private function loopMessage($message, $xml, &$errors)
     {
         $groupedEdi = [];
         $errors = [];
@@ -129,7 +169,7 @@ class Interpreter
 
         if ($segmentIdx != count($message)) {
             $errors[] = [
-                "text" => $this->messageTextConf['NOTCONFORMANT'],
+                "text" => $this->messageTextConf['NOTCONFORMANT']
             ];
         }
         return ['message' => $groupedEdi, 'errors' => $errors];
