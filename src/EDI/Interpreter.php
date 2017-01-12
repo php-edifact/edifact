@@ -21,7 +21,7 @@ class Interpreter
         'TOOMANYELEMENTS_COMPOSITE' => "This composite data element has more elements than expected",
         'TOOMANYELEMENTS' => "This segment has more data elements than expected",
         'MISSINGINTERCHANGEDELIMITER' => "The file has at least one UNB or UNZ missing",
-        'MISSINGMESSAGEDELIMITER' => "The message has at least one UNH or UNT missing",
+        'MISSINGMESSAGEDELIMITER' => "The message has at least one UNH or UNT missing"
     ];
 
     /**
@@ -154,7 +154,6 @@ class Interpreter
     private function loopMessage($message, $xml, &$errors)
     {
         $groupedEdi = [];
-        $errors = [];
         $segmentIdx = 0;
 
         foreach ($xml->children() as $elm) {
