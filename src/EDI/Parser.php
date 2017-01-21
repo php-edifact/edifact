@@ -58,7 +58,6 @@ class Parser
         "UNOC" => "/[\x01-\x1F\x7F-\x9F]/"
     ];
 
-
     /**
      * @var bool : TRUE when UNA's characters are known, FALSE when they are not. NULL means no initialization
      */
@@ -230,7 +229,7 @@ class Parser
             $this->analyseUNA(preg_replace("#^UNA#", "", substr($string, 0, 9)));
         }
         if (!$this->unbChecked && substr($string, 0, 3) === "UNB") {
-            $this->analyseUNB(preg_replace("#^UNB#", "", substr($string, 0, 8)));
+            $this->analyseUNB(preg_replace("#^UNB\+#", "", substr($string, 0, 8)));
         }
 
         $file2=array();
