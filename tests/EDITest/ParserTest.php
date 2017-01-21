@@ -127,4 +127,20 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $result=$p->errors();
         $this->assertEmpty($result);
     }
+
+    public function testUNHWithoutMessageType()
+    {
+        $arr= ["UNH+123", "LOC+9+VNSGN'", "LOC+11+ITGOA'"];
+        $p=new Parser($arr);
+        $this->assertNull($p->getMessageFormat());
+        $this->assertNull($p->getMessageDirectory());
+    }
+
+    public function testUNHData()
+    {
+        $arr= ["UNH+1452515553811+COARRI:D:95B:UN:ITG13'"];
+        $p=new Parser($arr);
+        $this->assertEquals("COARRI", $p->getMessageFormat());
+        $this->assertEquals("95B", $p->getMessageDirectory());
+    }
 }

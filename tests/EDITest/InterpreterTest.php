@@ -25,26 +25,12 @@ class InterpreterTest extends \PHPUnit_Framework_TestCase
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
         $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
 
-        $interpreter = new Interpreter($mapping->getMessage('coarri'), $segs, $svc);
+        $interpreter = new Interpreter($mapping->getMessage('COARRI'), $segs, $svc);
         $interpreter->prepare($parser->get());
 
-        $this->assertJsonStringEqualsJsonFile(
-            __DIR__ . "/../files/D95BCOARRI.json",
-            $interpreter->getJson(),
-            "JSON does not match expected output"
-        );
-
-        $this->assertEquals(
-            include __DIR__ . "/../files/messages/coarri.php",
-            $interpreter->getMessages(),
-            "Unable to get the correct message structure array"
-        );
-
         $this->assertCount(5, $interpreter->getMessages());
-        $this->assertCount(4, $interpreter->getErrors());
+        $this->assertCount(0, $interpreter->getErrors());
         $this->assertCount(2, $interpreter->getServiceSegments());
-
-        $this->assertEquals([[], [], [], []], $interpreter->getErrors());
     }
 
     public function testBAPLIE()
@@ -56,14 +42,14 @@ class InterpreterTest extends \PHPUnit_Framework_TestCase
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
         $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
 
-        $interpreter = new Interpreter($mapping->getMessage('baplie'), $segs, $svc);
+        $interpreter = new Interpreter($mapping->getMessage('BAPLIE'), $segs, $svc);
         $interpreter->prepare($parser->get());
 
         $this->assertCount(2, $interpreter->getMessages());
-        $this->assertCount(1, $interpreter->getErrors());
+        $this->assertCount(0, $interpreter->getErrors());
         $this->assertCount(2, $interpreter->getServiceSegments());
 
-        $this->assertEquals([[]], $interpreter->getErrors());
+        $this->assertEquals([], $interpreter->getErrors());
     }
 
     public function testDESADV()
@@ -75,7 +61,7 @@ class InterpreterTest extends \PHPUnit_Framework_TestCase
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
         $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
 
-        $interpreter = new Interpreter($mapping->getMessage('desadv'), $segs, $svc);
+        $interpreter = new Interpreter($mapping->getMessage('DESADV'), $segs, $svc);
         $interpreter->prepare($parser->get());
 
         $this->assertJsonStringEqualsJsonFile(
@@ -85,9 +71,8 @@ class InterpreterTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertCount(2, $interpreter->getMessages());
-        $this->assertCount(1, $interpreter->getErrors());
+        $this->assertCount(0, $interpreter->getErrors());
         $this->assertCount(2, $interpreter->getServiceSegments());
-
-        $this->assertEquals([[]], $interpreter->getErrors());
+        $this->assertEquals([], $interpreter->getErrors());
     }
 }

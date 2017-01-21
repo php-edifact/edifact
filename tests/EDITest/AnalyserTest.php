@@ -27,9 +27,7 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
 
     public function testGetMessageStructure()
     {
-        //$mapping = new \EDI\Mapping\MappingProvider('D07A');
         $messageXml = $this->mapping->getMessage('tpfrep');
-        //$messageXml =  __DIR__."/../../src/EDI/Mapping/D07A/messages/tpfrep.xml";
         $expected = include __DIR__."/../files/messages/tpfrep.php";
         $actual = $this->analyser->loadMessageXml($messageXml);
         $this->assertEquals(
@@ -41,28 +39,23 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
 
     public function testGetCodes()
     {
-        //$codesXml =  __DIR__."/../../src/EDI/Mapping/D07A/codes.xml";
         $codesXml = $this->mapping->getCodes();
-        $expected = include __DIR__."/../files/codes.php";
         $actual = $this->analyser->loadCodesXml($codesXml);
-        $this->assertEquals(
-            $expected,
-            $actual,
-            "Unable to get all codes as array"
-        );
+        $this->assertCount(270, $actual);
+        $this->assertArrayHasKey('1001', $actual);
+        $this->assertCount(652, $actual['1001']);
     }
 
     public function testGetSegmentStructure()
     {
         $segmentsXml = $this->mapping->getSegments();
-        $expected = include __DIR__."/../files/segments.php";
         $this->analyser->loadSegmentsXml($segmentsXml);
         $actual = $this->analyser->segments;
-        $this->assertEquals(
-            $expected,
-            $actual,
-            "Unable to get all segment structures as array"
-        );
+        $this->assertCount(156, $actual);
+        $this->assertArrayHasKey('ADR', $actual);
+        $this->assertArrayHasKey('attributes', $actual['ADR']);
+        $this->assertArrayHasKey('details', $actual['ADR']);
+        $this->assertCount(3, $actual['ADR']['attributes']);
     }
 
     public function testProcess()
@@ -72,8 +65,7 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
         $segments = $parser->getRawSegments();
         $this->assertEquals(15, count($parsed));
         $analyser = new Analyser();
-        //$codesXml =  __DIR__."/../../src/EDI/Mapping/D07A/segments.xml";
-        //$analyser->loadSegmentsXml($codesXml);
+
         $result = $analyser->process($parsed, $segments);
         $this->assertEquals(399, strlen($result));
     }
@@ -85,8 +77,7 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
         $segments = $parser->getRawSegments();
         $this->assertEquals(15, count($parsed));
         $analyser = new Analyser();
-        //$codesXml =  __DIR__."/../../src/EDI/Mapping/D07A/segments.xml";
-        //$analyser->loadSegmentsXml($codesXml);
+
         $result = $analyser->process($parsed, $segments);
         $this->assertEquals(399, strlen($result));
     }
