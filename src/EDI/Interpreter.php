@@ -250,6 +250,8 @@ class Interpreter
             $attributes = $xmlMap[$id]['attributes'];
             $details_desc = $xmlMap[$id]['details'];
 
+            $entryCount = [];
+
             $jsonelements = ["segmentIdx" => $segmentIdx, "segmentCode" => $id];
             foreach ($segment as $idx => $detail) {
                 $n = $idx - 1;
@@ -268,6 +270,12 @@ class Interpreter
                 }
 
                 $d_desc_attr = $details_desc[$n]['attributes'];
+
+                if (!array_key_exists($d_desc_attr['name'], $entryCount)) {
+                    $entryCount[$d_desc_attr['name']] = 0;
+                }
+
+                $entryCount[$d_desc_attr['name']]++;
 
                 $jsoncomposite = [];
                 if (isset($details_desc[$n]['details']) && $detail !== '') {
@@ -300,7 +308,16 @@ class Interpreter
                 } else {
                     $jsoncomposite = $detail;
                 }
-                $jsonelements[$d_desc_attr['name']] = $jsoncomposite;
+
+                if ($entryCount[$d_desc_attr['name']] === 1) {
+                    $jsonelements[$d_desc_attr['name']] = $jsoncomposite;
+                } else {
+                    if ($entryCount[$d_desc_attr['name']] === 2) {
+                        $jsonelements[$d_desc_attr['name']] = [$jsonelements[$d_desc_attr['name']]];
+                    }
+
+                    $jsonelements[$d_desc_attr['name']][] = $jsoncomposite;
+                }
             }
             $jsonsegment['key'] = $attributes['name'];
             $jsonsegment['value'] = $jsonelements;
