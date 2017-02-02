@@ -300,7 +300,13 @@ class Interpreter
                 } else {
                     $jsoncomposite = $detail;
                 }
-                $jsonelements[$d_desc_attr['name']] = $jsoncomposite;
+
+                if (array_key_exists($d_desc_attr['name'], $jsonelements)) {
+                    $jsonelements[$d_desc_attr['name'].$n] = $jsoncomposite;
+                } else {
+                    $jsonelements[$d_desc_attr['name']] = $jsoncomposite;
+                }
+
             }
             $jsonsegment['key'] = $attributes['name'];
             $jsonsegment['value'] = $jsonelements;
