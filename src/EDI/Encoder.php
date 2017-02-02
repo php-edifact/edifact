@@ -81,7 +81,6 @@ class Encoder
             } else {
                 foreach ($row[$i] as &$temp) {
                     $temp = $this->escapeValue($temp);
-                    //var_dump($temp);
                 }
                 $elm = implode($this->sepComp, $row[$i]);
             }

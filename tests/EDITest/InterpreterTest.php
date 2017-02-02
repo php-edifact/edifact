@@ -75,4 +75,41 @@ class InterpreterTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(2, $interpreter->getServiceSegments());
         $this->assertEquals([], $interpreter->getErrors());
     }
+
+    public function testMissingUNTUNZ()
+    {
+        $edi = "UNB+UNOA:2+LBCTI:01+OOCLIES:ZZ+160414:0307+1865'UNH+1907+BAPLIE:D:95B:UN:SMDG20'BGM++391651645'";
+        $parser = new Parser($edi);
+        $mapping = new \EDI\Mapping\MappingProvider('D95B');
+        $analyser = new Analyser();
+        $segs = $analyser->loadSegmentsXml($mapping->getSegments());
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+
+        $interpreter = new Interpreter($mapping->getMessage('BAPLIE'), $segs, $svc);
+        $interpreter->prepare($parser->get());
+        $errors = $interpreter->getErrors();
+        $this->assertCount(2, $errors);
+        $segments = [];
+        foreach ($errors as $err) {
+            $segments[] = $err['segmentId'];
+        }
+        $this->assertEquals(['UNZ', 'UNT'], $segments);
+    }
+
+    public function testTooManyElements()
+    {
+        $edi = "UNB+UNOA:2+LBCTI:01+OOCLIES:ZZ:AA:DD+160414:0307+1865'UNZ+1+1865+TEST+TEST'";
+        $parser = new Parser($edi);
+        $mapping = new \EDI\Mapping\MappingProvider('D95B');
+        $analyser = new Analyser();
+        $segs = $analyser->loadSegmentsXml($mapping->getSegments());
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+
+        $interpreter = new Interpreter($mapping->getMessage('BAPLIE'), $segs, $svc);
+        $p = $interpreter->prepare($parser->get());
+        $errors = $interpreter->getErrors();
+        $svcSegs = $interpreter->getServiceSegments();
+        $this->assertCount(0, $errors);
+        $this->assertArrayHasKey('Extension2', $svcSegs['interchangeTrailer']);
+    }
 }

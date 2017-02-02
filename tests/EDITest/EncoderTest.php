@@ -35,4 +35,20 @@ class EncoderTest extends \PHPUnit_Framework_TestCase
         $res = $e->get();
         $this->assertEquals($expected, $res);
     }
+
+    public function testEncodeMessageWithUNA()
+    {
+        $message=[["LOC","9","VNSGN"],["LOC","11","ITGOA"],["MEA","WT","",["KGM","9040"]]];
+        $expected="UNA:+.? 'LOC+9+VNSGN'LOC+11+ITGOA'MEA+WT++KGM:9040'";
+        $e = new Encoder($message);
+        $e->setUNA("&+.?");
+        $e->disableUNA();
+        $e->enableUNA();
+        $res = $e->get();
+        $this->assertEquals($expected, $res);
+        $e->setUNA("&+.? '", true);
+        $res2 = $e->get();
+        $expected2="UNA&+.? 'LOC+9+VNSGN'LOC+11+ITGOA'MEA+WT++KGM&9040'";
+        $this->assertEquals($expected2, $res2);
+    }
 }

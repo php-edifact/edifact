@@ -143,4 +143,19 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("COARRI", $p->getMessageFormat());
         $this->assertEquals("95B", $p->getMessageDirectory());
     }
+
+    public function testUNHDataOnlyFormat()
+    {
+        $arr= ["UNH+1452515553811+COARRI'"];
+        $p=new Parser($arr);
+        $this->assertEquals("COARRI", $p->getMessageFormat());
+        $this->assertNull($p->getMessageDirectory());
+    }
+
+    public function testUNAString()
+    {
+        $p=new Parser(["UNA:+.? '", "UNH+123", "LOC+9+VNSGN'"]);
+        $result=$p->errors();
+        $this->assertEmpty($result);
+    }
 }
