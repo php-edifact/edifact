@@ -28,9 +28,27 @@ class InterpreterTest extends \PHPUnit_Framework_TestCase
         $interpreter = new Interpreter($mapping->getMessage('COARRI'), $segs, $svc);
         $interpreter->prepare($parser->get());
 
-        $this->assertCount(5, $interpreter->getMessages());
+        $this->assertCount(3, $interpreter->getMessages()); //2 + service
         $this->assertCount(0, $interpreter->getErrors());
         $this->assertCount(2, $interpreter->getServiceSegments());
+    }
+
+    public function testServiceSegments()
+    {
+        $parser = new Parser(__DIR__ . "/../files/D95BCOARRI.edi");
+
+        $mapping = new \EDI\Mapping\MappingProvider('D95B');
+        $analyser = new Analyser();
+        $segs = $analyser->loadSegmentsXml($mapping->getSegments());
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+
+        $interpreter = new Interpreter($mapping->getMessage('COARRI'), $segs, $svc);
+        $interpreter->prepare($parser->get());
+        $svc = $interpreter->getServiceSegments();
+        $svcjson = $interpreter->getJsonServiceSegments();
+        $svcjsonpretty = $interpreter->getJsonServiceSegments(true);
+        $this->assertEquals($svc, json_decode($svcjson, true));
+        $this->assertEquals(26, substr_count($svcjsonpretty, "\n"));
     }
 
     public function testBAPLIE()
@@ -70,6 +88,9 @@ class InterpreterTest extends \PHPUnit_Framework_TestCase
             "JSON does not match expected output"
         );
 
+        $this->assertEquals(3152, strlen($interpreter->getJson()));
+        $this->assertEquals(8379, strlen($interpreter->getJson(true)));
+
         $this->assertCount(2, $interpreter->getMessages());
         $this->assertCount(0, $interpreter->getErrors());
         $this->assertCount(2, $interpreter->getServiceSegments());
@@ -94,6 +115,26 @@ class InterpreterTest extends \PHPUnit_Framework_TestCase
             $segments[] = $err['segmentId'];
         }
         $this->assertEquals(['UNZ', 'UNT'], $segments);
+    }
+
+    public function testMissingUNBUNH()
+    {
+        $edi = "UNT+30+1907'UNZ+1+1865'";
+        $parser = new Parser($edi);
+        $mapping = new \EDI\Mapping\MappingProvider('D95B');
+        $analyser = new Analyser();
+        $segs = $analyser->loadSegmentsXml($mapping->getSegments());
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+
+        $interpreter = new Interpreter($mapping->getMessage('BAPLIE'), $segs, $svc);
+        $interpreter->prepare($parser->get());
+        $errors = $interpreter->getErrors();
+        $segments = [];
+        foreach ($errors as $err) {
+            $segments[] = $err['segmentId'];
+        }
+        $this->assertContains('UNB', $segments);
+        $this->assertContains('UNH', $segments);
     }
 
     public function testTooManyElements()
