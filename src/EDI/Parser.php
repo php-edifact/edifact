@@ -105,7 +105,7 @@ class Parser
             if (preg_match($this->stripChars, $line)) {
                 $this->errors[]="There's a not printable character on line ".$i.": ". $line;
             }
-            $line = preg_replace($this->stripChars, '', $line); //basic sanitization, remove non printable chars
+            $line = preg_replace($this->stripChars, '', trim($line)); //basic sanitization, remove non printable chars
             if (strlen($line)<2) {
                 unset($file2[$x]);
                 continue;
