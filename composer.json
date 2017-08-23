@@ -1,8 +1,8 @@
 {
-    "name": "sabas/edifact",
+    "name": "secondreality/edifact",
     "description": "Tools in PHP for UN/EDIFACT",
     "keywords": ["EDI", "EDIFACT", "message", "container"],
-    "homepage": "https://github.com/php-edifact/edifact",
+    "homepage": "https://github.com/secondrealityGmbH/edifact",
     "license": "LGPL-3.0+",
     "authors": [
         {
@@ -18,15 +18,19 @@
         {
             "name": "Emil Vikström",
             "role": "Developer"
-        }
+        },
+        {
+            "name": "Frank Stuhec",
+            "role": "Developer"
+        }       
     ],
     "support": {
-        "issues": "https://github.com/php-edifact/edifact/issues"
+        "issues": "https://github.com/secondrealityGmbH/edifact"
     },
     "repositories": [
         {
             "type": "vcs",
-            "url":  "https://github.com/php-edifact/edifact"
+            "url":  "https://github.com/secondrealityGmbH/edifact"
         }
     ],
     "require-dev": {
