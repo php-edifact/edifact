@@ -194,9 +194,10 @@ class Reader
      * @param  int     $l1          first level item number (start by 1)
      * @param  int     $l2/false    second level item number (start by 0)
      * @param  bool    $required    if required, but no exist, register error
+     * @param  bool    $satisfyFirst    return first found Element
      * @return string/null
      */
-    public function readEdiDataValue($filter, $l1, $l2 = false, $required = false)
+    public function readEdiDataValue($filter, $l1, $l2 = false, $required = false,$satisfyFirst=false)
     {
 
         //interpret filter arameters
@@ -218,6 +219,7 @@ class Reader
                     $filter_ok = false;
                     foreach ($filter_elements as $el_id => $el_value) {
                         $f_el_list = explode('.', $el_id);
+
                         if (count($f_el_list) == 1) {
                             if (isset($edi_row[$el_id]) && $edi_row[$el_id] == $el_value) {
                                 $filter_ok = true;
@@ -231,12 +233,18 @@ class Reader
                             }
                         }
                     }
+
                     if ($filter_ok === false) {
                         continue;
                     }
                 }
                 $segment = $edi_row;
                 $segment_count ++;
+
+                // Cancel traversing and return first Element found
+                if (($filter_ok === true || !$filter_elements) && $satisfyFirst) {
+                    break;
+                }
             }
         }
 
