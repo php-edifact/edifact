@@ -314,7 +314,15 @@ class Reader
      */
     public function readUNBDateTimeOfPpreperation()
     {
-        return readUNBDateTimeOfPreperation();
+        return $this->readUNBDateTimeOfPreparation();
+    }
+
+    /**
+     * @deprecated
+     */
+    public function readUNBDateTimeOfPreperation()
+    {
+        return $this->readUNBDateTimeOfPreparation();
     }
 
     /**
@@ -322,7 +330,7 @@ class Reader
      *
      * @return mixed|string
      */
-    public function readUNBDateTimeOfPreperation()
+    public function readUNBDateTimeOfPreparation()
     {
 
         //separate date (YYMMDD) and time (HHMM)
