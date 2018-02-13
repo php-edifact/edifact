@@ -97,15 +97,15 @@ class Encoder
     private function escapeValue($str)
     {
         $search = [
+            $this->symbRel,
             $this->sepComp,
             $this->sepData,
-            $this->symbRel,
             $this->symbEnd
         ];
         $replace = [
+            $this->symbRel . $this->symbRel,
             $this->symbRel . $this->sepComp,
             $this->symbRel . $this->sepData,
-            $this->symbRel . $this->symbRel,
             $this->symbRel . $this->symbEnd
         ];
         return str_replace($search, $replace, $str);
