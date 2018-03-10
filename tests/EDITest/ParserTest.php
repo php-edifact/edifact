@@ -114,6 +114,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty($result);
     }
 
+    public function testArrayInputEmptyLine()
+    {
+        $arr= ["LOC+9+VNSGN'", "", "LOC+11+ITGOA'"];
+        $p=new Parser($arr);
+        $result=$p->errors();
+        $this->assertEmpty($result);
+    }
+
     public function testLoadFile()
     {
         $p=new Parser(__DIR__."/../files/example.edi");
