@@ -1,7 +1,7 @@
 <?php
 /**
  * EDIFACT Messages Interpreter
- * (c)2016 Stefano Sabatini
+ * (c) 2018 Stefano Sabatini
  */
 
 namespace EDI;
@@ -175,7 +175,7 @@ class Interpreter
     }
 
     /**
-     * Proccess an XML Group
+     * Process an XML Group
      *
      */
     public function processXmlGroup($elm, $message, &$segmentIdx, &$array, &$errors)
@@ -212,16 +212,7 @@ class Interpreter
             if ($message[$segmentIdx][0] == $elm['id']) {
                 $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx, $errors);
                 $segmentVisited = true;
-                if (!isset($array[$jsonMessage['key']])) {
-                    $array[$jsonMessage['key']] = $jsonMessage['value'];
-                } else {
-                    if (isset($array[$jsonMessage['key']]['segmentCode']) || $jsonMessage['key'] === 'UnrecognisedType') {
-                        $temp = $array[$jsonMessage['key']];
-                        $array[$jsonMessage['key']] = [];
-                        $array[$jsonMessage['key']][] = $temp;
-                    }
-                    $array[$jsonMessage['key']][] = $jsonMessage['value'];
-                }
+                $this->doAddArray($array, $jsonMessage);
                 $segmentIdx++;
             } else {
                 if (!$segmentVisited && isset($elm['required'])) {
@@ -233,6 +224,25 @@ class Interpreter
                 }
                 break;
             }
+        }
+    }
+
+    /**
+     * Adds a processed segment to the current group
+     *
+     * @param $array A reference to the group
+     * @param $jsonMessage A segment processed by processSegment()
+     */
+    private function doAddArray(&$array, $jsonMessage) {
+        if (!isset($array[$jsonMessage['key']])) {
+            $array[$jsonMessage['key']] = $jsonMessage['value'];
+        } else {
+            if (isset($array[$jsonMessage['key']]['segmentCode']) || $jsonMessage['key'] === 'UnrecognisedType') {
+                $temp = $array[$jsonMessage['key']];
+                $array[$jsonMessage['key']] = [];
+                $array[$jsonMessage['key']][] = $temp;
+            }
+            $array[$jsonMessage['key']][] = $jsonMessage['value'];
         }
     }
 
