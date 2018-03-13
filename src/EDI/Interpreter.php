@@ -15,6 +15,9 @@ class Interpreter
     private $errors;
     private $msgs;
     private $serviceSeg;
+
+    private $comparisonFunction;
+
     public $messageTextConf = [
         'MISSINGREQUIREDSEGMENT' => "Missing required segment",
         'NOTCONFORMANT' => "It looks like that this message isn't conformant to the mapping provided. (Not all segments were added)",
@@ -41,6 +44,20 @@ class Interpreter
             $this->messageTextConf = array_replace($this->messageTextConf, $messageTextConf);
         }
         $this->errors = [];
+
+        $this->comparisonFunction = function ($segment, $elm) {
+            return $segment[0] == $elm['id'];
+        };
+    }
+
+    /**
+     * Split multiple messages and process
+     *
+     * @param  $func A function accepting two arguments, first is the segment array, then the element definition
+     * @return void
+     */
+    public function setComparisonFunction(callable $func) {
+        $this->comparisonFunction = $func;
     }
 
     /**
@@ -178,7 +195,7 @@ class Interpreter
      * Process an XML Group
      *
      */
-    public function processXmlGroup($elm, $message, &$segmentIdx, &$array, &$errors)
+    private function processXmlGroup($elm, $message, &$segmentIdx, &$array, &$errors)
     {
         $newGroup = [];
         for ($g = 0; $g < $elm['maxrepeat']; $g++) {
@@ -209,7 +226,7 @@ class Interpreter
     {
         $segmentVisited = false;
         for ($i = 0; $i < $elm['maxrepeat']; $i++) {
-            if ($message[$segmentIdx][0] == $elm['id']) {
+            if (call_user_func($this->comparisonFunction, $message[$segmentIdx], $elm)) {
                 $jsonMessage = $this->processSegment($message[$segmentIdx], $this->xmlSeg, $segmentIdx, $errors);
                 $segmentVisited = true;
                 $this->doAddArray($array, $jsonMessage);
