@@ -20,11 +20,21 @@ class Interpreter
 
     public $messageTextConf = [
         'MISSINGREQUIREDSEGMENT' => "Missing required segment",
+        'MISSINGREQUIREDGROUP' => "Missing required group",
         'NOTCONFORMANT' => "It looks like that this message isn't conformant to the mapping provided. (Not all segments were added)",
         'TOOMANYELEMENTS_COMPOSITE' => "This composite data element has more elements than expected",
         'TOOMANYELEMENTS' => "This segment has more data elements than expected",
         'MISSINGINTERCHANGEDELIMITER' => "The file has at least one UNB or UNZ missing",
         'MISSINGMESSAGEDELIMITER' => "The message has at least one UNH or UNT missing"
+    ];
+
+    public $segmentTemplates = [
+        'DTM' => ['DTM', '999', 'XXX']
+    ];
+
+    public $groupTemplates = [
+        'SG1' =>
+            [['TDT', '20', 'XXX']]
     ];
 
     /**
@@ -48,6 +58,36 @@ class Interpreter
         $this->comparisonFunction = function ($segment, $elm) {
             return $segment[0] == $elm['id'];
         };
+    }
+
+    /**
+     * Patch the error messages array
+     *
+     * @param  $messageTextConf An array with same keys as the internal $messageTextConf
+     * @return void
+     */
+    public function setMessageTextConf($messageTextConf) {
+        $this->messageTextConf = array_replace($this->messageTextConf, $messageTextConf);
+    }
+
+    /**
+     * Add fake segments used to patch the message if a required segment is missing
+     *
+     * @param  $segmentTemplates An array with segments (having the segment name as key)
+     * @return void
+     */
+    public function setSegmentTemplates($segmentTemplates) {
+        $this->segmentTemplates = $segmentTemplates;
+    }
+
+    /**
+     * Add fake groups used to patch the message if a required group is missing
+     *
+     * @param  $groupTemplates An array with segments (having the group name as key)
+     * @return void
+     */
+    public function setGroupTemplates($groupTemplates) {
+        $this->groupTemplates = $groupTemplates;
     }
 
     /**
@@ -195,13 +235,28 @@ class Interpreter
      * Process an XML Group
      *
      */
-    private function processXmlGroup($elm, $message, &$segmentIdx, &$array, &$errors)
+    private function processXmlGroup($elm, &$message, &$segmentIdx, &$array, &$errors)
     {
+        $groupVisited = false;
         $newGroup = [];
         for ($g = 0; $g < $elm['maxrepeat']; $g++) {
             $grouptemp = [];
             if ($message[$segmentIdx][0] != $elm->children()[0]['id']) {
-                break;
+                if (!$groupVisited && isset($elm['required'])) {
+                    $elmType = $elm['id']->__toString();
+                    $fixed = false;
+                    if (isset($this->groupTemplates[$elmType])) {
+                        array_splice($message, $segmentIdx, 0, $this->groupTemplates[$elmType]);
+                        $fixed = true;
+                    }
+                    $errors[] = [
+                        "text" => $this->messageTextConf['MISSINGREQUIREDGROUP']." ".($fixed ? '(patched)' : ''),
+                        "position" => $segmentIdx,
+                        "segmentId" => $elmType
+                    ];
+                } else {
+                    break;
+                }
             }
             foreach ($elm->children() as $elm2) {
                 if ($elm2->getName() == "group") {
@@ -209,8 +264,11 @@ class Interpreter
                 } else {
                     $this->processXmlSegment($elm2, $message, $segmentIdx, $grouptemp, $errors);
                 }
+                $groupVisited = true;
             }
+
             $newGroup[] = $grouptemp;
+
         }
         if (count($newGroup) == 0) {
             return;
@@ -233,13 +291,24 @@ class Interpreter
                 $segmentIdx++;
             } else {
                 if (!$segmentVisited && isset($elm['required'])) {
+                    $fixed = false;
+                    $elmType = $elm['id']->__toString();
+                    if ($elm['replacewith'] !== null) {
+                        $elmType = $elm['replacewith']->__toString();
+                    }
+                    if (isset($this->segmentTemplates[$elmType])) {
+                        $jsonMessage = $this->processSegment($this->segmentTemplates[$elmType], $this->xmlSeg, $segmentIdx, $errors);
+                        $segmentVisited = true;
+                        $fixed = true;
+                        $this->doAddArray($array, $jsonMessage);
+                    }
                     $errors[] = [
-                        "text" => $this->messageTextConf['MISSINGREQUIREDSEGMENT'],
+                        "text" => $this->messageTextConf['MISSINGREQUIREDSEGMENT']." ".($fixed ? '(patched)' : ''),
                         "position" => $segmentIdx,
                         "segmentId" => $elm['id']->__toString(),
                     ];
                 }
-                break;
+                return;
             }
         }
     }
@@ -321,7 +390,6 @@ class Interpreter
                             } else { // More and more
                                 $jsoncomposite[$d_sub_desc_attr['name']][] = $d_detail;
                             }
-
                         }
                     }
                 } else {
