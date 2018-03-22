@@ -52,7 +52,7 @@ class Encoder
         $this->encode($array, $wrap);
     }
 
-    public function encode($arr, $wrap = true)
+    public function encode($arr, $wrap = true, $filterKeys = false)
     {
         $this->originalArray = $arr;
         $edistring = '';
@@ -60,6 +60,9 @@ class Encoder
         $k = 0;
         foreach ($arr as $row) {
             $k++;
+            if ($filterKeys) {
+                unset($row['segmentIdx']);
+            }
             $row = array_values($row);
             $edistring .= $this->encodeSegment($row);
             if (!$wrap && $k < $count) {
