@@ -1,7 +1,7 @@
 <?php
 /**
  * EDIFACT Messages Encoder
- * (c)2016 Stefano Sabatini
+ * (c) 2018 Stefano Sabatini
  */
 
 namespace EDI;
@@ -12,6 +12,7 @@ class Encoder
     private $output = '';
     private $UNAActive = false; // disable by default to preserve backward compatibility
     private $originalArray = [];
+    private $wrap = true; //when false adds a newline after each segment
 
     /**
      * @var string : component separator character (default :)
@@ -55,6 +56,8 @@ class Encoder
     public function encode($arr, $wrap = true, $filterKeys = false)
     {
         $this->originalArray = $arr;
+        $this->wrap = $wrap;
+
         $edistring = '';
         $count = count($arr);
         $k = 0;
@@ -117,12 +120,16 @@ class Encoder
     public function get()
     {
         if ($this->UNAActive) {
-            return "UNA" . $this->sepComp .
+            $una = "UNA" . $this->sepComp .
                     $this->sepData .
                     $this->sepDec .
                     $this->symbRel .
                     $this->symbRep .
-                    $this->symbEnd . $this->output;
+                    $this->symbEnd ;
+            if ($this->wrap === false) {
+                $una .= "\n";
+            }
+            return $una . $this->output;
         } else {
             return $this->output;
         }
