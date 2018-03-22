@@ -114,9 +114,14 @@ class Encoder
         return str_replace($search, $replace, $str);
     }
 
-    public function get()
+    public function get($wrap = true)
     {
         if ($this->UNAActive) {
+
+            if ($wrap === false) {
+                $this->symbEnd .= "\n";
+            }
+
             return "UNA" . $this->sepComp .
                     $this->sepData .
                     $this->sepDec .
