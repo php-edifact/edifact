@@ -166,4 +166,35 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $result=$p->errors();
         $this->assertEmpty($result);
     }
+
+    public function testReleaseCharacter()
+    {
+        $p=new Parser();
+        $loaded=$p->load(__DIR__."/../files/example_release_character.edi");
+        $result=$p->errors();
+        $this->assertEmpty($result);
+
+        $this->assertEquals($loaded[5][2], 'NO MORE FLIGHTS 1');
+        $this->assertEquals($loaded[6][2], 'NO MORE FLIGHTS 2?');
+        $this->assertEquals($loaded[7][2], 'NO MORE \' FLIGHTS 3');
+        $this->assertEquals($loaded[8][2], 'NO MORE ? FLIGHTS 3');
+        $this->assertEquals($loaded[9][2], 'NO MORE ?\' FLIGHTS 3');
+
+        $this->assertEquals($loaded[10][2], 'FIELD 1');
+        $this->assertEquals($loaded[10][3], 'FIELD 2');
+
+        $this->assertEquals($loaded[11][2], 'FIELD 1?');
+        $this->assertEquals($loaded[11][3], 'FIELD 2');
+
+        $this->assertEquals($loaded[12][2], 'FIELD 1?+FIELD 2');
+
+        $this->assertEquals($loaded[13][2][0], 'FIELD 1.1');
+        $this->assertEquals($loaded[13][2][1], 'FIELD 1.2');
+
+        $this->assertEquals($loaded[14][2][0], 'FIELD 1.1?');
+        $this->assertEquals($loaded[14][2][1], 'FIELD 1.2');
+
+        $this->assertEquals($loaded[15][2], 'FIELD 1.1?:FIELD 1.2');
+    }
+
 }
