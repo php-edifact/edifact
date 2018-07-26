@@ -40,6 +40,10 @@ class Parser
      */
     private $symbEnd;
     /**
+     * @var string : safe string (default §SS§)
+     */
+    private $stringSafe;
+    /**
      * @var string : encoding (default UNOB)
      */
     private $encoding;
@@ -177,6 +181,7 @@ class Parser
         $this->symbRel = "\?";
         $this->symbRep = "*"; // See later if a preg_quote is needed
         $this->symbEnd = "'";
+        $this->stringSafe = "§SS§";
         $this->unaChecked = false;
     }
 
@@ -281,7 +286,9 @@ class Parser
             $this->analyseUNB(preg_replace("#^UNB\+#", "", substr($string, 0, 8)));
         }
 
-        $file=preg_split(self::$DELIMITER."(?<!".$this->symbRel.")".$this->symbEnd.self::$DELIMITER."i", $string);
+        $regex="/(([^".$this->symbRel."]".$this->symbRel."{2})+|[^".$this->symbRel."])".$this->symbEnd."/";
+        $string=preg_replace($regex, "$1".$this->stringSafe, $string);
+        $file=preg_split(self::$DELIMITER.$this->stringSafe.self::$DELIMITER."i", $string);
         $end = stripslashes($this->symbEnd);
         foreach ($file as $fc => &$line) {
             if (trim($line) == '') {
