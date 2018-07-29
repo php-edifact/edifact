@@ -9,7 +9,7 @@ use EDI\Reader;
  * @package EDITest
  * @author Uldis Nelsons <uldis@weberp.lv>
  */
-class ReaderTest extends \PHPUnit_Framework_TestCase
+class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     public function testReadEdiDataValue()
     {

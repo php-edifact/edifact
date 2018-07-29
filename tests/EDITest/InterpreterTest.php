@@ -13,7 +13,7 @@ use EDI\Mapping;
  * @package EDITest
  * @author Mark Davidson <mark@4each.co.uk>
  */
-class InterpreterTest extends \PHPUnit_Framework_TestCase
+class InterpreterTest extends \PHPUnit\Framework\TestCase
 {
 
     public function testCOARRI()

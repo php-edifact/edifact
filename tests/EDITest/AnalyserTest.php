@@ -11,7 +11,7 @@ use EDI\Mapping;
  * @package EDITest
  * @author Marius Teller <marius.teller@modotex.com>
  */
-class AnalyserTest extends \PHPUnit_Framework_TestCase
+class AnalyserTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Analyser

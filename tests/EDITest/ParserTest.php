@@ -10,7 +10,7 @@ use EDI\Parser;
  * @author Stefano Sabatini <sabas88@gmail.com>
  */
 
-class ParserTest extends \PHPUnit_Framework_TestCase
+class ParserTest extends \PHPUnit\Framework\TestCase
 {
     public function testCustomStripRegex()
     {
