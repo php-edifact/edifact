@@ -12,7 +12,6 @@
      </whitelist>
     </filter>
     <logging>
-        <log type="coverage-html" target="./codeCoverage" charset="UTF-8"
-            yui="true" highlight="true"/>
+        <log type="coverage-html" target="./codeCoverage"/>
     </logging>
 </phpunit>

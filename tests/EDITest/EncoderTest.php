@@ -9,7 +9,7 @@ use EDI\Encoder;
  * @package EDITest
  * @author Stefano Sabatini <sabas88@gmail.com>
  */
-class EncoderTest extends \PHPUnit_Framework_TestCase
+class EncoderTest extends \PHPUnit\Framework\TestCase
 {
     public function testEncodeNull()
     {

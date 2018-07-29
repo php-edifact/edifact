@@ -31,6 +31,7 @@ class Parser
      * @var string : release character (default ?)
      */
     private $symbRel;
+    private $symbUnescapedRel;
     /**
      * @var string : repetition character (no use but here) (default *)
      */
@@ -39,6 +40,10 @@ class Parser
      * @var string : end character (default ')
      */
     private $symbEnd;
+    /**
+     * @var string : safe string (default §SS§)
+     */
+    private $stringSafe;
     /**
      * @var string : encoding (default UNOB)
      */
@@ -175,8 +180,10 @@ class Parser
         $this->sepData = "\+";
         $this->sepDec = "."; // See later if a preg_quote is needed
         $this->symbRel = "\?";
+        $this->symbUnescapedRel = "?";
         $this->symbRep = "*"; // See later if a preg_quote is needed
         $this->symbEnd = "'";
+        $this->stringSafe = "§SS§";
         $this->unaChecked = false;
     }
 
@@ -209,6 +216,7 @@ class Parser
                     $this->sepDec = $line{2}; // See later if a preg_quote is needed
                     if (isset($line{3})) {
                         $this->symbRel = preg_quote($line{3}, self::$DELIMITER);
+                        $this->symbUnescapedRel = $line{3};
                         if (isset($line{4})) {
                             $this->symbRep = $line{4}; // See later if a preg_quote is needed
                             if (isset($line{5})) {
@@ -281,7 +289,9 @@ class Parser
             $this->analyseUNB(preg_replace("#^UNB\+#", "", substr($string, 0, 8)));
         }
 
-        $file=preg_split(self::$DELIMITER."(?<!".$this->symbRel.")".$this->symbEnd.self::$DELIMITER."i", $string);
+        $regex="/(([^".$this->symbRel."]".$this->symbRel."{2})+|[^".$this->symbRel."])".$this->symbEnd."/";
+        $string=preg_replace($regex, "$1".$this->stringSafe, $string);
+        $file=preg_split(self::$DELIMITER.$this->stringSafe.self::$DELIMITER."i", $string);
         $end = stripslashes($this->symbEnd);
         foreach ($file as $fc => &$line) {
             if (trim($line) == '') {
@@ -297,6 +307,7 @@ class Parser
     {
         $str = strrev(preg_replace(self::$DELIMITER.$this->symbEnd.self::$DELIMITER, "", strrev($str), 1));//remove ending symbEnd
         $str = trim($str);
+        $str=preg_replace(self::$DELIMITER.$this->symbRel."{2}".self::$DELIMITER, $this->stringSafe, $str);
         $matches=preg_split(self::$DELIMITER."(?<!".$this->symbRel.")".$this->sepData.self::$DELIMITER, $str); //split on sepData if not escaped (negative lookbehind)
         foreach ($matches as &$value) {
             if (preg_match(self::$DELIMITER."(?<!".$this->symbRel.")".$this->symbEnd.self::$DELIMITER, $value)) {
@@ -313,12 +324,19 @@ class Parser
     //Composite data element
     private function splitData($str)
     {
+        $replace = function($string) {
+            $regex=self::$DELIMITER.$this->symbRel."(?=".$this->symbRel.")|".$this->symbRel."(?=".$this->sepData.")|".$this->symbRel."(?=".$this->sepComp.")|".$this->symbRel."(?=".$this->symbEnd.")".self::$DELIMITER;
+            $string=preg_replace($regex, "", $string);
+            return preg_replace(self::$DELIMITER.$this->stringSafe.self::$DELIMITER, $this->symbUnescapedRel, $string);
+        };
+
         $arr=preg_split(self::$DELIMITER."(?<!".$this->symbRel.")".$this->sepComp.self::$DELIMITER, $str); //split on sepComp if not escaped (negative lookbehind)
+
         if (count($arr)==1) {
-            return preg_replace(self::$DELIMITER.$this->symbRel."(?=".$this->symbRel.")|".$this->symbRel."(?=".$this->sepData.")|".$this->symbRel."(?=".$this->sepComp.")|".$this->symbRel."(?=".$this->symbEnd.")".self::$DELIMITER, "", $str); //remove symbRel if not escaped
+          return $replace($str);
         }
         foreach ($arr as &$value) {
-            $value=preg_replace(self::$DELIMITER.$this->symbRel."(?=".$this->symbRel.")|".$this->symbRel."(?=".$this->sepData.")|".$this->symbRel."(?=".$this->sepComp.")|".$this->symbRel."(?=".$this->symbEnd.")".self::$DELIMITER, "", $value);
+            $value=$replace($value);
         }
         return $arr;
     }
