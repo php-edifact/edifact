@@ -62,14 +62,13 @@ $groups = $reader->groupsExtract('INV');
 
 foreach ($groups as $record) {
     $recordReader->setParsedFile($record);
-    $record = [
+    $records[] = [
         'storageLocation' => $recordReader->readEdiDataValue(['LOC', ['2.0' => 'YA']], 2, 3),
         'bookingDate' => $recordReader->readEdiSegmentDTM(179),
         'enteredOn' => $recordReader->readEdiSegmentDTM(171),
         'quantity' => $r->readEdiDataValue(['QTY', ['1.0' => 156]], 1, 1),
         'actualStock' => $r->readEdiDataValue(['QTY', ['1.0' => 145]], 1, 1)
     ];
-
 }
 ```
 
