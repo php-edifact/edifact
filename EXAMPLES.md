@@ -40,6 +40,39 @@ $analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml');
 $text = $analyser->process($parsed, $segments);
 ```
 
+EDI data reading from extracted group
+-------------------------------------
+
+As not to have to go through the indexes for extracted groups, just set the group as ParsedFile of the reader.
+
+E.g. inventory messages (snippet, not a valid EDI message!):
+
+```
+INV+2++1'QTY+156:1000:PCE'QTY+145:3000:PCE'LOC+18+YA:::567'DTM+179:20180509:102'RFF+AAK:TEST'DTM+171:20180509:102'
+INV+1++11'QTY+156:200:PCE'QTY+145:2800:PCE'LOC+18+YA:::567'DTM+179:20180509:102'RFF+ALO:4916165350'DTM+171:20180509:102'
+INV+1++11'QTY+156:200:PCE'QTY+145:2600:PCE'LOC+18+YA:::567'DTM+179:20180509:102'RFF+ALO:4916165351'DTM+171:20180509:102'
+INV+1++11'QTY+156:200:PCE'QTY+145:2400:PCE'LOC+18+YA:::567'DTM+179:20180509:102'RFF+ALO:4916165352'DTM+171:20180509:102'
+INV+1++11'QTY+156:100:PCE'QTY+145:2300:PCE'LOC+18+YA:::567'DTM+179:20180510:102'RFF+ALO:4916165359'DTM+171:20180510:102'
+```
+
+```php
+$reader = new EDI\Reader($fileName);
+$recordReader = EDI\Reader();
+$groups = $reader->groupsExtract('INV');
+
+foreach ($groups as $record) {
+    $recordReader->setParsedFile($record);
+    $record = [
+        'storageLocation' => $recordReader->readEdiDataValue(['LOC', ['2.0' => 'YA']], 2, 3),
+        'bookingDate' => $recordReader->readEdiSegmentDTM(179),
+        'enteredOn' => $recordReader->readEdiSegmentDTM(171),
+        'quantity' => $r->readEdiDataValue(['QTY', ['1.0' => 156]], 1, 1),
+        'actualStock' => $r->readEdiDataValue(['QTY', ['1.0' => 145]], 1, 1)
+    ];
+
+}
+```
+
 Readable EDI file
 -----------------
 ```
