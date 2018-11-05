@@ -85,6 +85,9 @@ class Encoder
             if (!is_array($row[$i])) {
                 $elm = $this->escapeValue($row[$i]);
             } else {
+                if (count($row[$i]) == 1 && is_array(reset($row[$i]))) {
+                    $row[$i] = array_pop($row[$i]);
+                }
                 foreach ($row[$i] as &$temp) {
                     $temp = $this->escapeValue($temp);
                 }
