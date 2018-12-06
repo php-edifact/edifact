@@ -29,8 +29,13 @@
             "url":  "https://github.com/php-edifact/edifact"
         }
     ],
+    "require": {
+        "php": ">=7.0.0",
+        "ext-simplexml": "*",
+        "ext-json": "*"
+    },
     "require-dev": {
-        "phpunit/phpunit": "4.1.*",
+        "phpunit/phpunit": "~6.0",
         "php-edifact/edifact-mapping": "dev-master"
     },
     "autoload": {

@@ -1,14 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EDITest;
 
 use EDI\Reader;
 
-/**
- * Class ReaderTest
- * @package EDITest
- * @author Uldis Nelsons <uldis@weberp.lv>
- */
 class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     public function testReadEdiDataValue()
@@ -16,82 +13,67 @@ class ReaderTest extends \PHPUnit\Framework\TestCase
         $r = new Reader(__DIR__ . "/../files/example.edi");
 
         $sender = $r->readEdiDataValue('UNB', 2);
-        $this->assertEquals('6XPPC', $sender);
+        $this->assertSame('6XPPC', $sender);
 
         $unh2 = $r->readEdiDataValue(['UNH', ['1' => '1']], 2);
-        $this->assertEquals('PAORES', $unh2[0]);
+        $this->assertSame('PAORES', $unh2[0]);
 
         $unh1 = $r->readEdiDataValue(['UNH', ['2.0' => 'PAORES']], 1);
-        $this->assertEquals('1', $unh1);
+        $this->assertSame('1', $unh1);
     }
 
     public function testReadUNBDateTimeOfPpreperation()
     {
-        $r = new Reader(__DIR__ . "/../files/example.edi");
-
-        $Dt = $r->readUNBDateTimeOfPpreperation();
-        $this->assertEquals('2094-01-01 09:50:00', $Dt);
+        $Dt = (new Reader(__DIR__ . "/../files/example.edi"))->readUNBDateTimeOfPpreperation();
+        $this->assertSame('2094-01-01 09:50:00', $Dt);
     }
 
     public function testReadUNBDateTimeOfPreperation()
     {
-        $r = new Reader(__DIR__ . "/../files/example.edi");
-
-        $Dt = $r->readUNBDateTimeOfPreperation();
-        $this->assertEquals('2094-01-01 09:50:00', $Dt);
+        $Dt = (new Reader(__DIR__ . "/../files/example.edi"))->readUNBDateTimeOfPreperation();
+        $this->assertSame('2094-01-01 09:50:00', $Dt);
     }
 
     public function testReadUNBDateTimeOfPreparation()
     {
-        $r = new Reader(__DIR__ . "/../files/example.edi");
-
-        $Dt = $r->readUNBDateTimeOfPreparation();
-        $this->assertEquals('2094-01-01 09:50:00', $Dt);
+        $Dt = (new Reader(__DIR__ . "/../files/example.edi"))->readUNBDateTimeOfPreparation();
+        $this->assertSame('2094-01-01 09:50:00', $Dt);
     }
 
     public function testReadUNHmessageType()
     {
-        $r = new Reader(__DIR__ . "/../files/example.edi");
-
-        $messageType = $r->readUNHmessageType();
-        $this->assertEquals('PAORES', $messageType);
+        $messageType = (new Reader(__DIR__ . "/../files/example.edi"))->readUNHmessageType();
+        $this->assertSame('PAORES', $messageType);
     }
 
     public function testReadUNHmessageNumber()
     {
-        $r = new Reader(__DIR__ . "/../files/example.edi");
-
-        $messageNumber = $r->readUNHmessageNumber();
-        $this->assertEquals('1', $messageNumber);
+        $messageNumber = (new Reader(__DIR__ . "/../files/example.edi"))->readUNHmessageNumber();
+        $this->assertSame('1', $messageNumber);
     }
 
 
     public function testpreValidate()
     {
-        $r = new Reader(__DIR__ . "/../files/exampleMulti.edi");
-        $errors = $r->errors();
+        $errors = (new Reader(__DIR__ . "/../files/exampleMulti.edi"))->errors();
         $this->assertArrayHasKey(0, $errors);
 
-        $this->assertEquals('File has multiple messages', $errors[0]);
+        $this->assertSame('File has multiple messages', $errors[0]);
     }
 
     public function testSplitMultiMessage()
     {
         $multiEdi = file_get_contents(__DIR__ . "/../files/exampleMulti.edi");
         $eddies = Reader::splitMultiMessage($multiEdi);
-        $this->assertEquals(2, count($eddies));
+        $this->assertSame(2, \count($eddies));
 
         $r = new Reader($eddies[0]);
         $messageType = $r->readUNHmessageType();
-        $this->assertEquals('PAORES', $messageType);
+        $this->assertSame('PAORES', $messageType);
 
         $r = new Reader($eddies[1]);
         $messageType = $r->readUNHmessageType();
-        $this->assertEquals('PAORES', $messageType);
-
-
-
+        $this->assertSame('PAORES', $messageType);
     }
-
 
 }
