@@ -3,34 +3,34 @@
 namespace EDITest;
 
 use EDI\Analyser;
+use EDI\Mapping\MappingProvider;
 use EDI\Parser;
-use EDI\Mapping;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Class AnalyserTest
- * @package EDITest
- * @author Marius Teller <marius.teller@modotex.com>
- */
-class AnalyserTest extends \PHPUnit\Framework\TestCase
+class AnalyserTest extends TestCase
 {
     /**
      * @var Analyser
      */
     protected $analyser;
+
+    /**
+     * @var MappingProvider
+     */
     protected $mapping;
 
     public function setUp()
     {
         $this->analyser = new Analyser();
-        $this->mapping = new \EDI\Mapping\MappingProvider('D07A');
+        $this->mapping = new MappingProvider('D07A');
     }
 
     public function testGetMessageStructure()
     {
         $messageXml = $this->mapping->getMessage('tpfrep');
-        $expected = include __DIR__."/../files/messages/tpfrep.php";
+        $expected = include __DIR__ . "/../files/messages/tpfrep.php";
         $actual = $this->analyser->loadMessageXml($messageXml);
-        $this->assertEquals(
+        $this->assertSame(
             $expected,
             $actual,
             "Unable to get the correct message structure array"
@@ -49,8 +49,8 @@ class AnalyserTest extends \PHPUnit\Framework\TestCase
     public function testGetSegmentStructure()
     {
         $segmentsXml = $this->mapping->getSegments();
-        $this->analyser->loadSegmentsXml($segmentsXml);
-        $actual = $this->analyser->segments;
+        /* @noinspection UnusedFunctionResultInspection */
+        $actual = $this->analyser->loadSegmentsXml($segmentsXml);
         $this->assertCount(156, $actual);
         $this->assertArrayHasKey('ADR', $actual);
         $this->assertArrayHasKey('attributes', $actual['ADR']);
@@ -60,25 +60,21 @@ class AnalyserTest extends \PHPUnit\Framework\TestCase
 
     public function testProcess()
     {
-        $parser = new Parser(__DIR__."/../files/example.edi");
+        $parser = new Parser(__DIR__ . "/../files/example.edi");
         $parsed = $parser->get();
         $segments = $parser->getRawSegments();
-        $this->assertEquals(15, count($parsed));
-        $analyser = new Analyser();
-
-        $result = $analyser->process($parsed, $segments);
-        $this->assertEquals(399, strlen($result));
+        $this->assertSame(15, \count($parsed));
+        $result = (new Analyser())->process($parsed, $segments);
+        $this->assertSame(399, \strlen($result));
     }
 
     public function testProcessWrapped()
     {
-        $parser = new Parser(__DIR__."/../files/example_wrapped.edi");
+        $parser = new Parser(__DIR__ . "/../files/example_wrapped.edi");
         $parsed = $parser->get();
         $segments = $parser->getRawSegments();
-        $this->assertEquals(15, count($parsed));
-        $analyser = new Analyser();
-
-        $result = $analyser->process($parsed, $segments);
-        $this->assertEquals(399, strlen($result));
+        $this->assertSame(15, \count($parsed));
+        $result = (new Analyser())->process($parsed, $segments);
+        $this->assertSame(399, \strlen($result));
     }
 }

@@ -5,14 +5,7 @@ namespace EDITest;
 use EDI\Analyser;
 use EDI\Interpreter;
 use EDI\Parser;
-use EDI\Mapping;
 
-/**
- * Class InterpreterTest
- *
- * @package EDITest
- * @author Mark Davidson <mark@4each.co.uk>
- */
 class InterpreterTest extends \PHPUnit\Framework\TestCase
 {
 
@@ -26,6 +19,7 @@ class InterpreterTest extends \PHPUnit\Framework\TestCase
         $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
 
         $interpreter = new Interpreter($mapping->getMessage('COARRI'), $segs, $svc);
+        /** @noinspection UnusedFunctionResultInspection */
         $interpreter->prepare($parser->get());
 
         $this->assertCount(3, $interpreter->getMessages()); //2 + service
@@ -43,12 +37,13 @@ class InterpreterTest extends \PHPUnit\Framework\TestCase
         $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
 
         $interpreter = new Interpreter($mapping->getMessage('COARRI'), $segs, $svc);
+        /** @noinspection UnusedFunctionResultInspection */
         $interpreter->prepare($parser->get());
         $svc = $interpreter->getServiceSegments();
         $svcjson = $interpreter->getJsonServiceSegments();
         $svcjsonpretty = $interpreter->getJsonServiceSegments(true);
-        $this->assertEquals($svc, json_decode($svcjson, true));
-        $this->assertEquals(26, substr_count($svcjsonpretty, "\n"));
+        $this->assertSame($svc, json_decode($svcjson, true));
+        $this->assertSame(26, substr_count($svcjsonpretty, "\n"));
     }
 
     public function testBAPLIE()
@@ -61,13 +56,14 @@ class InterpreterTest extends \PHPUnit\Framework\TestCase
         $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
 
         $interpreter = new Interpreter($mapping->getMessage('BAPLIE'), $segs, $svc);
+        /** @noinspection UnusedFunctionResultInspection */
         $interpreter->prepare($parser->get());
 
         $this->assertCount(2, $interpreter->getMessages());
         $this->assertCount(0, $interpreter->getErrors());
         $this->assertCount(2, $interpreter->getServiceSegments());
 
-        $this->assertEquals([], $interpreter->getErrors());
+        $this->assertSame([], $interpreter->getErrors());
     }
 
     public function testDESADV()
@@ -80,6 +76,7 @@ class InterpreterTest extends \PHPUnit\Framework\TestCase
         $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
 
         $interpreter = new Interpreter($mapping->getMessage('DESADV'), $segs, $svc);
+        /** @noinspection UnusedFunctionResultInspection */
         $interpreter->prepare($parser->get());
 
         $this->assertJsonStringEqualsJsonFile(
@@ -88,13 +85,13 @@ class InterpreterTest extends \PHPUnit\Framework\TestCase
             "JSON does not match expected output"
         );
 
-        $this->assertEquals(3152, strlen($interpreter->getJson()));
-        $this->assertEquals(8379, strlen($interpreter->getJson(true)));
+        $this->assertSame(3152, \strlen($interpreter->getJson()));
+        $this->assertSame(8379, \strlen($interpreter->getJson(true)));
 
         $this->assertCount(2, $interpreter->getMessages());
         $this->assertCount(0, $interpreter->getErrors());
         $this->assertCount(2, $interpreter->getServiceSegments());
-        $this->assertEquals([], $interpreter->getErrors());
+        $this->assertSame([], $interpreter->getErrors());
     }
 
     public function testMissingUNTUNZ()
@@ -107,6 +104,7 @@ class InterpreterTest extends \PHPUnit\Framework\TestCase
         $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
 
         $interpreter = new Interpreter($mapping->getMessage('BAPLIE'), $segs, $svc);
+        /** @noinspection UnusedFunctionResultInspection */
         $interpreter->prepare($parser->get());
         $errors = $interpreter->getErrors();
         $this->assertCount(2, $errors);
@@ -114,7 +112,7 @@ class InterpreterTest extends \PHPUnit\Framework\TestCase
         foreach ($errors as $err) {
             $segments[] = $err['segmentId'];
         }
-        $this->assertEquals(['UNZ', 'UNT'], $segments);
+        $this->assertSame(['UNZ', 'UNT'], $segments);
     }
 
     public function testMissingUNBUNH()
@@ -127,6 +125,7 @@ class InterpreterTest extends \PHPUnit\Framework\TestCase
         $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
 
         $interpreter = new Interpreter($mapping->getMessage('BAPLIE'), $segs, $svc);
+        /** @noinspection UnusedFunctionResultInspection */
         $interpreter->prepare($parser->get());
         $errors = $interpreter->getErrors();
         $segments = [];
