@@ -28,7 +28,7 @@ class Parser
     /**
      * @var string
      */
-    private $stripChars = "/[\x01-\x1F\x80-\xFF]/"; //UNOB encoding set
+    private $stripChars = "/[\x01-\x1F\x80-\xFF]/"; // UNOB encoding set
 
     /**
      * @var string
@@ -156,19 +156,21 @@ class Parser
      */
     public function parse(&$file2): array
     {
-        $t = \count($file2);
-        for ($i = 1; $i <= $t; $i++) {
-            $line = \array_shift($file2);
+        $i = 0;
+        foreach ($file2 as &$line) {
+            ++$i;
 
-            // Null byte and carriage return removal (CR+LF)
-            $line = \preg_replace('#[\x00\r\n]#', '', $line);
-            if (\preg_match($this->stripChars, $line)) {
-                $this->errors[] = "There's a not printable character on line " . $i . ": " . $line;
+            // Null byte and carriage return removal. (CR+LF)
+            $line = str_replace(["\x00", "\r", "\n"], '', $line);
+
+            // Basic sanitization, remove non printable chars.
+            $lineTrim = \trim($line);
+            $line = \preg_replace($this->stripChars, '', $lineTrim);
+            $line_bytes = \strlen($line);
+            if ($line_bytes !== \strlen($lineTrim)) {
+                $this->errors[] = "There's a not printable character on line " . $i . ": " . $lineTrim;
             }
-
-            // Basic sanitization, remove non printable chars
-            $line = \preg_replace($this->stripChars, '', \trim($line));
-            if (\strlen($line) < 2) {
+            if ($line_bytes < 2) {
                 continue;
             }
 
@@ -199,7 +201,6 @@ class Parser
 
         return $this->parsedfile;
     }
-
 
     /**
      * Reset UNA's characters definition
@@ -240,19 +241,19 @@ class Parser
     public function analyseUNA($line)
     {
         $line = \substr($line, 0, 6);
-        if (isset($line{0})) {
-            $this->sepComp = \preg_quote($line{0}, self::$DELIMITER);
-            if (isset($line{1})) {
-                $this->sepData = \preg_quote($line{1}, self::$DELIMITER);
-                if (isset($line{2})) {
-                    $this->sepDec = $line{2}; // See later if a preg_quote is needed
-                    if (isset($line{3})) {
-                        $this->symbRel = \preg_quote($line{3}, self::$DELIMITER);
-                        $this->symbUnescapedRel = $line{3};
-                        if (isset($line{4})) {
-                            $this->symbRep = $line{4}; // See later if a preg_quote is needed
-                            if (isset($line{5})) {
-                                $this->symbEnd = \preg_quote($line{5}, self::$DELIMITER);
+        if (isset($line[0])) {
+            $this->sepComp = \preg_quote($line[0], self::$DELIMITER);
+            if (isset($line[1])) {
+                $this->sepData = \preg_quote($line[1], self::$DELIMITER);
+                if (isset($line[2])) {
+                    $this->sepDec = $line[2]; // See later if a preg_quote is needed
+                    if (isset($line[3])) {
+                        $this->symbRel = \preg_quote($line[3], self::$DELIMITER);
+                        $this->symbUnescapedRel = $line[3];
+                        if (isset($line[4])) {
+                            $this->symbRep = $line[4]; // See later if a preg_quote is needed
+                            if (isset($line[5])) {
+                                $this->symbEnd = \preg_quote($line[5], self::$DELIMITER);
                             }
                         }
                     }
@@ -275,9 +276,7 @@ class Parser
             $encoding = $encoding[0];
         }
         $this->encoding = $encoding;
-        /**
-         * If there's a regex defined for this character set, use it
-         */
+        // If there's a regex defined for this character set, use it.
         if (isset($this->encodingToStripChars[$encoding])) {
             $this->setStripRegex($this->encodingToStripChars[$encoding]);
         }
@@ -296,12 +295,14 @@ class Parser
         if (\count($line) < 3) {
             return;
         }
+
         $lineElement = $line[2];
         if (!\is_array($lineElement)) {
             $this->messageFormat = $lineElement;
 
             return;
         }
+
         $this->messageFormat = $lineElement[0];
         $this->messageDirectory = $lineElement[2];
     }
@@ -315,11 +316,19 @@ class Parser
      */
     private function unwrap(&$string): array
     {
-        if (!$this->unaChecked && \strpos($string, "UNA") === 0) {
+        if (
+            !$this->unaChecked
+            &&
+            \strpos($string, "UNA") === 0
+        ) {
             $this->analyseUNA(\preg_replace("#^UNA#", "", substr($string, 0, 9)));
         }
 
-        if (!$this->unbChecked && \strpos($string, "UNB") === 0) {
+        if (
+            !$this->unbChecked
+            &&
+            \strpos($string, "UNB") === 0
+        ) {
             $this->analyseUNB(\preg_replace("#^UNB\+#", "", substr($string, 0, 8)));
         }
 

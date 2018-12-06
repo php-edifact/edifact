@@ -172,6 +172,16 @@ class ParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEmpty($result);
     }
 
+    /*
+    public function testBigFile()
+    {
+        $p = new Parser();
+        $p->load(__DIR__ . "/../files/example_big.edi");
+        $result = $p->errors();
+        $this->assertSame([], $result);
+    }
+    */
+
     public function testReleaseCharacter()
     {
         $p = new Parser();
