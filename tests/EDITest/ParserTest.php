@@ -67,7 +67,7 @@ class ParserTest extends \PHPUnit\Framework\TestCase
     {
         $string = file_get_contents(__DIR__ . '/../files/example_order_ok.edi');
 
-        for ($i = 0; $i < 2; $i++) { // keep for simple performance tests
+        for ($i = 0; $i < 100; $i++) { // keep for simple performance tests
             $errors = (new Parser($string))->errors();
         }
 

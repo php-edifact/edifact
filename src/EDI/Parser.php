@@ -345,17 +345,25 @@ class Parser
         if (
             !$this->unaChecked
             &&
-            \strpos($string, "UNA") === 0
+            \strpos($string, 'UNA') === 0
         ) {
-            $this->analyseUNA(\preg_replace("#^UNA#", '', substr($string, 0, 9)));
+            $this->analyseUNA(
+                \substr(\substr($string, 3), 0, 9)
+            );
         }
 
         if (
             !$this->unbChecked
             &&
-            \strpos($string, "UNB") === 0
+            \strpos($string, 'UNB') === 0
         ) {
-            $this->analyseUNB(\preg_replace("#^UNB\+#", '', substr($string, 0, 8)));
+            $this->analyseUNB(
+                \preg_replace(
+                    "#^UNB\+#",
+                    '',
+                    \substr($string, 0, 8)
+                )
+            );
         }
 
         $string = \preg_replace(
@@ -363,6 +371,7 @@ class Parser
             "$1" . $this->stringSafe,
             $string
         );
+
         $file = \preg_split(
             self::$DELIMITER . $this->stringSafe . self::$DELIMITER . "i",
             $string
@@ -393,31 +402,36 @@ class Parser
      */
     private function splitSegment(string &$str): array
     {
-        // remove ending symbEnd
-        if (\strpos($str, $this->symbEnd) !== false) {
-            $str = \preg_replace(
+        // remove ending "symbEnd"
+        $str = \trim(
+            \preg_replace(
                 self::$DELIMITER . $this->symbEnd . '$' . self::$DELIMITER,
                 '',
                 $str
-            );
-        }
+            )
+        );
 
-        $str = \trim($str);
-
-        // replace duplicate symbRel
+        // replace duplicate "symbRel"
         $str = \str_replace(
             $this->symbUnescapedRel . $this->symbUnescapedRel,
             $this->stringSafe,
             $str
         );
 
-        // split on sepData if not escaped (negative lookbehind)
+        // split on "sepData" if not escaped (negative lookbehind)
         $matches = \preg_split(
             self::$DELIMITER . "(?<!" . $this->symbRel . ")" . $this->sepData . self::$DELIMITER,
             $str
         );
+        // fallback
+        if ($matches === false) {
+            $matches = [];
+        }
 
         foreach ($matches as &$value) {
+            if ($value === '') {
+                continue;
+            }
 
             // INFO:
             //
@@ -439,14 +453,10 @@ class Parser
                 }
             }
 
-            // split on sepComp
+            // split on "sepComp"
             $value = $this->splitData($value);
         }
         unset($value);
-
-        if ($matches === false) {
-            $matches = [];
-        }
 
         return $matches;
     }
@@ -481,15 +491,20 @@ class Parser
             );
         };
 
+        // check for "sepUnescapedComp" in the string
         if (\strpos($str, $this->sepUnescapedComp) === false) {
             return $replace($str);
         }
 
-        // split on sepComp if not escaped (negative lookbehind)
+        // split on "sepComp" if not escaped (negative lookbehind)
         $array = \preg_split(
             self::$DELIMITER . "(?<!" . $this->symbRel . ")" . $this->sepComp . self::$DELIMITER,
             $str
         );
+        // fallback
+        if ($array === false) {
+            $array = [[]];
+        }
 
         if (\count($array) === 1) {
             return $replace($str);
