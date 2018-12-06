@@ -26,7 +26,7 @@ class Reader
      *
      * @param string $url url or path ur EDI message
      */
-    public function __construct($url = null)
+    public function __construct(string $url = null)
     {
         $this->load($url);
     }
@@ -62,7 +62,7 @@ class Reader
      *
      * @return bool
      */
-    public function load($url): bool
+    public function load(string $url): bool
     {
         $this->parsedfile = (new Parser($url))->get();
 
@@ -114,7 +114,7 @@ class Reader
      *
      * @return array
      */
-    public static function splitMultiMessage($ediMessage): array
+    public static function splitMultiMessage(string $ediMessage): array
     {
         // init
         $splicedMessages = [];
@@ -189,7 +189,7 @@ class Reader
      *
      * @return string
      */
-    public function readEdiDataValueReq($filter, $l1, $l2 = false): string
+    public function readEdiDataValueReq($filter, int $l1, $l2 = false): string
     {
         return $this->readEdiDataValue($filter, $l1, $l2, true);
     }
@@ -205,9 +205,9 @@ class Reader
      * @param  int|false    $l2       second level item number (start by 0)
      * @param  bool         $required if required, but no exist, register error
      *
-     * @return string|null
+     * @return null|string
      */
-    public function readEdiDataValue($filter, $l1, $l2 = false, $required = false)
+    public function readEdiDataValue($filter, int $l1, $l2 = false, bool $required = false)
     {
         // interpret filter parameters
         if (\is_array($filter)) {
@@ -228,7 +228,7 @@ class Reader
                     $filter_ok = false;
                     foreach ($filter_elements as $el_id => $el_value) {
                         $f_el_list = \explode('.', (string)$el_id);
-                        if (\count($f_el_list) == 1) {
+                        if (\count($f_el_list) === 1) {
                             if (
                                 isset($edi_row[$el_id])
                                 &&
@@ -362,7 +362,7 @@ class Reader
     /**
      * get message preparation time
      *
-     * @return mixed|string
+     * @return null|string
      */
     public function readUNBDateTimeOfPreparation()
     {
@@ -387,7 +387,7 @@ class Reader
      *
      * @param mixed $transportStageQualifier
      *
-     * @return string
+     * @return null|string
      */
     public function readTDTtransportIdentification($transportStageQualifier): string
     {
@@ -402,9 +402,9 @@ class Reader
     /**
      * read message type
      *
-     * @return string
+     * @return null|string
      */
-    public function readUNHmessageType(): string
+    public function readUNHmessageType()
     {
         return $this->readEdiDataValue('UNH', 2, 0);
     }
@@ -420,7 +420,7 @@ class Reader
     }
 
     /**
-     * get groups from message
+     * Get groups from message.
      *
      * @param string $before segment before groups
      * @param string $start  first segment of group
@@ -429,7 +429,7 @@ class Reader
      *
      * @return false|array
      */
-    public function readGroups($before, $start, $end, $after)
+    public function readGroups(string $before, string $start, string $end, string $after)
     {
         // init
         $groups = [];
@@ -501,15 +501,15 @@ class Reader
     }
 
     /**
-     * get groups from message when last segment is unknown but you know the barrier
-     * useful for invoices by default
+     * Get groups from message when last segment is unknown but you know the barrier
+     * useful for invoices by default.
      *
      * @param string $start   first segment start a new group
      * @param array  $barrier barrier segment (NOT in group)
      *
      * @return array
      */
-    public function groupsExtract($start = 'LIN', $barrier = ['UNS']): array
+    public function groupsExtract(string $start = 'LIN', array $barrier = ['UNS']): array
     {
         // init
         $groups = [];

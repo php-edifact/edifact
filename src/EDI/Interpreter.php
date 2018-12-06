@@ -81,12 +81,12 @@ class Interpreter
     /**
      * Split multiple messages and process
      *
-     * @param string $xmlMsg          Path to XML Message representation
-     * @param array  $xmlSeg          Segments processed by EDI\Analyser::loadSegmentsXml
-     * @param array  $xmlSvc          Service segments processed by EDI\Analyser::loadSegmentsXml
-     * @param array  $messageTextConf Personalisation of error messages
+     * @param string     $xmlMsg          Path to XML Message representation
+     * @param array      $xmlSeg          Segments processed by EDI\Analyser::loadSegmentsXml
+     * @param array      $xmlSvc          Service segments processed by EDI\Analyser::loadSegmentsXml
+     * @param null|array $messageTextConf Personalisation of error messages
      */
-    public function __construct($xmlMsg, $xmlSeg, $xmlSvc, $messageTextConf = null)
+    public function __construct(string $xmlMsg, array $xmlSeg, array $xmlSvc, array $messageTextConf = null)
     {
         $this->xmlMsg = \simplexml_load_file($xmlMsg);
         $this->xmlSeg = $xmlSeg;
@@ -108,7 +108,7 @@ class Interpreter
      *
      * @return void
      */
-    public function setMessageTextConf($messageTextConf)
+    public function setMessageTextConf(array $messageTextConf)
     {
         $this->messageTextConf = \array_replace($this->messageTextConf, $messageTextConf);
     }
@@ -120,7 +120,7 @@ class Interpreter
      *
      * @return void
      */
-    public function setSegmentTemplates($segmentTemplates)
+    public function setSegmentTemplates(array $segmentTemplates)
     {
         $this->segmentTemplates = $segmentTemplates;
     }
@@ -132,7 +132,7 @@ class Interpreter
      *
      * @return void
      */
-    public function setGroupTemplates($groupTemplates)
+    public function setGroupTemplates(array $groupTemplates)
     {
         $this->groupTemplates = $groupTemplates;
     }
@@ -156,7 +156,7 @@ class Interpreter
      *
      * @return array
      */
-    public function prepare($parsed): array
+    public function prepare(array $parsed): array
     {
         $this->msgs = $this->splitMessages($parsed, $this->errors);
         $groups = [];
@@ -267,7 +267,7 @@ class Interpreter
      *
      * @return array
      */
-    private function loopMessage(&$message, $xml, &$errors): array
+    private function loopMessage(array &$message, \SimpleXMLElement $xml, array &$errors): array
     {
         // init
         $groupedEdi = [];
@@ -301,7 +301,7 @@ class Interpreter
      *
      * @return void
      */
-    private function processXmlGroup($elm, &$message, &$segmentIdx, &$array, &$errors)
+    private function processXmlGroup(\SimpleXMLElement $elm, array &$message, int &$segmentIdx, array &$array, array &$errors)
     {
         // init
         $groupVisited = false;
@@ -345,7 +345,7 @@ class Interpreter
 
         }
 
-        if (\count($newGroup) == 0) {
+        if (\count($newGroup) === 0) {
             return;
         }
 
@@ -363,9 +363,11 @@ class Interpreter
      *
      * @return void
      */
-    private function processXmlSegment($elm, &$message, &$segmentIdx, &$array, &$errors)
+    private function processXmlSegment(\SimpleXMLElement $elm, array &$message, int &$segmentIdx, array &$array, array &$errors)
     {
+        // init
         $segmentVisited = false;
+
         for ($i = 0; $i < $elm['maxrepeat']; $i++) {
 
             if (\call_user_func($this->comparisonFunction, $message[$segmentIdx], $elm)) {
@@ -412,7 +414,7 @@ class Interpreter
      *
      * @return void
      */
-    private function doAddArray(&$array, &$jsonMessage)
+    private function doAddArray(array &$array, array &$jsonMessage)
     {
         if (isset($array[$jsonMessage['key']])) {
             if (
@@ -435,12 +437,12 @@ class Interpreter
      *
      * @param array      $segment
      * @param array      $xmlMap
-     * @param int        $segmentIdx
+     * @param null|int   $segmentIdx
      * @param null|array $errors
      *
      * @return array
      */
-    private function processSegment(&$segment, &$xmlMap, $segmentIdx, &$errors = null): array
+    private function processSegment(array &$segment, array &$xmlMap, $segmentIdx, array &$errors = null): array
     {
         $id = $segment[0];
 
@@ -508,7 +510,7 @@ class Interpreter
                     $jsoncomposite = $detail;
                 }
 
-                if (array_key_exists($d_desc_attr['name'], $jsonelements)) {
+                if (\array_key_exists($d_desc_attr['name'], $jsonelements)) {
                     $jsonelements[$d_desc_attr['name'] . $n] = $jsoncomposite;
                 } else {
                     $jsonelements[$d_desc_attr['name']] = $jsoncomposite;
@@ -535,9 +537,11 @@ class Interpreter
      *
      * @return array
      */
-    private function processService(&$segments): array
+    private function processService(array &$segments): array
     {
+        // init
         $processed = [];
+
         foreach ($segments as &$seg) {
             $jsonsegment = $this->processSegment($seg, $this->xmlSvc, null);
             $processed[$jsonsegment['key']] = $jsonsegment['value'];
@@ -553,7 +557,7 @@ class Interpreter
      *
      * @return false|string
      */
-    public function getJson($pretty = false)
+    public function getJson(bool $pretty = false)
     {
         if ($pretty) {
             return \json_encode($this->ediGroups, JSON_PRETTY_PRINT);
@@ -593,7 +597,7 @@ class Interpreter
      *
      * @return false|string
      */
-    public function getJsonServiceSegments($pretty = false)
+    public function getJsonServiceSegments(bool $pretty = false)
     {
         if ($pretty) {
             return \json_encode($this->serviceSeg, JSON_PRETTY_PRINT);
