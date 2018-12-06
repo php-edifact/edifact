@@ -183,7 +183,7 @@ class Interpreter
      *
      * @return array
      */
-    private function splitMessages($parsed, &$errors): array
+    private function splitMessages(&$parsed, &$errors): array
     {
         // init
         $messages = [];
@@ -267,7 +267,7 @@ class Interpreter
      *
      * @return array
      */
-    private function loopMessage($message, $xml, &$errors): array
+    private function loopMessage(&$message, $xml, &$errors): array
     {
         // init
         $groupedEdi = [];
@@ -363,7 +363,7 @@ class Interpreter
      *
      * @return void
      */
-    private function processXmlSegment($elm, $message, &$segmentIdx, &$array, &$errors)
+    private function processXmlSegment($elm, &$message, &$segmentIdx, &$array, &$errors)
     {
         $segmentVisited = false;
         for ($i = 0; $i < $elm['maxrepeat']; $i++) {
@@ -412,7 +412,7 @@ class Interpreter
      *
      * @return void
      */
-    private function doAddArray(&$array, $jsonMessage)
+    private function doAddArray(&$array, &$jsonMessage)
     {
         if (isset($array[$jsonMessage['key']])) {
             if (
@@ -440,7 +440,7 @@ class Interpreter
      *
      * @return array
      */
-    private function processSegment($segment, &$xmlMap, $segmentIdx, &$errors = null): array
+    private function processSegment(&$segment, &$xmlMap, $segmentIdx, &$errors = null): array
     {
         $id = $segment[0];
 
@@ -535,10 +535,10 @@ class Interpreter
      *
      * @return array
      */
-    private function processService($segments): array
+    private function processService(&$segments): array
     {
         $processed = [];
-        foreach ($segments as $seg) {
+        foreach ($segments as &$seg) {
             $jsonsegment = $this->processSegment($seg, $this->xmlSvc, null);
             $processed[$jsonsegment['key']] = $jsonsegment['value'];
         }

@@ -111,6 +111,7 @@ class Parser
         if ($this->unaChecked !== false) {
             $this->resetUNA();
         }
+
         if ($this->unbChecked !== false) {
             $this->resetUNB();
         }
@@ -122,9 +123,9 @@ class Parser
             return;
         }
         if (\is_array($url)) {
-            /**
-             * Object constructed with an array as argument
-             */
+            //
+            // Object constructed with an array as argument
+            //
             if (\count($url) == 1) {
                 $url = $this->unwrap($url[0]);
             }
@@ -132,15 +133,15 @@ class Parser
             /** @noinspection UnusedFunctionResultInspection */
             $this->parse($url);
         } elseif (file_exists($url)) {
-            /**
-             * Object constructed with a path to a file as argument
-             */
+            //
+            // Object constructed with a path to a file as argument
+            //
             /** @noinspection UnusedFunctionResultInspection */
             $this->load($url);
         } else {
-            /**
-             * Object constructed with a string as argument
-             */
+            //
+            // Object constructed with a string as argument
+            //
             /** @noinspection UnusedFunctionResultInspection */
             $this->loadString($url);
         }
@@ -159,17 +160,13 @@ class Parser
         for ($i = 1; $i <= $t; $i++) {
             $line = \array_shift($file2);
 
-            /**
-             * Null byte and carriage return removal (CR+LF)
-             */
+            // Null byte and carriage return removal (CR+LF)
             $line = \preg_replace('#[\x00\r\n]#', '', $line);
             if (\preg_match($this->stripChars, $line)) {
                 $this->errors[] = "There's a not printable character on line " . $i . ": " . $line;
             }
 
-            /**
-             * Basic sanitization, remove non printable chars
-             */
+            // Basic sanitization, remove non printable chars
             $line = \preg_replace($this->stripChars, '', \trim($line));
             if (\strlen($line) < 2) {
                 continue;
@@ -316,11 +313,12 @@ class Parser
      *
      * @return string[]
      */
-    private function unwrap($string): array
+    private function unwrap(&$string): array
     {
         if (!$this->unaChecked && \strpos($string, "UNA") === 0) {
             $this->analyseUNA(\preg_replace("#^UNA#", "", substr($string, 0, 9)));
         }
+
         if (!$this->unbChecked && \strpos($string, "UNB") === 0) {
             $this->analyseUNB(\preg_replace("#^UNB\+#", "", substr($string, 0, 8)));
         }
@@ -350,7 +348,7 @@ class Parser
      *
      * @return array[]|string[]
      */
-    private function splitSegment($str): array
+    private function splitSegment(&$str): array
     {
         // remove ending symbEnd
         $str = \trim(
@@ -405,7 +403,7 @@ class Parser
      *
      * @return mixed
      */
-    private function splitData($str)
+    private function splitData(&$str)
     {
         $replace = function ($string) {
             $regex = self::$DELIMITER . $this->symbRel . "(?=" . $this->symbRel . ")|" . $this->symbRel . "(?=" . $this->sepData . ")|" . $this->symbRel . "(?=" . $this->sepComp . ")|" . $this->symbRel . "(?=" . $this->symbEnd . ")" . self::$DELIMITER;

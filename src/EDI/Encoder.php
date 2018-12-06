@@ -159,7 +159,7 @@ class Encoder
      *
      * @return string
      */
-    private function escapeValue($str): string
+    private function escapeValue(&$str): string
     {
         $search = [
             $this->symbRel,
