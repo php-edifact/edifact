@@ -19,7 +19,7 @@ class Analyser
      *
      * @return array
      */
-    public function loadMessageXml($message_xml_file): array
+    public function loadMessageXml(string $message_xml_file): array
     {
         $messageXmlString = \file_get_contents($message_xml_file);
         $messageXml = new \SimpleXMLIterator($messageXmlString);
@@ -106,7 +106,7 @@ class Analyser
      *
      * @return array
      */
-    public function loadCodesXml($codesXml): array
+    public function loadCodesXml(string $codesXml): array
     {
         $codesXmlString = \file_get_contents($codesXml);
         $codesXml = new \SimpleXMLIterator($codesXmlString);
@@ -135,7 +135,7 @@ class Analyser
      *
      * @return array
      */
-    public function loadSegmentsXml($segment_xml_file): array
+    public function loadSegmentsXml(string $segment_xml_file): array
     {
         $segments_xml = \file_get_contents($segment_xml_file);
 
@@ -166,7 +166,7 @@ class Analyser
      *
      * @return string file
      */
-    public function process($data, $rawSegments = null): string
+    public function process(array $data, array $rawSegments = null): string
     {
         $r = [];
         foreach ($data as $nrow => $segment) {

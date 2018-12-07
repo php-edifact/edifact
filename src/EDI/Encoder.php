@@ -78,21 +78,21 @@ class Encoder
     }
 
     /**
-     * @param array $arr
+     * @param array $array
      * @param bool  $wrap
      * @param bool  $filterKeys
      *
      * @return string
      */
-    public function encode($arr, $wrap = true, $filterKeys = false): string
+    public function encode(array $array, $wrap = true, $filterKeys = false): string
     {
-        $this->originalArray = $arr;
+        $this->originalArray = $array;
         $this->wrap = $wrap;
 
         $edistring = '';
-        $count = \count($arr);
+        $count = \count($array);
         $k = 0;
-        foreach ($arr as $row) {
+        foreach ($array as $row) {
             $k++;
             if ($filterKeys) {
                 unset($row['segmentIdx']);
@@ -113,7 +113,7 @@ class Encoder
      *
      * @return string
      */
-    public function encodeSegment($row): string
+    public function encodeSegment(array $row): string
     {
         // init
         $str = '';
@@ -122,7 +122,7 @@ class Encoder
         foreach ($row as $i => &$iValue) {
             if (\is_array($iValue)) {
                 if (
-                    \count($iValue) == 1
+                    \count($iValue) === 1
                     &&
                     \is_array(\reset($iValue))
                 ) {
@@ -159,7 +159,7 @@ class Encoder
      *
      * @return string
      */
-    private function escapeValue(&$str): string
+    private function escapeValue(string &$str): string
     {
         $search = [
             $this->symbRel,
@@ -205,7 +205,7 @@ class Encoder
      *
      * @return bool
      */
-    public function setUNA($chars, $user_call = true): bool
+    public function setUNA(string $chars, bool $user_call = true): bool
     {
         if (
             \is_string($chars)
