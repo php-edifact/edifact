@@ -115,6 +115,86 @@ class InterpreterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['UNZ', 'UNT'], $segments);
     }
 
+    public function testOrderError()
+    {
+        $edi = file_get_contents(__DIR__ . '/../files/example_order_error.edi');
+        $parser = new Parser($edi);
+        $mapping = new \EDI\Mapping\MappingProvider('D95B');
+        $analyser = new Analyser();
+        $segs = $analyser->loadSegmentsXml($mapping->getSegments());
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+
+        $interpreter = new Interpreter($mapping->getMessage('ORDERS'), $segs, $svc);
+        /** @noinspection UnusedFunctionResultInspection */
+        $interpreter->prepare($parser->get());
+        $this->assertSame(
+            [
+                0 => 'There\'s a character not escaped with ? in the data; string :::H-Vollmilch 3,5%  ?*?*Marke?*?*:1l Tertra mit Drehverschluss',
+            ],
+            $parser->errors()
+        );
+
+        $errors = $interpreter->getErrors();
+        $this->assertCount(3, $errors);
+        $segments = [];
+        foreach ($errors as $err) {
+            $segments[] = $err['segmentId'];
+        }
+        $this->assertSame(['IMD', 'IMD', 'IMD'], $segments);
+
+        $this->assertCount(2, $interpreter->getMessages());
+
+        $this->assertContains('"messageHeader"', $interpreter->getJson(true));
+        $this->assertContains('"interchangeHeader"', $interpreter->getJsonServiceSegments(true));
+
+        $arrayy = $interpreter->getArrayy();
+        $this->assertSame(
+            'Butter 40x250g Alu',
+            $arrayy->get('0.SG25.0.itemDescription.itemDescription.itemDescription')
+        );
+
+        $arrayy = $interpreter->getArrayyServiceSegments();
+        $this->assertCount(
+            13,
+            $arrayy->get('interchangeHeader')
+        );
+    }
+
+    public function testOrderOk()
+    {
+        $edi = file_get_contents(__DIR__ . '/../files/example_order_ok.edi');
+        $parser = new Parser($edi);
+        $mapping = new \EDI\Mapping\MappingProvider('D95B');
+        $analyser = new Analyser();
+        $segs = $analyser->loadSegmentsXml($mapping->getSegments());
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+
+        $interpreter = new Interpreter($mapping->getMessage('ORDERS'), $segs, $svc);
+        /** @noinspection UnusedFunctionResultInspection */
+        $interpreter->prepare($parser->get());
+        $this->assertSame([], $parser->errors());
+
+        $errors = $interpreter->getErrors();
+        $this->assertCount(0, $errors);
+
+        $this->assertCount(2, $interpreter->getMessages());
+
+        $this->assertContains('"messageHeader"', $interpreter->getJson(true));
+        $this->assertContains('"interchangeHeader"', $interpreter->getJsonServiceSegments(true));
+
+        $arrayy = $interpreter->getArrayy();
+        $this->assertSame(
+            'Butter 40x250g Alu',
+            $arrayy->get('0.SG25.0.itemDescription.itemDescription.itemDescription')
+        );
+
+        $arrayy = $interpreter->getArrayyServiceSegments();
+        $this->assertCount(
+            13,
+            $arrayy->get('interchangeHeader')
+        );
+    }
+
     public function testMissingUNBUNH()
     {
         $edi = "UNT+30+1907'UNZ+1+1865'";
