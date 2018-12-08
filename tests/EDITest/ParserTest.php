@@ -70,8 +70,12 @@ class ParserTest extends \PHPUnit\Framework\TestCase
         for ($i = 0; $i < 100; $i++) { // keep for simple performance tests
             $errors = (new Parser($string))->errors();
         }
-
         $this->assertSame([], $errors);
+
+        $data = json_encode((new Parser($string))->get());
+        $this->assertContains('Sup 1:10', $data);
+        $this->assertNotContains('Konzentrat:o', $data);
+        $this->assertContains('"Rindfleischsuppe Konzentrat","o', $data);
     }
 
     public function testFileError()
