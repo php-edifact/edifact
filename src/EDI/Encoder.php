@@ -119,7 +119,7 @@ class Encoder
                     $this->sepDec .
                     $this->symbRel .
                     $this->symbRep .
-                    $this->symbEnd . $this->output;
+                    $this->symbEnd . "\n".$this->output;
         } else {
             return $this->output;
         }
