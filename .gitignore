@@ -1,4 +1,5 @@
 codeCoverage/*
 /vendor
 composer.lock
+.idea
 *.bak
