@@ -121,10 +121,8 @@ class Encoder
 
         foreach ($row as $i => &$iValue) {
             if (\is_array($iValue)) {
-                if (
-                    \count($iValue) === 1
-                    &&
-                    \is_array(\reset($iValue))
+                if (\count($iValue) === 1
+                    && \is_array(\reset($iValue))
                 ) {
                     $iValue = \array_pop($iValue);
                 }
@@ -155,11 +153,11 @@ class Encoder
     }
 
     /**
-     * @param string $str
+     * @param string|int $str
      *
      * @return string
      */
-    private function escapeValue(string &$str): string
+    private function escapeValue(&$str): string
     {
         $search = [
             $this->symbRel,
@@ -207,10 +205,8 @@ class Encoder
      */
     public function setUNA(string $chars, bool $user_call = true): bool
     {
-        if (
-            \is_string($chars)
-            &&
-            \strlen($chars) == 6
+        if (\is_string($chars)
+            && \strlen($chars) == 6
         ) {
             $this->sepComp = $chars[0];
             $this->sepData = $chars[1];
