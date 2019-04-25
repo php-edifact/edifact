@@ -63,6 +63,23 @@ class ParserTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected, $result);
     }
 
+    /** @dataProvider multipleEscapedSegmentsProvider */
+    public function testMultipleEscapedSegments($string,$expected)
+    {
+        $result = (new Parser($string))->get();
+        $this->assertSame($expected,$result);
+    }
+
+    public function multipleEscapedSegmentsProvider()
+    {
+        return [
+            ["EQD+CX??DU12?+3456+2?:0'",      [["EQD", "CX?DU12+3456", "2:0"]]],
+            ["EQD+CX????DU12?+3456+2?:0'",    [["EQD", "CX??DU12+3456", "2:0"]]],
+            ["EQD+CX??????DU12?+3456+2?:0'",  [["EQD", "CX???DU12+3456", "2:0"]]],
+            ["EQD+CX????????DU12?+3456+2?:0'",[["EQD", "CX????DU12+3456", "2:0"]]],
+        ];
+    }
+
     public function testFileOk()
     {
         $string = file_get_contents(__DIR__ . '/../files/example_order_ok.edi');
