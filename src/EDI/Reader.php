@@ -120,6 +120,7 @@ class Reader
         $splicedMessages = [];
         $message = [];
         $unb = false;
+        $segment = '';
 
         foreach (self::unwrap($ediMessage) as $segment) {
 
