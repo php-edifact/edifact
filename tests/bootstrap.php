@@ -6,8 +6,7 @@ if (file_exists($file)) {
 }
 
 error_reporting(E_ALL | E_STRICT);
-chdir(__DIR__);
 
-require('classBootstrap.php');
+require(__DIR__ . '/classBootstrap.php');
 
 Bootstrap::init();
