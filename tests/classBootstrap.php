@@ -16,8 +16,8 @@ class Bootstrap
         spl_autoload_register(
             function ($className) {
                 $path = str_replace('\\', '/', $className);
-                if (file_exists('../src/' . $path . '.php')) {
-                    include_once '../src/' . $path . '.php';
+                if (file_exists(__DIR__ . '/../src/' . $path . '.php')) {
+                    include_once __DIR__ . '/../src/' . $path . '.php';
                 }
             }
         );
