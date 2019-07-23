@@ -28,7 +28,9 @@ class Reader
      */
     public function __construct(string $url = null)
     {
-        $this->load($url);
+        if (isset($url)) {
+            $this->load($url);
+        }
     }
 
     /**
