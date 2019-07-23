@@ -13,12 +13,14 @@ class Bootstrap
         if (file_exists($vendorPath . '/autoload.php')) {
             include $vendorPath . '/autoload.php';
         }
-        spl_autoload_register(function ($className) {
-            $path = str_replace('\\', '/', $className);
-            if (file_exists('../src/'.$path.'.php')) {
-                include_once '../src/'.$path.'.php';
+        spl_autoload_register(
+            function ($className) {
+                $path = str_replace('\\', '/', $className);
+                if (file_exists(__DIR__ . '/../src/' . $path . '.php')) {
+                    include_once __DIR__ . '/../src/' . $path . '.php';
+                }
             }
-        });
+        );
     }
 
     public static function findParentPath($path)
@@ -32,6 +34,7 @@ class Bootstrap
             }
             $previousDir = $dir;
         }
+
         return $dir . '/' . $path;
     }
 }
