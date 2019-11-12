@@ -3,7 +3,7 @@
     "description": "Tools in PHP for UN/EDIFACT",
     "keywords": ["EDI", "EDIFACT", "message", "container"],
     "homepage": "https://github.com/php-edifact/edifact",
-    "license": "LGPL-3.0+",
+    "license": "LGPL-3.0-or-later",
     "authors": [
         {
             "name": "Stefano Sabatini",
