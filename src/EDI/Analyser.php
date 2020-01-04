@@ -11,17 +11,28 @@ namespace EDI;
 class Analyser
 {
 
+    /**
+     * @var array<mixed>
+     */
     public  $segments;
+
+    /**
+     * @var array<mixed>
+     */
     private $jsonedi;
 
     /**
      * @param string $message_xml_file
      *
-     * @return array
+     * @return array|false
      */
-    public function loadMessageXml(string $message_xml_file): array
+    public function loadMessageXml(string $message_xml_file)
     {
         $messageXmlString = \file_get_contents($message_xml_file);
+        if ($messageXmlString === false) {
+            return false;
+        }
+
         $messageXml = new \SimpleXMLIterator($messageXmlString);
         unset($messageXmlString);
         $message = [
@@ -92,7 +103,7 @@ class Analyser
     protected function readAttributesArray(\SimpleXMLElement $element): array
     {
         $attributes = [];
-        foreach ($element->attributes() as $attrName => $attr) {
+        foreach ($element->attributes() ?? [] as $attrName => $attr) {
             $attributes[(string)$attrName] = (string)$attr;
         }
 
@@ -104,23 +115,36 @@ class Analyser
      *
      * @param string $codesXml
      *
-     * @return array
+     * @return array|false
      */
-    public function loadCodesXml(string $codesXml): array
+    public function loadCodesXml(string $codesXml)
     {
         $codesXmlString = \file_get_contents($codesXml);
+        if ($codesXmlString === false) {
+            return false;
+        }
+
         $codesXml = new \SimpleXMLIterator($codesXmlString);
         unset($codesXmlString);
         $codes = [];
-        /* @var \SimpleXmlIterator $codeCollection */
         foreach ($codesXml as $codeCollection) {
-            $id = (string)$codeCollection->attributes()->id;
+            \assert($codeCollection instanceof \SimpleXMLIterator);
+
+            $codeCollectionAttributes = $codeCollection->attributes();
+            if ($codeCollectionAttributes === null) {
+                continue;
+            }
+
+            $id = (string)$codeCollectionAttributes->id;
             $codes[$id] = [];
-            /*  @var \SimpleXmlIterator $codeNode */
             foreach ($codeCollection as $codeNode) {
+                \assert($codeNode instanceof \SimpleXMLIterator);
+
                 $codeAttributes = $codeNode->attributes();
-                $code = (string)$codeAttributes->id;
-                $codes[$id][$code] = (string)$codeAttributes->desc;
+                if ($codeAttributes !== null) {
+                    $code = (string)$codeAttributes->id;
+                    $codes[$id][$code] = (string)$codeAttributes->desc;
+                }
             }
         }
 
@@ -133,18 +157,32 @@ class Analyser
      *
      * @param string $segment_xml_file
      *
-     * @return array
+     * @return array|false
      */
-    public function loadSegmentsXml(string $segment_xml_file): array
+    public function loadSegmentsXml(string $segment_xml_file)
     {
-        $segments_xml = \file_get_contents($segment_xml_file);
-
-        $xml = \simplexml_load_string($segments_xml);
-        unset($segments_xml);
+        // reset
         $this->segments = [];
 
-        /* @var \SimpleXMLElement $segmentNode */
+        $segments_xml = \file_get_contents($segment_xml_file);
+        if ($segments_xml === false) {
+            return false;
+        }
+
+        $xml = \simplexml_load_string($segments_xml);
+        if ($xml === false) {
+            return false;
+        }
+
+        // free memory
+        $segments_xml = null;
+
         foreach ($xml as $segmentNode) {
+
+            /** @noinspection PhpSillyAssignmentInspection - hack for phpstan */
+            /* @var \SimpleXMLElement $segmentNode */
+            $segmentNode = $segmentNode;
+
             $qualifier = (string)$segmentNode->attributes()->id;
             $segment = [];
             $segment["attributes"] = $this->readAttributesArray($segmentNode);
@@ -265,9 +303,9 @@ class Analyser
     /**
      * return the processed EDI in json format
      *
-     * @return string json
+     * @return string|false
      */
-    public function getJson(): string
+    public function getJson()
     {
         return \json_encode($this->jsonedi);
     }

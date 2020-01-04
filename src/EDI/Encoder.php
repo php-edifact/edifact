@@ -172,7 +172,7 @@ class Encoder
             $this->symbRel . $this->symbEnd,
         ];
 
-        return \str_replace($search, $replace, $str);
+        return \str_replace($search, $replace, (string)$str);
     }
 
     /**

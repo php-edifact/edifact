@@ -95,6 +95,9 @@ class Parser
      */
     private $messageDirectory;
 
+    /**
+     * @var array<string,string>
+     */
     private static $encodingToStripChars = [
         "UNOA" => "/[\x01-\x1F\x80-\xFF]/", // not as restrictive as it should be
         "UNOB" => "/[\x01-\x1F\x80-\xFF]/",
@@ -182,7 +185,7 @@ class Parser
 
             // Basic sanitization, remove non printable chars.
             $lineTrim = \trim($line);
-            $line = \preg_replace($this->stripChars, '', $lineTrim);
+            $line = (string)\preg_replace($this->stripChars, '', $lineTrim);
             $line_bytes = \strlen($line);
 
             if ($line_bytes !== \strlen($lineTrim)) {
@@ -312,7 +315,7 @@ class Parser
     /**
      * Identify message type
      *
-     * @param string[] $line UNH segment
+     * @param array<string|mixed> $line UNH segment
      *
      * @return void
      */
@@ -358,7 +361,7 @@ class Parser
             \strpos($string, 'UNB') === 0
         ) {
             $this->analyseUNB(
-                \preg_replace(
+                (string)\preg_replace(
                     "#^UNB\+#",
                     '',
                     \substr($string, 0, 8)
@@ -366,7 +369,7 @@ class Parser
             );
         }
 
-        $string = \preg_replace(
+        $string = (string)\preg_replace(
             "/(([^" . $this->symbRel . "]" . $this->symbRel . "{2})+|[^" . $this->symbRel . "])" . $this->symbEnd . "/",
             "$1" . $this->stringSafe,
             $string
@@ -381,7 +384,7 @@ class Parser
             $file = [];
         }
 
-        $end = \stripslashes($this->symbEnd);
+        $end = \stripslashes($this->symbEnd . '');
         foreach ($file as $fc => &$line) {
             if (\trim($line) == '') {
                 /* @noinspection OffsetOperationsInspection */
@@ -404,7 +407,7 @@ class Parser
     {
         // remove ending "symbEnd"
         $str = \trim(
-            \preg_replace(
+            (string)\preg_replace(
                 self::$DELIMITER . $this->symbEnd . '$' . self::$DELIMITER,
                 '',
                 $str
@@ -413,8 +416,8 @@ class Parser
 
         // replace duplicate "symbRel"
         $str = \str_replace(
-            $this->symbUnescapedRel . $this->symbUnescapedRel,
-            $this->stringSafe,
+            $this->symbUnescapedRel . $this->symbUnescapedRel . '',
+            $this->stringSafe ?? '',
             $str
         );
 
@@ -441,15 +444,15 @@ class Parser
             //
             // Question mark is represented by ??
 
-            if (\strpos($value, $this->symbEnd) !== false) {
+            if ($this->symbEnd && \strpos($value, $this->symbEnd) !== false) {
                 if (\preg_match(self::$DELIMITER . "(?<!" . $this->symbRel . ")" . $this->symbEnd . self::$DELIMITER, $value)) {
                     $this->errors[] = "There's a " . \stripslashes($this->symbEnd) . " not escaped in the data; string " . $str;
                 }
             }
 
-            if (\strpos($value, $this->symbUnescapedRel) !== false) {
+            if ($this->symbUnescapedRel && \strpos($value, $this->symbUnescapedRel) !== false) {
                 if (\preg_match(self::$DELIMITER . "(?<!" . $this->symbRel . ")" . $this->symbRel . "(?!" . $this->symbRel . ")(?!" . $this->sepData . ")(?!" . $this->sepComp . ")(?!" . $this->symbEnd . ")" . self::$DELIMITER, $value)) {
-                    $this->errors[] = "There's a character not escaped with " . \stripslashes($this->symbRel) . " in the data; string " . $value;
+                    $this->errors[] = "There's a character not escaped with " . \stripslashes($this->symbRel ?? '') . " in the data; string " . $value;
                 }
             }
 
@@ -476,7 +479,7 @@ class Parser
 
         $replace = function (&$string) {
 
-            if (\strpos($string, $this->symbUnescapedRel) !== false) {
+            if ($this->symbUnescapedRel && \strpos($string, $this->symbUnescapedRel) !== false) {
                 $string = \preg_replace(
                     self::$DELIMITER . $this->symbRel . "(?=" . $this->symbRel . ")|" . $this->symbRel . "(?=" . $this->sepData . ")|" . $this->symbRel . "(?=" . $this->sepComp . ")|" . $this->symbRel . "(?=" . $this->symbEnd . ")" . self::$DELIMITER,
                     '',
@@ -485,14 +488,14 @@ class Parser
             }
 
             return \str_replace(
-                $this->stringSafe,
-                $this->symbUnescapedRel,
+                $this->stringSafe ?? '',
+                $this->symbUnescapedRel ?? '',
                 $string
             );
         };
 
         // check for "sepUnescapedComp" in the string
-        if (\strpos($str, $this->sepUnescapedComp) === false) {
+        if ($this->sepUnescapedComp && \strpos($str, $this->sepUnescapedComp) === false) {
             return $replace($str);
         }
 
@@ -581,6 +584,8 @@ class Parser
      * Change the default regex used for stripping invalid characters.
      *
      * @param string $regex
+     *
+     * @return void
      */
     public function setStripRegex($regex)
     {

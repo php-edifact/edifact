@@ -23,7 +23,7 @@ class Interpreter
     private $xmlSeg;
 
     /**
-     * @var string
+     * @var array
      */
     private $xmlSvc;
 
@@ -48,7 +48,7 @@ class Interpreter
     private $serviceSeg;
 
     /**
-     * @var \Closure
+     * @var callable
      */
     private $comparisonFunction;
 
@@ -90,7 +90,18 @@ class Interpreter
      */
     public function __construct(string $xmlMsg, array $xmlSeg, array $xmlSvc, array $messageTextConf = null)
     {
-        $this->xmlMsg = \simplexml_load_file($xmlMsg);
+        // simplexml_load_file: This can be affected by a PHP bug #62577 (https://bugs.php.net/bug.php?id=62577)
+        $xmlData = \file_get_contents($xmlMsg);
+        if ($xmlData === false) {
+            throw new \InvalidArgumentException('file_get_contents for "' . $xmlMsg . '" faild');
+        }
+
+        $xmlMsgTmp = \simplexml_load_string($xmlData);
+        if ($xmlMsgTmp === false) {
+            throw new \InvalidArgumentException('simplexml_load_string for "' . $xmlMsg . '" faild');
+        }
+
+        $this->xmlMsg = $xmlMsgTmp;
         $this->xmlSeg = $xmlSeg;
         $this->xmlSvc = $xmlSvc;
         if ($messageTextConf !== null) {
@@ -571,7 +582,7 @@ class Interpreter
     /**
      * Get result as Arrayy Object.
      *
-     * @return Arrayy
+     * @return Arrayy<mixed,mixed>
      */
     public function getArrayy()
     {
@@ -627,7 +638,7 @@ class Interpreter
     /**
      * Get service segments as Arrayy Object.
      *
-     * @return Arrayy
+     * @return Arrayy<mixed,mixed>
      */
     public function getArrayyServiceSegments()
     {
