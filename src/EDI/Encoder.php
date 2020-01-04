@@ -63,7 +63,7 @@ class Encoder
     /**
      * Encoder constructor.
      *
-     * @param null|array $array
+     * @param array|null $array
      * @param bool       $wrap
      */
     public function __construct($array = null, $wrap = true)
@@ -93,7 +93,7 @@ class Encoder
         $count = \count($array);
         $k = 0;
         foreach ($array as $row) {
-            $k++;
+            ++$k;
             if ($filterKeys) {
                 unset($row['segmentIdx']);
             }
@@ -153,35 +153,12 @@ class Encoder
     }
 
     /**
-     * @param string|int $str
-     *
-     * @return string
-     */
-    private function escapeValue(&$str): string
-    {
-        $search = [
-            $this->symbRel,
-            $this->sepComp,
-            $this->sepData,
-            $this->symbEnd,
-        ];
-        $replace = [
-            $this->symbRel . $this->symbRel,
-            $this->symbRel . $this->sepComp,
-            $this->symbRel . $this->sepData,
-            $this->symbRel . $this->symbEnd,
-        ];
-
-        return \str_replace($search, $replace, (string)$str);
-    }
-
-    /**
      * @return string
      */
     public function get(): string
     {
         if ($this->UNAActive) {
-            $una = "UNA" . $this->sepComp .
+            $una = 'UNA' . $this->sepComp .
                    $this->sepData .
                    $this->sepDec .
                    $this->symbRel .
@@ -205,8 +182,10 @@ class Encoder
      */
     public function setUNA(string $chars, bool $user_call = true): bool
     {
-        if (\is_string($chars)
-            && \strlen($chars) == 6
+        if (
+            \is_string($chars)
+            &&
+            \strlen($chars) == 6
         ) {
             $this->sepComp = $chars[0];
             $this->sepData = $chars[1];
@@ -243,5 +222,28 @@ class Encoder
     public function disableUNA()
     {
         $this->UNAActive = false;
+    }
+
+    /**
+     * @param int|string $str
+     *
+     * @return string
+     */
+    private function escapeValue(&$str): string
+    {
+        $search = [
+            $this->symbRel,
+            $this->sepComp,
+            $this->sepData,
+            $this->symbEnd,
+        ];
+        $replace = [
+            $this->symbRel . $this->symbRel,
+            $this->symbRel . $this->sepComp,
+            $this->symbRel . $this->sepData,
+            $this->symbRel . $this->symbEnd,
+        ];
+
+        return \str_replace($search, $replace, (string) $str);
     }
 }
