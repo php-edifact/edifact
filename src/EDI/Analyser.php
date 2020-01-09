@@ -33,14 +33,11 @@ class Analyser
         }
 
         $messageXml = new \SimpleXMLIterator($messageXmlString);
-        unset($messageXmlString);
-        $message = [
+
+        return [
             'defaults' => $this->readMessageDefaults($messageXml),
             'segments' => $this->readXmlNodes($messageXml),
         ];
-        unset($messageXml);
-
-        return $message;
     }
 
     /**
@@ -58,7 +55,6 @@ class Analyser
         }
 
         $codesXml = new \SimpleXMLIterator($codesXmlString);
-        unset($codesXmlString);
         $codes = [];
         foreach ($codesXml as $codeCollection) {
             \assert($codeCollection instanceof \SimpleXMLIterator);
@@ -111,12 +107,14 @@ class Analyser
         $segments_xml = null;
 
         foreach ($xml as $segmentNode) {
+            \assert($segmentNode instanceof \SimpleXMLElement);
 
-            /** @noinspection PhpSillyAssignmentInspection - hack for phpstan */
-            /* @var \SimpleXMLElement $segmentNode */
-            $segmentNode = $segmentNode;
+            $segmentNodeAttributes = $segmentNode->attributes();
+            if ($segmentNodeAttributes === null) {
+                continue;
+            }
 
-            $qualifier = (string) $segmentNode->attributes()->id;
+            $qualifier = (string) $segmentNodeAttributes->id;
             $segment = [];
             $segment['attributes'] = $this->readAttributesArray($segmentNode);
             $details = $this->readXmlNodes($segmentNode);
@@ -193,7 +191,7 @@ class Analyser
                                     $r[] = '        length: ' . $d_sub_desc_attr['length'];
                                 }
 
-                                //check for skipped data
+                                // check for skipped data
                                 unset(
                                     $d_sub_desc_attr['id'],
                                     $d_sub_desc_attr['name'],

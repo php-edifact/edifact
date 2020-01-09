@@ -342,11 +342,14 @@ class Parser
      *
      * @param string $url
      *
-     * @return array
+     * @return array|false
      */
-    public function load($url): array
+    public function load($url)
     {
         $file = \file_get_contents($url);
+        if ($file === false) {
+            return false;
+        }
 
         return $this->loadString($file);
     }
@@ -533,13 +536,21 @@ class Parser
             //
             // Question mark is represented by ??
 
-            if ($this->symbEnd && \strpos($value, $this->symbEnd) !== false) {
+            if (
+                $this->symbEnd
+                &&
+                \strpos($value, $this->symbEnd) !== false
+            ) {
                 if (\preg_match(self::$DELIMITER . '(?<!' . $this->symbRel . ')' . $this->symbEnd . self::$DELIMITER, $value)) {
                     $this->errors[] = "There's a " . \stripslashes($this->symbEnd) . ' not escaped in the data; string ' . $str;
                 }
             }
 
-            if ($this->symbUnescapedRel && \strpos($value, $this->symbUnescapedRel) !== false) {
+            if (
+                $this->symbUnescapedRel
+                &&
+                \strpos($value, $this->symbUnescapedRel) !== false
+            ) {
                 if (\preg_match(self::$DELIMITER . '(?<!' . $this->symbRel . ')' . $this->symbRel . '(?!' . $this->symbRel . ')(?!' . $this->sepData . ')(?!' . $this->sepComp . ')(?!' . $this->symbEnd . ')' . self::$DELIMITER, $value)) {
                     $this->errors[] = "There's a character not escaped with " . \stripslashes($this->symbRel ?? '') . ' in the data; string ' . $value;
                 }
@@ -548,7 +559,6 @@ class Parser
             // split on "sepComp"
             $value = $this->splitData($value);
         }
-        unset($value);
 
         return $matches;
     }

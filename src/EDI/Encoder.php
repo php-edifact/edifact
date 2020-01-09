@@ -119,14 +119,18 @@ class Encoder
         $str = '';
         $t = \count($row);
 
+        /** @noinspection AlterInForeachInspection */
         foreach ($row as $i => &$iValue) {
             if (\is_array($iValue)) {
-                if (\count($iValue) === 1
-                    && \is_array(\reset($iValue))
+                if (
+                    \count($iValue) === 1
+                    &&
+                    \is_array(\reset($iValue))
                 ) {
                     $iValue = \array_pop($iValue);
                 }
 
+                /** @noinspection NotOptimalIfConditionsInspection */
                 if (\is_array($iValue)) {
                     foreach ($iValue as &$temp) {
                         $temp = $this->escapeValue($temp);
@@ -145,7 +149,6 @@ class Encoder
             }
             $str .= $this->sepData;
         }
-        unset($iValue);
 
         $str .= $this->symbEnd;
 
@@ -182,11 +185,7 @@ class Encoder
      */
     public function setUNA(string $chars, bool $user_call = true): bool
     {
-        if (
-            \is_string($chars)
-            &&
-            \strlen($chars) == 6
-        ) {
+        if (\strlen($chars) == 6) {
             $this->sepComp = $chars[0];
             $this->sepData = $chars[1];
             $this->sepDec = $chars[2];

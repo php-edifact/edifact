@@ -216,6 +216,7 @@ class Reader
             $filter_elements = false;
         }
 
+        // init
         $segment = false;
         $segment_count = 0;
 
