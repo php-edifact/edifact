@@ -1,7 +1,12 @@
 {
     "name": "sabas/edifact",
     "description": "Tools in PHP for UN/EDIFACT",
-    "keywords": ["EDI", "EDIFACT", "message", "container"],
+    "keywords": [
+        "EDI",
+        "EDIFACT",
+        "message",
+        "container"
+    ],
     "homepage": "https://github.com/php-edifact/edifact",
     "license": "LGPL-3.0-or-later",
     "authors": [
@@ -20,28 +25,28 @@
             "role": "Developer"
         }
     ],
-    "support": {
-        "issues": "https://github.com/php-edifact/edifact/issues"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url":  "https://github.com/php-edifact/edifact"
-        }
-    ],
     "require": {
         "php": ">=7.0.0",
-        "ext-simplexml": "*",
         "ext-json": "*",
-        "voku/arrayy": "5.*"
+        "ext-simplexml": "*",
+        "voku/arrayy": "~7.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "~6.0",
-        "php-edifact/edifact-mapping": "dev-master"
+        "php-edifact/edifact-mapping": "dev-master",
+        "phpunit/phpunit": "~6.0"
     },
     "autoload": {
         "psr-4": {
             "EDI\\": "src/EDI/"
         }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/php-edifact/edifact"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/php-edifact/edifact/issues"
     }
 }
