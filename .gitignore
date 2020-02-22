@@ -1,3 +1,4 @@
 codeCoverage/*
 /vendor
+/build
 composer.lock

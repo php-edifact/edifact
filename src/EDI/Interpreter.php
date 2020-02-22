@@ -40,6 +40,11 @@ class Interpreter
     ];
 
     /**
+     *
+     */
+    private $patchFiles = true;
+
+    /**
      * @var \SimpleXMLElement
      */
     private $xmlMsg;
@@ -111,6 +116,11 @@ class Interpreter
         $this->comparisonFunction = static function ($segment, $elm) {
             return $segment[0] == $elm['id'];
         };
+    }
+
+    public function togglePatching(bool $flag)
+    {
+        $this->patchFiles = $flag;
     }
 
     /**
@@ -305,7 +315,12 @@ class Interpreter
                         ];
                     }
                     $service['UNZ'] = $segment;
-
+                    if ($this->patchFiles && $hasMessageDelimiters > 0) {
+                        $segment = ['UNT', '0', '1'];
+                        $hasMessageDelimiters--;
+                        $tmpmsg[] = $segment;
+                        $messages[] = $tmpmsg;
+                    }
                     break;
                 case 'UNH':
                     $hasMessageDelimiters = 0;
@@ -416,7 +431,7 @@ class Interpreter
                 ) {
                     $elmType = $elm['id']->__toString();
                     $fixed = false;
-                    if (isset($this->groupTemplates[$elmType])) {
+                    if ($this->patchFiles && isset($this->groupTemplates[$elmType])) {
                         \array_splice($message, $segmentIdx, 0, $this->groupTemplates[$elmType]);
                         $fixed = true;
                     }
@@ -482,7 +497,7 @@ class Interpreter
                         $elmType = (string) $elm['id'];
                     }
 
-                    if (isset($this->segmentTemplates[$elmType])) {
+                    if ($this->patchFiles && isset($this->segmentTemplates[$elmType])) {
                         $jsonMessage = $this->processSegment($this->segmentTemplates[$elmType], $this->xmlSeg, $segmentIdx, $errors);
                         $fixed = true;
                         $this->doAddArray($array, $jsonMessage);
