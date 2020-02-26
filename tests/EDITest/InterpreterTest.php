@@ -234,4 +234,27 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         static::assertCount(0, $errors);
         static::assertArrayHasKey('Extension2', $svcSegs['interchangeTrailer']);
     }
+
+    public function testIdInsteadOfName()
+    {
+        $edi = \file_get_contents(__DIR__ . '/../files/D96ADESADV.edi');
+        $parser = new Parser($edi);
+        $mapping = new \EDI\Mapping\MappingProvider($parser->getMessageDirectory());
+        $analyser = new Analyser();
+        $segs = $analyser->loadSegmentsXml($mapping->getSegments());
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+
+        $interpreter = new Interpreter($mapping->getMessage($parser->getMessageFormat()), $segs, $svc);
+        $interpreter->toggleUseIdInsteadOfNameForOutput(true);
+
+        $p = $interpreter->prepare($parser->get());
+        static::assertSame([], $parser->errors());
+
+        static::assertArrayHasKey('BGM', $p[0]);
+        static::assertArrayHasKey('C002', $p[0]['BGM']);
+        static::assertArrayHasKey('1001', $p[0]['BGM']['C002']);
+        static::assertSame('351', $p[0]['BGM']['C002']['1001']);
+        static::assertArrayHasKey('SG10', $p[0]);
+        static::assertArrayHasKey('CPS', $p[0]['SG10'][0]);
+    }
 }
