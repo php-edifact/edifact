@@ -96,9 +96,8 @@ class Interpreter
      * @param array      $xmlSeg                        Segments processed by EDI\Analyser::loadSegmentsXml
      * @param array      $xmlSvc                        Service segments processed by EDI\Analyser::loadSegmentsXml
      * @param array|null $messageTextConf               Personalisation of error messages
-     * @param boolean    $useIdInsteadOfNameForOutput   Set to true if ID from UNCEFACT should be used instead of name
      */
-    public function __construct(string $xmlMsg, array $xmlSeg, array $xmlSvc, array $messageTextConf = null, bool $useIdInsteadOfNameForOutput = false)
+    public function __construct(string $xmlMsg, array $xmlSeg, array $xmlSvc, array $messageTextConf = null)
     {
         // simplexml_load_file: This can be affected by a PHP bug #62577 (https://bugs.php.net/bug.php?id=62577)
         $xmlData = \file_get_contents($xmlMsg);
@@ -123,12 +122,7 @@ class Interpreter
             return $segment[0] == $elm['id'];
         };
 
-        if ($useIdInsteadOfNameForOutput) {
-            $this->outputKey = 'id';
-        }
-        else {
-            $this->outputKey = 'name';
-        }
+        $this->toggleUseIdInsteadOfNameForOutput(false);
     }
 
     public function togglePatching(bool $flag)
@@ -182,6 +176,23 @@ class Interpreter
     public function setComparisonFunction(callable $func)
     {
         $this->comparisonFunction = $func;
+    }
+
+    /**
+     * Set to true if UNCEFACT XML ID should be used instead of names
+     *
+     * @param bool $toggle
+     *
+     * @return void
+     */
+    public function toggleUseIdInsteadOfNameForOutput(bool $toggle)
+    {
+        if ($toggle) {
+            $this->outputKey = 'id';
+        }
+        else {
+            $this->outputKey = 'name';
+        }
     }
 
     /**
