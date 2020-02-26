@@ -40,7 +40,7 @@ class Interpreter
     ];
 
     /**
-     *
+     * @var bool
      */
     private $patchFiles = true;
 
@@ -123,6 +123,11 @@ class Interpreter
         };
     }
 
+    /**
+     * @param bool $flag
+     *
+     * @return void
+     */
     public function togglePatching(bool $flag)
     {
         $this->patchFiles = $flag;
