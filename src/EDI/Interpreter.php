@@ -87,7 +87,7 @@ class Interpreter
     /**
      * @var string
      */
-    private $outputKey;
+    private $outputKey = 'name';
 
     /**
      * Split multiple messages and process
@@ -121,8 +121,6 @@ class Interpreter
         $this->comparisonFunction = static function ($segment, $elm) {
             return $segment[0] == $elm['id'];
         };
-
-        $this->toggleUseIdInsteadOfNameForOutput(false);
     }
 
     public function togglePatching(bool $flag)
