@@ -85,14 +85,20 @@ class Interpreter
     private $comparisonFunction;
 
     /**
+     * @var string
+     */
+    private $outputKey;
+
+    /**
      * Split multiple messages and process
      *
-     * @param string     $xmlMsg          Path to XML Message representation
-     * @param array      $xmlSeg          Segments processed by EDI\Analyser::loadSegmentsXml
-     * @param array      $xmlSvc          Service segments processed by EDI\Analyser::loadSegmentsXml
-     * @param array|null $messageTextConf Personalisation of error messages
+     * @param string     $xmlMsg                        Path to XML Message representation
+     * @param array      $xmlSeg                        Segments processed by EDI\Analyser::loadSegmentsXml
+     * @param array      $xmlSvc                        Service segments processed by EDI\Analyser::loadSegmentsXml
+     * @param array|null $messageTextConf               Personalisation of error messages
+     * @param boolean    $useIdInsteadOfNameForOutput   Set to true if ID from UNCEFACT should be used instead of name
      */
-    public function __construct(string $xmlMsg, array $xmlSeg, array $xmlSvc, array $messageTextConf = null)
+    public function __construct(string $xmlMsg, array $xmlSeg, array $xmlSvc, array $messageTextConf = null, bool $useIdInsteadOfNameForOutput = false)
     {
         // simplexml_load_file: This can be affected by a PHP bug #62577 (https://bugs.php.net/bug.php?id=62577)
         $xmlData = \file_get_contents($xmlMsg);
@@ -116,6 +122,13 @@ class Interpreter
         $this->comparisonFunction = static function ($segment, $elm) {
             return $segment[0] == $elm['id'];
         };
+
+        if ($useIdInsteadOfNameForOutput) {
+            $this->outputKey = 'id';
+        }
+        else {
+            $this->outputKey = 'name';
+        }
     }
 
     public function togglePatching(bool $flag)
@@ -601,32 +614,32 @@ class Interpreter
                             }
 
                             $d_sub_desc_attr = $sub_details_desc[$d_n]['attributes'];
-                            if (!isset($jsoncomposite[$d_sub_desc_attr['name']])) { //New
-                                $jsoncomposite[$d_sub_desc_attr['name']] = $d_detail;
-                            } elseif (\is_string($jsoncomposite[$d_sub_desc_attr['name']])) { // More data than one string
-                                $jsoncomposite[$d_sub_desc_attr['name']] = [
-                                    $jsoncomposite[$d_sub_desc_attr['name']],
+                            if (!isset($jsoncomposite[$d_sub_desc_attr[$this->outputKey]])) { //New
+                                $jsoncomposite[$d_sub_desc_attr[$this->outputKey]] = $d_detail;
+                            } elseif (\is_string($jsoncomposite[$d_sub_desc_attr[$this->outputKey]])) { // More data than one string
+                                $jsoncomposite[$d_sub_desc_attr[$this->outputKey]] = [
+                                    $jsoncomposite[$d_sub_desc_attr[$this->outputKey]],
                                     $d_detail,
                                 ];
                             } else { // More and more
-                                $jsoncomposite[$d_sub_desc_attr['name']][] = $d_detail;
+                                $jsoncomposite[$d_sub_desc_attr[$this->outputKey]][] = $d_detail;
                             }
                         }
                     } else {
                         $d_sub_desc_attr = $sub_details_desc[0]['attributes'];
-                        $jsoncomposite[$d_sub_desc_attr['name']] = $detail;
+                        $jsoncomposite[$d_sub_desc_attr[$this->outputKey]] = $detail;
                     }
                 } else {
                     $jsoncomposite = $detail;
                 }
 
-                if (\array_key_exists($d_desc_attr['name'], $jsonelements)) {
-                    $jsonelements[$d_desc_attr['name'] . $n] = $jsoncomposite;
+                if (\array_key_exists($d_desc_attr[$this->outputKey], $jsonelements)) {
+                    $jsonelements[$d_desc_attr[$this->outputKey] . $n] = $jsoncomposite;
                 } else {
-                    $jsonelements[$d_desc_attr['name']] = $jsoncomposite;
+                    $jsonelements[$d_desc_attr[$this->outputKey]] = $jsoncomposite;
                 }
             }
-            $jsonsegment['key'] = $attributes['name'];
+            $jsonsegment['key'] = $attributes[$this->outputKey];
             $jsonsegment['value'] = $jsonelements;
         } elseif ($xmlMap !== $this->xmlSvc) {
             $jsonsegment = $this->processSegment($segment, $this->xmlSvc, $segmentIdx, $errors);
