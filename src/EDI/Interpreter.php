@@ -90,6 +90,11 @@ class Interpreter
     private $outputKey = 'name';
 
     /**
+     * @var string
+     */
+    private $currentGroup = '';
+
+    /**
      * Split multiple messages and process
      *
      * @param string     $xmlMsg                        Path to XML Message representation
@@ -473,6 +478,8 @@ class Interpreter
                 }
             }
 
+            $this->currentGroup = $elm['id']->__toString();
+
             foreach ($elm->children() as $elm2) {
                 if ($elm2->getName() == 'group') {
                     $this->processXmlGroup($elm2, $message, $segmentIdx, $grouptemp, $errors);
@@ -587,7 +594,7 @@ class Interpreter
             $attributes = $xmlMap[$id]['attributes'];
             $details_desc = $xmlMap[$id]['details'];
 
-            $jsonelements = ['segmentIdx' => $segmentIdx, 'segmentCode' => $id];
+            $jsonelements = ['segmentIdx' => $segmentIdx, 'segmentCode' => $id, 'segmentGroup' => $this->currentGroup];
             foreach ($segment as $idx => $detail) {
                 $n = $idx - 1;
                 if ($idx == 0) {
