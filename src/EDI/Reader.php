@@ -390,6 +390,16 @@ class Reader
         return $datetime;
     }
 
+    public function readUNBInterchangeSender()
+    {
+        return $this->readEdiDataValue('UNB', 2);
+    }
+
+    public function readUNBInterchangeRecipient()
+    {
+        return $this->readEdiDataValue('UNB', 3);
+    }
+
     /**
      * read transport identification number
      *
@@ -425,6 +435,16 @@ class Reader
     public function readUNHmessageNumber()
     {
         return $this->readEdiDataValue('UNH', 1);
+    }
+
+    /**
+     * read message number
+     *
+     * @return string|null
+     */
+    public function readUNHmessageRealise()
+    {
+        return $this->readEdiDataValue('UNH', 3);
     }
 
     /**
