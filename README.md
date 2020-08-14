@@ -78,30 +78,21 @@ Requires the EDI\Mapping package.
 
 **INPUT**
 ```php
-$mapping = new EDI\Mapping\MappingProvider('D95B');
-$analyser = new EDI\Analyser();
-$analyser->loadMessageXml($mapping->getMessage('CODECO'));
-$analyser->loadSegmentsXml($mapping->getSegments());
-```
-* `$url` is the path to orginal EDI message file
-* `$parsed` is an EDI message array created by `EDI\Parser()`
+        $parser = new Parser($file);
+        $parsed = $parser->get();
+        $segments = $parser->getRawSegments();
+        $analyser = new Analyser();
+        $mapping = new MappingProvider('D95B');
+        $analyser->loadSegmentsXml($mapping->getSegments());
+        $analyser->loadMessageXml($mapping->getMessage('coparn'));
+        $analyser->loadCodesXml($mapping->getCodes());
+        $analyser->directory = 'D95B';
+        $result = $analyser->process($parsed, $segments);                   
 
-**TEXT OUTPUT**
-```php
-$analyser->process($parsed); // returns text
 ```
-Or
-```php
-$analyser->process($parsed, $rawSegments);
-```
-* `$rawSegments` (optional) contains the segments in raw format from `EDI\Parser::getRawSegments()` to be printed before each segment in the analysed result
+* `$file` is the path to orginal EDI message file
 
-**JSON OUTPUT**
-Get a json representation of the array, with the element names as key.
-```php
-$analyser->process($parsed);
-$json = $analyser->getJson();
-```
+
 
 EDI\Reader
 ------------------

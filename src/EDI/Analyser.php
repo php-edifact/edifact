@@ -16,9 +16,18 @@ class Analyser
     public $segments;
 
     /**
+     * @var string
+     */
+    public $directory;
+
+    /**
      * @var array<mixed>
      */
     private $jsonedi;
+    /**
+     * @var array
+     */
+    private $codes;
 
     /**
      * @param string $message_xml_file
@@ -55,7 +64,7 @@ class Analyser
         }
 
         $codesXml = new \SimpleXMLIterator($codesXmlString);
-        $codes = [];
+        $this->codes = [];
         foreach ($codesXml as $codeCollection) {
             \assert($codeCollection instanceof \SimpleXMLIterator);
 
@@ -65,19 +74,19 @@ class Analyser
             }
 
             $id = (string) $codeCollectionAttributes->id;
-            $codes[$id] = [];
+            $this->codes[$id] = [];
             foreach ($codeCollection as $codeNode) {
                 \assert($codeNode instanceof \SimpleXMLIterator);
 
                 $codeAttributes = $codeNode->attributes();
                 if ($codeAttributes !== null) {
                     $code = (string) $codeAttributes->id;
-                    $codes[$id][$code] = (string) $codeAttributes->desc;
+                    $this->codes[$id][$code] = (string) $codeAttributes->desc;
                 }
             }
         }
 
-        return $codes;
+        return $this->codes;
     }
 
     /**
@@ -130,8 +139,8 @@ class Analyser
     /**
      * create readable EDI MESSAGE with comments
      *
-     * @param array $data        by EDI\Parser:parse() created array from plain EDI message
-     * @param array $rawSegments (optional) List of raw segments from EDI\Parser::getRawSegments
+     * @param array      $data        by EDI\Parser:parse() created array from plain EDI message
+     * @param array|null $rawSegments (optional) List of raw segments from EDI\Parser::getRawSegments
      *
      * @return string file
      */
@@ -151,7 +160,11 @@ class Analyser
                 $attributes = $this->segments[$id]['attributes'];
                 $details_desc = $this->segments[$id]['details'];
 
-                $r[] = $id . ' - ' . $attributes['name'];
+                $idHeader = $id . ' - ' . $attributes['name'];
+                if($this->directory && $id !== 'UNB') {
+                    $idHeader .= ' http://www.unece.org/trade/untdid/' . strtolower($this->directory) . '/trsd/trsd' . strtolower($id) . '.htm';
+                }
+                $r[] = $idHeader;
                 $r[] = '  (' . \wordwrap($attributes['desc'], 75, \PHP_EOL . '  ') . ')';
 
                 $jsonelements = ['segmentCode' => $id];
@@ -175,8 +188,14 @@ class Analyser
 
                             foreach ($detail as $d_n => $d_detail) {
                                 $d_sub_desc_attr = $sub_details_desc[$d_n]['attributes'];
-                                $r[] = '    [' . $d_n . '] ' . $d_detail;
-                                $r[] = '        id: ' . $d_sub_desc_attr['id'] . ' - ' . $d_sub_desc_attr['name'];
+                                $codeElementId = $d_sub_desc_attr['id'];
+                                $line = '    [' . $d_n . '] ' . $d_detail;
+                                if(isset($this->codes[(int)$codeElementId][$d_detail])){
+                                    $line .= ' - ' . $this->codes[$codeElementId][$d_detail];
+                                }
+                                $r[] = $line;
+
+                                $r[] = '        id: ' . $codeElementId . ' - ' . $d_sub_desc_attr['name'];
                                 $r[] = '        ' . \wordwrap($d_sub_desc_attr['desc'], 69, \PHP_EOL . '        ');
                                 $r[] = '        type: ' . $d_sub_desc_attr['type'];
 
