@@ -18,7 +18,7 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
-        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments('3'));
 
         $interpreter = new Interpreter($mapping->getMessage('COARRI'), $segs, $svc);
         /** @noinspection UnusedFunctionResultInspection */
@@ -36,7 +36,7 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
-        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments('3'));
 
         $interpreter = new Interpreter($mapping->getMessage('COARRI'), $segs, $svc);
         /** @noinspection UnusedFunctionResultInspection */
@@ -55,7 +55,7 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
-        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments('3'));
 
         $interpreter = new Interpreter($mapping->getMessage('BAPLIE'), $segs, $svc);
         /** @noinspection UnusedFunctionResultInspection */
@@ -75,16 +75,15 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         $mapping = new \EDI\Mapping\MappingProvider('D96A');
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
-        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments('3'));
 
         $interpreter = new Interpreter($mapping->getMessage('DESADV'), $segs, $svc);
         /** @noinspection UnusedFunctionResultInspection */
         $interpreter->prepare($parser->get());
 
-        $json = $interpreter->getJson(true);
         static::assertJsonStringEqualsJsonFile(
             __DIR__ . '/../files/D96ADESADV.json',
-            $json,
+            $interpreter->getJson(true),
             'JSON does not match expected output'
         );
 
@@ -104,7 +103,7 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
-        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments('3'));
 
         $interpreter = new Interpreter($mapping->getMessage('BAPLIE'), $segs, $svc);
         /** @noinspection UnusedFunctionResultInspection */
@@ -125,7 +124,7 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
-        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments('3'));
 
         $interpreter = new Interpreter($mapping->getMessage('ORDERS'), $segs, $svc);
         /** @noinspection UnusedFunctionResultInspection */
@@ -170,7 +169,7 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
-        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments('3'));
 
         $interpreter = new Interpreter($mapping->getMessage('ORDERS'), $segs, $svc);
         /** @noinspection UnusedFunctionResultInspection */
@@ -205,7 +204,7 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
-        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments('3'));
 
         $interpreter = new Interpreter($mapping->getMessage('BAPLIE'), $segs, $svc);
         /** @noinspection UnusedFunctionResultInspection */
@@ -226,10 +225,10 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
-        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments('3'));
 
         $interpreter = new Interpreter($mapping->getMessage('BAPLIE'), $segs, $svc);
-        $p = $interpreter->prepare($parser->get());
+        $interpreter->prepare($parser->get());
         $errors = $interpreter->getErrors();
         $svcSegs = $interpreter->getServiceSegments();
         static::assertCount(0, $errors);
@@ -243,7 +242,7 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         $mapping = new \EDI\Mapping\MappingProvider($parser->getMessageDirectory());
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
-        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments(3));
+        $svc = $analyser->loadSegmentsXml($mapping->getServiceSegments('3'));
 
         $interpreter = new Interpreter($mapping->getMessage($parser->getMessageFormat()), $segs, $svc);
         $interpreter->toggleUseIdInsteadOfNameForOutput(true);

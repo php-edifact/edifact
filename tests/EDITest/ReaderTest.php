@@ -27,13 +27,13 @@ final class ReaderTest extends \PHPUnit\Framework\TestCase
 
     public function testReadUNBDateTimeOfPpreperation()
     {
-        $Dt = (new Reader(__DIR__ . '/../files/example.edi'))->readUNBDateTimeOfPpreperation();
+        $Dt = (new Reader(__DIR__ . '/../files/example.edi'))->readUNBDateTimeOfPreparation();
         static::assertSame('2094-01-01 09:50:00', $Dt);
     }
 
     public function testReadUNBDateTimeOfPreperation()
     {
-        $Dt = (new Reader(__DIR__ . '/../files/example.edi'))->readUNBDateTimeOfPreperation();
+        $Dt = (new Reader(__DIR__ . '/../files/example.edi'))->readUNBDateTimeOfPreparation();
         static::assertSame('2094-01-01 09:50:00', $Dt);
     }
 

@@ -96,8 +96,8 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
 
     public function testFileOk()
     {
+        $errors = [];
         $string = \file_get_contents(__DIR__ . '/../files/example_order_ok.edi');
-
         for ($i = 0; $i < 100; ++$i) { // keep for simple performance tests
             $errors = (new Parser($string))->errors();
         }
@@ -149,7 +149,7 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
     {
         $string = ["EQD+CX'DU12?+3456+2?:0'", "EQD+CXDU12?+3456+2?:0'"];
         $p = new Parser();
-        $result = $p->parse($string);
+        $p->parse($string);
         $experror = "There's a ' not escaped in the data; string EQD+CX'DU12?+3456+2?:0";
         $error = $p->errors();
         static::assertContains($experror, $error);
