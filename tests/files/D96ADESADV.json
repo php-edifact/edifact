@@ -1,214 +1,235 @@
 [
-   {
-      "messageHeader":{
-         "segmentIdx":0,
-         "segmentCode":"UNH",
-         "messageReferenceNumber":"142",
-         "messageIdentifier":{
-            "messageType":"DESADV",
-            "messageVersionNumber":"0",
-            "messageReleaseNumber":"96A",
-            "controllingAgency":"UN"
-         }
-      },
-      "beginningOfMessage":{
-         "segmentIdx":1,
-         "segmentCode":"BGM",
-         "documentmessageName":{
-            "documentmessageNameCoded":"351"
-         },
-         "documentmessageNumber":"Y02197250",
-         "messageFunctionCoded":"700101"
-      },
-      "datetimeperiod":{
-         "segmentIdx":2,
-         "segmentCode":"DTM",
-         "datetimeperiod":{
-            "datetimeperiodQualifier":"11",
-            "datetimeperiod":"20160726",
-            "datetimeperiodFormatQualifier":"102"
-         }
-      },
-      "SG1":[
-         {
-            "reference":{
-               "segmentIdx":3,
-               "segmentCode":"RFF",
-               "reference":{
-                  "referenceQualifier":"ON",
-                  "referenceNumber":"6877871"
-               }
+    {
+        "messageHeader": {
+            "segmentIdx": 0,
+            "segmentCode": "UNH",
+            "segmentGroup": "",
+            "messageReferenceNumber": "142",
+            "messageIdentifier": {
+                "messageType": "DESADV",
+                "messageVersionNumber": "0",
+                "messageReleaseNumber": "96A",
+                "controllingAgency": "UN"
             }
-         },
-         {
-            "reference":{
-               "segmentIdx":4,
-               "segmentCode":"RFF",
-               "reference":{
-                  "referenceQualifier":"PK",
-                  "referenceNumber":"VEE0214439"
-               }
-            }
-         }
-      ],
-      "SG2":[
-         {
-            "nameAndAddress":{
-               "segmentIdx":5,
-               "segmentCode":"NAD",
-               "partyQualifier":"SU",
-               "partyIdentificationDetails":{
-                  "partyIdIdentification":"1694901"
-               },
-               "nameAndAddress":{
-                  "nameAndAddressLine":"31B"
-               }
-            }
-         },
-         {
-            "nameAndAddress":{
-               "segmentIdx":6,
-               "segmentCode":"NAD",
-               "partyQualifier":"BY",
-               "partyIdentificationDetails":{
-                  "partyIdIdentification":"01131116"
-               },
-               "nameAndAddress":{
-                  "nameAndAddressLine":"31B"
-               }
-            }
-         }
-      ],
-      "SG10":[
-         {
-            "consignmentPackingSequence":{
-               "segmentIdx":7,
-               "segmentCode":"CPS",
-               "hierarchicalIdNumber":"IE2156580387"
+        },
+        "beginningOfMessage": {
+            "segmentIdx": 1,
+            "segmentCode": "BGM",
+            "segmentGroup": "",
+            "documentmessageName": {
+                "documentmessageNameCoded": "351"
             },
-            "SG15":[
-               {
-                  "lineItem":{
-                     "segmentIdx":8,
-                     "segmentCode":"LIN",
-                     "lineItemNumber":"001"
-                  },
-                  "additionalProductId":{
-                     "segmentIdx":9,
-                     "segmentCode":"PIA",
-                     "productIdFunctionQualifier":"5",
-                     "itemNumberIdentification":{
-                        "itemNumber":"9780738507330"
-                     }
-                  },
-                  "itemDescription":{
-                     "segmentIdx":10,
-                     "segmentCode":"IMD",
-                     "itemDescriptionTypeCoded":"F",
-                     "itemCharacteristicCoded":"81",
-                     "itemDescription":{
-                        "itemDescriptionIdentification":"",
-                        "codeListQualifier":"",
-                        "codeListResponsibleAgencyCoded":"",
-                        "itemDescription":"MUNCIE THE MIDDLE"
-                     }
-                  },
-                  "quantity":{
-                     "segmentIdx":11,
-                     "segmentCode":"QTY",
-                     "quantityDetails":{
-                        "quantityQualifier":"12",
-                        "quantity":"1"
-                     }
-                  },
-                  "SG16":[
-                     {
-                        "reference":{
-                           "segmentIdx":12,
-                           "segmentCode":"RFF",
-                           "reference":{
-                              "referenceQualifier":"LI",
-                              "referenceNumber":"6877871"
-                           }
-                        }
-                     },
-                     {
-                        "reference":{
-                           "segmentIdx":13,
-                           "segmentCode":"RFF",
-                           "reference":{
-                              "referenceQualifier":"ON",
-                              "referenceNumber":"6877871"
-                           }
-                        }
-                     }
-                  ]
-               },
-               {
-                  "lineItem":{
-                     "segmentIdx":14,
-                     "segmentCode":"LIN",
-                     "lineItemNumber":"002"
-                  },
-                  "additionalProductId":{
-                     "segmentIdx":15,
-                     "segmentCode":"PIA",
-                     "productIdFunctionQualifier":"5",
-                     "itemNumberIdentification":{
-                        "itemNumber":"9781568361871"
-                     }
-                  },
-                  "itemDescription":{
-                     "segmentIdx":16,
-                     "segmentCode":"IMD",
-                     "itemDescriptionTypeCoded":"F",
-                     "itemCharacteristicCoded":"81",
-                     "itemDescription":{
-                        "itemDescriptionIdentification":"",
-                        "codeListQualifier":"",
-                        "codeListResponsibleAgencyCoded":"",
-                        "itemDescription":"ROADS TO SATA A 2"
-                     }
-                  },
-                  "quantity":{
-                     "segmentIdx":17,
-                     "segmentCode":"QTY",
-                     "quantityDetails":{
-                        "quantityQualifier":"12",
-                        "quantity":"1"
-                     }
-                  },
-                  "SG16":[
-                     {
-                        "reference":{
-                           "segmentIdx":18,
-                           "segmentCode":"RFF",
-                           "reference":{
-                              "referenceQualifier":"LI",
-                              "referenceNumber":"6905456"
-                           }
-                        }
-                     },
-                     {
-                        "reference":{
-                           "segmentIdx":19,
-                           "segmentCode":"RFF",
-                           "reference":{
-                              "referenceQualifier":"ON",
-                              "referenceNumber":"6905456"
-                           }
-                        }
-                     }
-                  ]
-               }
-            ]
-         }
-      ],
-      "messageTrailer":{
-         "segmentIdx":20,
-         "segmentCode":"UNT",
-         "numberOfSegmentsInTheMessage":"21",
-         "messageReferenceNumber":"142"
-      }
-   }
+            "documentmessageNumber": "Y02197250",
+            "messageFunctionCoded": "700101"
+        },
+        "datetimeperiod": {
+            "segmentIdx": 2,
+            "segmentCode": "DTM",
+            "segmentGroup": "",
+            "datetimeperiod": {
+                "datetimeperiodQualifier": "11",
+                "datetimeperiod": "20160726",
+                "datetimeperiodFormatQualifier": "102"
+            }
+        },
+        "SG1": [
+            {
+                "reference": {
+                    "segmentIdx": 3,
+                    "segmentCode": "RFF",
+                    "segmentGroup": "SG1",
+                    "reference": {
+                        "referenceQualifier": "ON",
+                        "referenceNumber": "6877871"
+                    }
+                }
+            },
+            {
+                "reference": {
+                    "segmentIdx": 4,
+                    "segmentCode": "RFF",
+                    "segmentGroup": "SG1",
+                    "reference": {
+                        "referenceQualifier": "PK",
+                        "referenceNumber": "VEE0214439"
+                    }
+                }
+            }
+        ],
+        "SG2": [
+            {
+                "nameAndAddress": {
+                    "segmentIdx": 5,
+                    "segmentCode": "NAD",
+                    "segmentGroup": "SG2",
+                    "partyQualifier": "SU",
+                    "partyIdentificationDetails": {
+                        "partyIdIdentification": "1694901"
+                    },
+                    "nameAndAddress": {
+                        "nameAndAddressLine": "31B"
+                    }
+                }
+            },
+            {
+                "nameAndAddress": {
+                    "segmentIdx": 6,
+                    "segmentCode": "NAD",
+                    "segmentGroup": "SG2",
+                    "partyQualifier": "BY",
+                    "partyIdentificationDetails": {
+                        "partyIdIdentification": "01131116"
+                    },
+                    "nameAndAddress": {
+                        "nameAndAddressLine": "31B"
+                    }
+                }
+            }
+        ],
+        "SG10": [
+            {
+                "consignmentPackingSequence": {
+                    "segmentIdx": 7,
+                    "segmentCode": "CPS",
+                    "segmentGroup": "SG10",
+                    "hierarchicalIdNumber": "IE2156580387"
+                },
+                "SG15": [
+                    {
+                        "lineItem": {
+                            "segmentIdx": 8,
+                            "segmentCode": "LIN",
+                            "segmentGroup": "SG15",
+                            "lineItemNumber": "001"
+                        },
+                        "additionalProductId": {
+                            "segmentIdx": 9,
+                            "segmentCode": "PIA",
+                            "segmentGroup": "SG15",
+                            "productIdFunctionQualifier": "5",
+                            "itemNumberIdentification": {
+                                "itemNumber": "9780738507330"
+                            }
+                        },
+                        "itemDescription": {
+                            "segmentIdx": 10,
+                            "segmentCode": "IMD",
+                            "segmentGroup": "SG15",
+                            "itemDescriptionTypeCoded": "F",
+                            "itemCharacteristicCoded": "81",
+                            "itemDescription": {
+                                "itemDescriptionIdentification": "",
+                                "codeListQualifier": "",
+                                "codeListResponsibleAgencyCoded": "",
+                                "itemDescription": "MUNCIE THE MIDDLE"
+                            }
+                        },
+                        "quantity": {
+                            "segmentIdx": 11,
+                            "segmentCode": "QTY",
+                            "segmentGroup": "SG15",
+                            "quantityDetails": {
+                                "quantityQualifier": "12",
+                                "quantity": "1"
+                            }
+                        },
+                        "SG16": [
+                            {
+                                "reference": {
+                                    "segmentIdx": 12,
+                                    "segmentCode": "RFF",
+                                    "segmentGroup": "SG16",
+                                    "reference": {
+                                        "referenceQualifier": "LI",
+                                        "referenceNumber": "6877871"
+                                    }
+                                }
+                            },
+                            {
+                                "reference": {
+                                    "segmentIdx": 13,
+                                    "segmentCode": "RFF",
+                                    "segmentGroup": "SG16",
+                                    "reference": {
+                                        "referenceQualifier": "ON",
+                                        "referenceNumber": "6877871"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "lineItem": {
+                            "segmentIdx": 14,
+                            "segmentCode": "LIN",
+                            "segmentGroup": "SG15",
+                            "lineItemNumber": "002"
+                        },
+                        "additionalProductId": {
+                            "segmentIdx": 15,
+                            "segmentCode": "PIA",
+                            "segmentGroup": "SG15",
+                            "productIdFunctionQualifier": "5",
+                            "itemNumberIdentification": {
+                                "itemNumber": "9781568361871"
+                            }
+                        },
+                        "itemDescription": {
+                            "segmentIdx": 16,
+                            "segmentCode": "IMD",
+                            "segmentGroup": "SG15",
+                            "itemDescriptionTypeCoded": "F",
+                            "itemCharacteristicCoded": "81",
+                            "itemDescription": {
+                                "itemDescriptionIdentification": "",
+                                "codeListQualifier": "",
+                                "codeListResponsibleAgencyCoded": "",
+                                "itemDescription": "ROADS TO SATA A 2"
+                            }
+                        },
+                        "quantity": {
+                            "segmentIdx": 17,
+                            "segmentCode": "QTY",
+                            "segmentGroup": "SG15",
+                            "quantityDetails": {
+                                "quantityQualifier": "12",
+                                "quantity": "1"
+                            }
+                        },
+                        "SG16": [
+                            {
+                                "reference": {
+                                    "segmentIdx": 18,
+                                    "segmentCode": "RFF",
+                                    "segmentGroup": "SG16",
+                                    "reference": {
+                                        "referenceQualifier": "LI",
+                                        "referenceNumber": "6905456"
+                                    }
+                                }
+                            },
+                            {
+                                "reference": {
+                                    "segmentIdx": 19,
+                                    "segmentCode": "RFF",
+                                    "segmentGroup": "SG16",
+                                    "reference": {
+                                        "referenceQualifier": "ON",
+                                        "referenceNumber": "6905456"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "messageTrailer": {
+            "segmentIdx": 20,
+            "segmentCode": "UNT",
+            "segmentGroup": "SG16",
+            "numberOfSegmentsInTheMessage": "21",
+            "messageReferenceNumber": "142"
+        }
+    }
 ]
