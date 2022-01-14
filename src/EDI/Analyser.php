@@ -147,7 +147,7 @@ class Analyser
     public function loadMultiSegmentsXml(array $segmentXmlFiles)
     {
         foreach ($segmentXmlFiles as $xmlFile) {
-            if (!$result = $this->loadSegmentsXml($xmlFile)) {
+            if (!$result = $this->loadSegmentsXml($xmlFile, false)) {
                 return $result;
             }
         }
