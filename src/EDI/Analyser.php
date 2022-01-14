@@ -93,27 +93,28 @@ class Analyser
      * convert segment definition from XML to array. Sequence of data_elements and
      * composite_data_element same as in XML
      *
-     * @param string $segment_xml_file
+     * @param string $segmentXmlFile
+     * @param bool $discardOldSegments
      *
      * @return array|false
      */
-    public function loadSegmentsXml(string $segment_xml_file)
+    public function loadSegmentsXml(string $segmentXmlFile, bool $discardOldSegments = true)
     {
-        // reset
-        $this->segments = [];
+        if ($discardOldSegments) {
+            $this->segments = [];
+        }
 
-        $segments_xml = \file_get_contents($segment_xml_file);
-        if ($segments_xml === false) {
+        $segmentsXml = \file_get_contents($segmentXmlFile);
+        if ($segmentsXml === false) {
             return false;
         }
 
-        $xml = \simplexml_load_string($segments_xml);
+        $xml = \simplexml_load_string($segmentsXml);
         if ($xml === false) {
             return false;
         }
-
         // free memory
-        $segments_xml = null;
+        unset($segmentsXml);
 
         foreach ($xml as $segmentNode) {
             \assert($segmentNode instanceof \SimpleXMLElement);
@@ -131,6 +132,24 @@ class Analyser
                 $segment['details'] = $details;
             }
             $this->segments[$qualifier] = $segment;
+        }
+
+        return $this->segments;
+    }
+
+    /**
+     * Load segment definitions from multiple files
+     *
+     * @see Analyser::loadSegmentsXml()
+     * @param string[] $segmentXmlFiles
+     * @return array|false
+     */
+    public function loadMultiSegmentsXml(array $segmentXmlFiles)
+    {
+        foreach ($segmentXmlFiles as $xmlFile) {
+            if (!$result = $this->loadSegmentsXml($xmlFile)) {
+                return $result;
+            }
         }
 
         return $this->segments;
