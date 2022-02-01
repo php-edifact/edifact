@@ -181,7 +181,7 @@ class Analyser
 
                 $idHeader = $id . ' - ' . $attributes['name'];
                 if($this->directory && $id !== 'UNB') {
-                    $idHeader .= ' http://www.unece.org/trade/untdid/' . strtolower($this->directory) . '/trsd/trsd' . strtolower($id) . '.htm';
+                    $idHeader .= ' https://service.unece.org/trade/untdid/' . strtolower($this->directory) . '/trsd/trsd' . strtolower($id) . '.htm';
                 }
                 $r[] = $idHeader;
                 $r[] = '  (' . \wordwrap($attributes['desc'], 75, \PHP_EOL . '  ') . ')';
@@ -210,7 +210,7 @@ class Analyser
                                 $codeElementId = $d_sub_desc_attr['id'];
                                 $line = '    [' . $d_n . '] ' . $d_detail;
                                 if(isset($this->codes[(int)$codeElementId][$d_detail])){
-                                    $line .= ' - ' . $this->codes[$codeElementId][$d_detail];
+                                    $line .= ' - ' . \wordwrap($this->codes[$codeElementId][$d_detail], 69, \PHP_EOL . '        ');
                                 }
                                 $r[] = $line;
 
@@ -249,7 +249,19 @@ class Analyser
                         }
                         $jsonelements[$d_desc_attr['name']] = $jsoncomposite;
                     } else {
-                        $r[] = '  [' . $n . '] ' . $detail;
+                        $codeElementId = $d_desc_attr['id'];
+                        $line = '  [' . $n . '] ' . $detail;
+                        if(isset($this->codes[(int)$codeElementId][$detail])){
+						  /* 
+                           * for retrieving code element description when first element of the segment 
+						   * is a data element and not a composite one. Ex: NAD segment.
+                           * We rewrite also l1 line for adding 'id:' prefix before data element id. 
+                           * It's just a cosmetic fix 
+                           */
+                          $line .= ' - ' . \wordwrap($this->codes[$codeElementId][$detail], 71, \PHP_EOL . '        ');
+                          $l1 = '      id: ' . $d_desc_attr['id'] . ' - ' . $d_desc_attr['name'];
+                        }
+                        $r[] = $line;
                         $r[] = $l1;
                         $r[] = $l2;
                         $jsonelements[$d_desc_attr['name']] = $detail;
