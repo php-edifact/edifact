@@ -195,71 +195,55 @@ class Reader
     /**
      * read data value from parsed EDI data
      *
-     * @param array<mixed>|string $filter   'AGR' - segment code
-     *                                      or ['AGR',['1'=>'BB']], where AGR segment code and first element equal 'BB'
-     *                                      or ['AGR',['1.0'=>'BB']], where AGR segment code and first element zero subelement
-     *                                      equal 'BB'
-     * @param int                 $l1       first level item number (start by 1)
-     * @param false|int           $l2       second level item number (start by 0)
-     * @param bool                $required if required, but no exist, register error
+     * @param array|string $filter    'AGR' - segment code
+     *                                or ['AGR',['1'=>'BB']], where AGR segment code and first element equal 'BB'
+     *                                or ['AGR',['1.0'=>'BB']], where AGR segment code and first element zero subelement
+     *                                equal 'BB'
+     * @param int          $l1        first level item number (start by 1)
+     * @param false|int    $l2        second level item number (start by 0)
+     * @param bool         $required  if required, but no exist, register error
      *
      * @return string|null
      */
     public function readEdiDataValue($filter, int $l1, $l2 = false, bool $required = false)
     {
-        // interpret filter parameters
+        $segment = false;
+        $segment_count = 0;
+        $segment_name = $filter;
+        $filter_elements = false;
         if (\is_array($filter)) {
             $segment_name = $filter[0];
             $filter_elements = $filter[1];
-        } else {
-            $segment_name = $filter;
-            $filter_elements = false;
         }
 
-        // init
-        $segment = false;
-        $segment_count = 0;
-
-        // search segment, who conform to filter
+        // search segments which conform to filter
         foreach ($this->parsedfile as $edi_row) {
             if ($edi_row[0] == $segment_name) {
                 if ($filter_elements) {
-                    $filter_ok = false;
                     foreach ($filter_elements as $el_id => $el_value) {
+                        $filter_ok = false;
                         $f_el_list = \explode('.', (string) $el_id);
                         if (\count($f_el_list) === 1) {
-                            if (
-                                isset($edi_row[$el_id])
-                                &&
-                                $edi_row[$el_id] == $el_value
-                            ) {
+                            if (isset($edi_row[$el_id]) && $edi_row[$el_id] == $el_value) {
                                 $filter_ok = true;
-
-                                break;
                             }
                         } elseif (
                             isset($edi_row[$f_el_list[0]])
-                            &&
-                            (
+                            && (
                                 (
                                     isset($edi_row[$f_el_list[0]][$f_el_list[1]])
-                                    &&
-                                    \is_array($edi_row[$f_el_list[0]])
-                                    &&
-                                    $edi_row[$f_el_list[0]][$f_el_list[1]] == $el_value
-                                )
-                                ||
-                                (
+                                    && \is_array($edi_row[$f_el_list[0]])
+                                    && $edi_row[$f_el_list[0]][$f_el_list[1]] == $el_value
+                                ) || (
                                     isset($edi_row[$f_el_list[0]])
-                                    &&
-                                    \is_string($edi_row[$f_el_list[0]])
-                                    &&
-                                    $edi_row[$f_el_list[0]] == $el_value
+                                    && \is_string($edi_row[$f_el_list[0]])
+                                    && $edi_row[$f_el_list[0]] == $el_value
                                 )
                             )
                         ) {
                             $filter_ok = true;
-
+                        }
+                        if ($filter_ok === false) {
                             break;
                         }
                     }
@@ -273,7 +257,7 @@ class Reader
             }
         }
 
-        // no found segment
+        // no segment found
         if (!$segment) {
             if ($required) {
                 $this->errors[] = 'Segment "' . $segment_name . '" no exist';
@@ -282,7 +266,7 @@ class Reader
             return null;
         }
 
-        // found more one segment - error
+        // found more than one segment - error
         if ($segment_count > 1) {
             $this->errors[] = 'Segment "' . $segment_name . '" is ambiguous';
 
