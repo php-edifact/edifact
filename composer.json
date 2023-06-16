@@ -28,8 +28,7 @@
     "require": {
         "php": ">=7.0.0",
         "ext-json": "*",
-        "ext-simplexml": "*",
-        "voku/arrayy": "~7.1"
+        "ext-simplexml": "*"
     },
     "require-dev": {
         "php-edifact/edifact-mapping": "dev-master",

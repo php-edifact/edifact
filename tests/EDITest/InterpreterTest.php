@@ -149,17 +149,17 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         static::assertContains('"messageHeader"', $interpreter->getJson(true));
         static::assertContains('"interchangeHeader"', $interpreter->getJsonServiceSegments(true));
 
-        $arrayy = $interpreter->getArrayy();
-        static::assertSame(
-            'Butter 40x250g Alu',
-            $arrayy->get('0.SG25.0.itemDescription.itemDescription.itemDescription')
-        );
+        // $arrayy = $interpreter->getArrayy();
+        // static::assertSame(
+        //     'Butter 40x250g Alu',
+        //     $arrayy->get('0.SG25.0.itemDescription.itemDescription.itemDescription')
+        // );
 
-        $arrayy = $interpreter->getArrayyServiceSegments();
-        static::assertCount(
-            14,
-            $arrayy->get('interchangeHeader')
-        );
+        // $arrayy = $interpreter->getArrayyServiceSegments();
+        // static::assertCount(
+        //     14,
+        //     $arrayy->get('interchangeHeader')
+        // );
     }
 
     public function testOrderOk()
@@ -184,17 +184,17 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         static::assertContains('"messageHeader"', $interpreter->getJson(true));
         static::assertContains('"interchangeHeader"', $interpreter->getJsonServiceSegments(true));
 
-        $arrayy = $interpreter->getArrayy();
-        static::assertSame(
-            'Butter 40x250g Alu',
-            $arrayy->get('0.SG25.0.itemDescription.itemDescription.itemDescription')
-        );
+        // $arrayy = $interpreter->getArrayy();
+        // static::assertSame(
+        //     'Butter 40x250g Alu',
+        //     $arrayy->get('0.SG25.0.itemDescription.itemDescription.itemDescription')
+        // );
 
-        $arrayy = $interpreter->getArrayyServiceSegments();
-        static::assertCount(
-            14,
-            $arrayy->get('interchangeHeader')
-        );
+        // $arrayy = $interpreter->getArrayyServiceSegments();
+        // static::assertCount(
+        //     14,
+        //     $arrayy->get('interchangeHeader')
+        // );
     }
 
     public function testMissingUNBUNH()
