@@ -22,7 +22,7 @@ final class AnalyserTest extends TestCase
      */
     protected $mapping;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->analyser = new Analyser();
         $this->mapping = new MappingProvider('D07A');

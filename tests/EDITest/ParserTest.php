@@ -104,9 +104,9 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
         static::assertSame([], $errors);
 
         $data = \json_encode((new Parser($string))->get());
-        static::assertContains('Sup 1:10', $data);
-        static::assertNotContains('Konzentrat:o', $data);
-        static::assertContains('"Rindfleischsuppe Konzentrat","o', $data);
+        static::assertStringContainsString('Sup 1:10', $data);
+        static::assertStringNotContainsString('Konzentrat:o', $data);
+        static::assertStringContainsString('"Rindfleischsuppe Konzentrat","o', $data);
     }
 
     public function testFileError()

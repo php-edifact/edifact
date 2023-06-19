@@ -262,6 +262,16 @@ class Interpreter
     }
 
     /**
+     * Get EDI groups.
+     *
+     * @return array
+     */
+    public function getEdiGroups()
+    {
+        return $this->ediGroups;
+    }
+
+    /**
      * Get errors
      *
      * @return array
