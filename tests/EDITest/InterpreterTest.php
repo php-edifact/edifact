@@ -2,9 +2,10 @@
 
 namespace EDITest;
 
-use EDI\Analyser;
-use EDI\Interpreter;
 use EDI\Parser;
+use EDI\Analyser;
+use Arrayy\Arrayy;
+use EDI\Interpreter;
 
 /**
  * @internal
@@ -146,16 +147,16 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
 
         static::assertCount(2, $interpreter->getMessages());
 
-        static::assertContains('"messageHeader"', $interpreter->getJson(true));
-        static::assertContains('"interchangeHeader"', $interpreter->getJsonServiceSegments(true));
+        $this->assertStringContainsString('"messageHeader"', $interpreter->getJson(true));
+        static::assertStringContainsString('"interchangeHeader"', $interpreter->getJsonServiceSegments(true));
 
-        $arrayy = $interpreter->getArrayy();
+        $arrayy = new Arrayy($interpreter->getEdiGroups());
         static::assertSame(
             'Butter 40x250g Alu',
             $arrayy->get('0.SG25.0.itemDescription.itemDescription.itemDescription')
         );
 
-        $arrayy = $interpreter->getArrayyServiceSegments();
+        $arrayy =  new Arrayy($interpreter->getServiceSegments());
         static::assertCount(
             14,
             $arrayy->get('interchangeHeader')
@@ -181,16 +182,16 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
 
         static::assertCount(2, $interpreter->getMessages());
 
-        static::assertContains('"messageHeader"', $interpreter->getJson(true));
-        static::assertContains('"interchangeHeader"', $interpreter->getJsonServiceSegments(true));
+        static::assertStringContainsString('"messageHeader"', $interpreter->getJson(true));
+        static::assertStringContainsString('"interchangeHeader"', $interpreter->getJsonServiceSegments(true));
 
-        $arrayy = $interpreter->getArrayy();
+        $arrayy = new Arrayy($interpreter->getEdiGroups());
         static::assertSame(
             'Butter 40x250g Alu',
             $arrayy->get('0.SG25.0.itemDescription.itemDescription.itemDescription')
         );
 
-        $arrayy = $interpreter->getArrayyServiceSegments();
+        $arrayy =  new Arrayy($interpreter->getServiceSegments());
         static::assertCount(
             14,
             $arrayy->get('interchangeHeader')

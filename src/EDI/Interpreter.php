@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace EDI;
 
-use Arrayy\Arrayy;
-
 /**
  * EDIFACT Messages Interpreter
  * (c) 2018 Stefano Sabatini
@@ -264,13 +262,13 @@ class Interpreter
     }
 
     /**
-     * Get result as Arrayy Object.
+     * Get EDI groups.
      *
-     * @return Arrayy<mixed,mixed>
+     * @return array
      */
-    public function getArrayy()
+    public function getEdiGroups()
     {
-        return new Arrayy($this->ediGroups);
+        return $this->ediGroups;
     }
 
     /**
@@ -317,16 +315,6 @@ class Interpreter
         }
 
         return \json_encode($this->serviceSeg);
-    }
-
-    /**
-     * Get service segments as Arrayy Object.
-     *
-     * @return Arrayy<mixed,mixed>
-     */
-    public function getArrayyServiceSegments()
-    {
-        return new Arrayy($this->serviceSeg);
     }
 
     /**

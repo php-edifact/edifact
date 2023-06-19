@@ -26,14 +26,14 @@
         }
     ],
     "require": {
-        "php": ">=7.0.0",
+        "php": "~8",
         "ext-json": "*",
-        "ext-simplexml": "*",
-        "voku/arrayy": "~7.1"
+        "ext-simplexml": "*"
     },
     "require-dev": {
         "php-edifact/edifact-mapping": "dev-master",
-        "phpunit/phpunit": "~6.0"
+        "phpunit/phpunit": "~9.0",
+        "voku/arrayy": "~7.1"
     },
     "autoload": {
         "psr-4": {
