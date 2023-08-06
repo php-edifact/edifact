@@ -4,3 +4,4 @@ codeCoverage/*
 composer.lock
 .vscode
 .phan
+.phpunit*

@@ -72,7 +72,7 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
         static::assertSame($expected, $result);
     }
 
-    public function multipleEscapedSegmentsProvider()
+    public static function multipleEscapedSegmentsProvider()
     {
         return [
             ["EQD+CX??DU12?+3456+2?:0'",      [['EQD', 'CX?DU12+3456', '2:0']]],

@@ -29,6 +29,11 @@ class Analyser
      */
     private $codes;
 
+    public function setXml($segments, $codes) {
+        $this->segments = $segments;
+        $this->codes = $codes;
+    }
+
     /**
      * @param string $message_xml_file
      *
@@ -92,6 +97,7 @@ class Analyser
     /**
      * convert segment definition from XML to array. Sequence of data_elements and
      * composite_data_element same as in XML
+     * For single message, it's vailable also in (new EDI\Mapping\MappingProvider($version))->loadSegmentsXml()
      *
      * @param string $segmentXmlFile
      * @param bool $discardOldSegments
@@ -252,11 +258,11 @@ class Analyser
                         $codeElementId = $d_desc_attr['id'];
                         $line = '  [' . $n . '] ' . $detail;
                         if(isset($this->codes[(int)$codeElementId][$detail])){
-						  /* 
-                           * for retrieving code element description when first element of the segment 
+						  /*
+                           * for retrieving code element description when first element of the segment
 						   * is a data element and not a composite one. Ex: NAD segment.
-                           * We rewrite also l1 line for adding 'id:' prefix before data element id. 
-                           * It's just a cosmetic fix 
+                           * We rewrite also l1 line for adding 'id:' prefix before data element id.
+                           * It's just a cosmetic fix
                            */
                           $line .= ' - ' . \wordwrap($this->codes[$codeElementId][$detail], 71, \PHP_EOL . '        ');
                           $l1 = '      id: ' . $d_desc_attr['id'] . ' - ' . $d_desc_attr['name'];

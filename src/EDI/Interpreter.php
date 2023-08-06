@@ -81,7 +81,7 @@ class Interpreter
      * @var array
      */
     private $codes;
- 
+
     /**
      * @var callable
      */
@@ -643,8 +643,8 @@ class Interpreter
 
                             $d_sub_desc_attr = $sub_details_desc[$d_n]['attributes'];
 
-                            if ($this->codes !== null && $this->codes[$d_sub_desc_attr['id']] !== null) { //if codes is set enable translation of the value
-                                if ($this->codes[$d_sub_desc_attr['id']][$d_detail]) {
+                            if ($this->codes !== null && isset($this->codes[$d_sub_desc_attr['id']]) && is_array($this->codes[$d_sub_desc_attr['id']])) { //if codes is set enable translation of the value
+                                if (isset($this->codes[$d_sub_desc_attr['id']][$d_detail])) {
                                     $d_detail = $this->codes[$d_sub_desc_attr['id']][$d_detail];
                                 }
                             }
@@ -663,16 +663,16 @@ class Interpreter
                     } else {
                         $d_sub_desc_attr = $sub_details_desc[0]['attributes'];
 
-                        if ($this->codes !== null && $this->codes[$d_sub_desc_attr['id']] !== null) { //if codes is set enable translation of the value
-                            if ($this->codes[$d_sub_desc_attr['id']][$detail]) {
+                        if ($this->codes !== null &&  isset($this->codes[$d_sub_desc_attr['id']]) && is_array($this->codes[$d_sub_desc_attr['id']])) { //if codes is set enable translation of the value
+                            if (isset($this->codes[$d_sub_desc_attr['id']][$detail]) && $this->codes[$d_sub_desc_attr['id']][$detail]) {
                                 $detail = $this->codes[$d_sub_desc_attr['id']][$detail];
                             }
                         }
                         $jsoncomposite[$d_sub_desc_attr[$this->outputKey]] = $detail;
                     }
                 } else {
-                    if ($this->codes !== null && $this->codes[$d_desc_attr['id']] !== null) { //if codes is set enable translation of the value
-                        if ($this->codes[$d_desc_attr['id']][$detail]) {
+                    if ($this->codes !== null && isset($this->codes[$d_desc_attr['id']]) &&  is_array($this->codes[$d_desc_attr['id']])) { //if codes is set enable translation of the value
+                        if (isset($this->codes[$d_desc_attr['id']][$detail]) && $this->codes[$d_desc_attr['id']][$detail]) {
                             $detail = $this->codes[$d_desc_attr['id']][$detail];
                         }
                     }

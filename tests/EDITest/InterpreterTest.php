@@ -4,7 +4,6 @@ namespace EDITest;
 
 use EDI\Parser;
 use EDI\Analyser;
-use Arrayy\Arrayy;
 use EDI\Interpreter;
 
 /**
@@ -150,16 +149,17 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('"messageHeader"', $interpreter->getJson(true));
         static::assertStringContainsString('"interchangeHeader"', $interpreter->getJsonServiceSegments(true));
 
-        $arrayy = new Arrayy($interpreter->getEdiGroups());
+        $arrayy = $interpreter->getEdiGroups();
+        $item = $arrayy[0]['SG25'][0]['itemDescription']['itemDescription']['itemDescription'];
         static::assertSame(
             'Butter 40x250g Alu',
-            $arrayy->get('0.SG25.0.itemDescription.itemDescription.itemDescription')
+            $item
         );
 
-        $arrayy =  new Arrayy($interpreter->getServiceSegments());
+        $arrayy =  $interpreter->getServiceSegments();
         static::assertCount(
             14,
-            $arrayy->get('interchangeHeader')
+            $arrayy['interchangeHeader']
         );
     }
 
@@ -185,16 +185,17 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         static::assertStringContainsString('"messageHeader"', $interpreter->getJson(true));
         static::assertStringContainsString('"interchangeHeader"', $interpreter->getJsonServiceSegments(true));
 
-        $arrayy = new Arrayy($interpreter->getEdiGroups());
+        $arrayy = $interpreter->getEdiGroups();
+        $item = $arrayy[0]['SG25'][0]['itemDescription']['itemDescription']['itemDescription'];
         static::assertSame(
             'Butter 40x250g Alu',
-            $arrayy->get('0.SG25.0.itemDescription.itemDescription.itemDescription')
+            $item
         );
 
-        $arrayy =  new Arrayy($interpreter->getServiceSegments());
+        $arrayy =  $interpreter->getServiceSegments();
         static::assertCount(
             14,
-            $arrayy->get('interchangeHeader')
+            $arrayy['interchangeHeader']
         );
     }
 

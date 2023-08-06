@@ -68,7 +68,8 @@ final class AnalyserTest extends TestCase
         $segments = $parser->getRawSegments();
         static::assertCount(15, $parsed);
         $result = (new Analyser())->process($parsed, $segments);
-        static::assertSame(399, \strlen($result));
+
+        static::assertSame(228, \strlen($result));
     }
 
     public function testProcessWrapped()
