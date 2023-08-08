@@ -78,9 +78,9 @@ class Encoder
     }
 
     /**
-     * @param array $array
-     * @param bool  $wrap
-     * @param bool  $filterKeys
+     * @param array[] $array Containing arrays of segments
+     * @param bool    $wrap  Put each segment on a new line?
+     * @param bool    $filterKeys
      *
      * @return string
      */
@@ -99,7 +99,7 @@ class Encoder
             }
             $row = \array_values($row);
             $edistring .= $this->encodeSegment($row);
-            if (!$wrap && $k < $count) {
+            if ($wrap && $k < $count) {
                 $edistring .= "\n";
             }
         }
