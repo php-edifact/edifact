@@ -18,7 +18,7 @@ class Encoder
     /**
      * @var bool
      */
-    private $UNAActive = false; // disable by default to preserve backward compatibility
+    private $UNAActive = false; // disabled by default to preserve backward compatibility
 
     /**
      * @var array
@@ -26,37 +26,37 @@ class Encoder
     private $originalArray = [];
 
     /**
-     * @var bool
+     * @var bool When false adds a new line after each segment
      */
-    private $wrap = true; //when false adds a newline after each segment
+    private $compact = true;
 
     /**
-     * @var string : component separator character (default :)
+     * @var string Component separator character (default :)
      */
     private $sepComp;
 
     /**
-     * @var string : data separator character (default +)
+     * @var string Data separator character (default +)
      */
     private $sepData;
 
     /**
-     * @var string : dec separator character (no use but here) (default .)
+     * @var string Dec separator character (no use but here) (default .)
      */
     private $sepDec;
 
     /**
-     * @var string : release character (default ?)
+     * @var string Release character (default ?)
      */
     private $symbRel;
 
     /**
-     * @var string : repetition character (no use but here) (default space)
+     * @var string Repetition character (no use but here) (default space)
      */
     private $symbRep;
 
     /**
-     * @var string : end character (default ')
+     * @var string End character (default ')
      */
     private $symbEnd;
 
@@ -64,9 +64,9 @@ class Encoder
      * Encoder constructor.
      *
      * @param array|null $array
-     * @param bool       $wrap
+     * @param bool       $compact
      */
-    public function __construct($array = null, $wrap = true)
+    public function __construct($array = null, $compact = true)
     {
         $this->setUNA(":+.? '", false);
         if ($array === null) {
@@ -74,20 +74,20 @@ class Encoder
         }
 
         /** @noinspection UnusedFunctionResultInspection */
-        $this->encode($array, $wrap);
+        $this->encode($array, $compact);
     }
 
     /**
-     * @param array $array
-     * @param bool  $wrap
-     * @param bool  $filterKeys
+     * @param array[] $array
+     * @param bool    $compact All segments on a single line?
+     * @param bool    $filterKeys
      *
      * @return string
      */
-    public function encode(array $array, $wrap = true, $filterKeys = false): string
+    public function encode(array $array, $compact = true, $filterKeys = false): string
     {
         $this->originalArray = $array;
-        $this->wrap = $wrap;
+        $this->compact = $compact;
 
         $edistring = '';
         $count = \count($array);
@@ -99,7 +99,7 @@ class Encoder
             }
             $row = \array_values($row);
             $edistring .= $this->encodeSegment($row);
-            if (!$wrap && $k < $count) {
+            if (!$compact && $k < $count) {
                 $edistring .= "\n";
             }
         }
@@ -167,7 +167,7 @@ class Encoder
                    $this->symbRel .
                    $this->symbRep .
                    $this->symbEnd;
-            if ($this->wrap === false) {
+            if ($this->compact === false) {
                 $una .= "\n";
             }
 
