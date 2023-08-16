@@ -18,12 +18,12 @@ class Parser
     /**
      * @var array
      */
-    private $parsedfile;
+    private $parsedfile = [];
 
     /**
      * @var array
      */
-    private $errors;
+    private $errors = [];
 
     /**
      * @var string
@@ -81,9 +81,9 @@ class Parser
     private $stringSafe;
 
     /**
-     * @var string|null : encoding (default UNOB)
+     * @var string|null Syntax identifier (default UNOB)
      */
-    private $encoding;
+    private $syntaxID;
 
     /**
      * @var string|null : message format from UNH
@@ -108,6 +108,17 @@ class Parser
         'UNOB' => "/[\x01-\x1F\x80-\xFF]/",
         'UNOC' => "/[\x01-\x1F\x7F-\x9F]/",
         'UNOE' => "/[\x20-\x7E]\xA0-\xFF/"
+    ];
+
+    private static $charsets =[
+        // ISO 646, except lower case letters, alternative graphic chars, national or application-oriented graphic chars
+        'UNOA'=>'ASCII',
+        // ISO 646, except alternative graphic chars and national or application-oriented graphic chars
+        'UNOB'=>'ASCII',
+        'UNOC'=>'ISO-8859-1',
+        'UNOD'=>'ISO-8859-2',
+        'UNOE'=>'ISO-8859-5',
+        'UNOF'=>'ISO-8859-7'
     ];
 
     /**
@@ -135,15 +146,11 @@ class Parser
             $this->resetUNB();
         }
 
-        $this->errors = [];
-        $this->parsedfile = [];
-
         if ($url === null) {
             return;
         }
 
         if (\is_array($url)) {
-
             //
             // Object constructed with an array as argument
             //
@@ -154,14 +161,12 @@ class Parser
             /** @noinspection UnusedFunctionResultInspection */
             $this->parse($url);
         } elseif (\file_exists($url)) {
-
             //
             // Object constructed with a path to a file as argument
             //
             /** @noinspection UnusedFunctionResultInspection */
             $this->load($url);
         } else {
-
             //
             // Object constructed with a string as argument
             //
@@ -171,28 +176,28 @@ class Parser
     }
 
     /**
-     * Parse edi array
+     * Parse EDI array
      *
-     * @param array $file2
+     * @param array $lines
      *
      * @return array
      */
-    public function parse(array &$file2): array
+    public function parse(array &$lines): array
     {
         $i = 0;
-        foreach ($file2 as &$line) {
+        foreach ($lines as &$line) {
             ++$i;
 
             // Null byte and carriage return removal. (CR+LF)
             $line = \str_replace(["\x00", "\r", "\n"], '', $line);
 
-            // Basic sanitization, remove non printable chars.
+            // Basic sanitization, remove non-printable chars.
             $lineTrim = \trim($line);
             $line = (string) \preg_replace($this->stripChars, '', $lineTrim);
             $line_bytes = \strlen($line);
 
             if ($line_bytes !== \strlen($lineTrim)) {
-                $this->errors[] = "There's a not printable character on line " . $i . ': ' . $lineTrim;
+                $this->errors[] = "There's a non-printable character on line " . $i . ': ' . $lineTrim;
             }
 
             if ($line_bytes < 2) {
@@ -228,7 +233,7 @@ class Parser
             }
         }
 
-        return $this->parsedfile;
+        return $this->get();
     }
 
     /**
@@ -267,23 +272,23 @@ class Parser
     /**
      * UNB line analysis
      *
-     * @param string|string[] $encoding UNB definition line (without UNB tag). Example UNOA:2
+     * @param string|string[] $line UNB definition line (without UNB tag). Example UNOA:2
      *
      * @return void
      */
-    public function analyseUNB($encoding)
+    public function analyseUNB($line): void
     {
-        if (\is_array($encoding)) {
-            $encoding = $encoding[0];
+        if (\is_array($line)) {
+            $line = $line[0];
         }
 
-        $this->encoding = $encoding;
+        $this->syntaxID = $line;
 
         // If there's a regex defined for this character set, use it.
         /** @noinspection OffsetOperationsInspection */
-        if (isset(self::$encodingToStripChars[$encoding])) {
+        if (isset(self::$encodingToStripChars[$line])) {
             /** @noinspection OffsetOperationsInspection */
-            $this->setStripRegex(self::$encodingToStripChars[$encoding]);
+            $this->setStripRegex(self::$encodingToStripChars[$line]);
         }
 
         $this->unbChecked = true;
@@ -296,7 +301,7 @@ class Parser
      *
      * @return void
      */
-    public function analyseUNH(array $line)
+    public function analyseUNH(array $line): void
     {
         if (\count($line) < 3) {
             return;
@@ -314,6 +319,23 @@ class Parser
     }
 
     /**
+     * Check if the encoding of the text actually matches the one declared by the UNB syntax identifier.
+     *
+     * @return bool
+     * @throws \RuntimeException
+     */
+    public function checkEncoding(): bool
+    {
+        if(empty($this->parsedfile))
+            throw new \RuntimeException("No text has been parsed yet");
+
+        if(!isset(self::$charsets[$this->syntaxID]))
+            throw new \RuntimeException("Unsupported syntax identifier");
+
+        return mb_check_encoding($this->parsedfile, self::$charsets[$this->syntaxID]);
+    }
+
+    /**
      * Get errors
      *
      * @return array
@@ -324,7 +346,7 @@ class Parser
     }
 
     /**
-     * Get result
+     * Get parsed lines/segments
      *
      * @return array
      */
@@ -350,14 +372,15 @@ class Parser
      *
      * @return array|false
      */
-    public function load($url)
+    public function load(string $url)
     {
         $file = \file_get_contents($url);
-        if ($file === false) {
-            return false;
-        }
+        if ($file === false)
+            throw new \RuntimeException("File could not be retrieved");
 
-        return $this->loadString($file);
+        $this->loadString($file);
+
+        return $this->get();
     }
 
     /**
@@ -367,13 +390,16 @@ class Parser
      *
      * @return array
      */
-    public function loadString(&$string): array
+    public function loadString(string &$string)
     {
         /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $string = $this->unwrap($string);
         $this->rawSegments = $string;
+        $this->parse($string);
+        if ($this->checkEncoding() === false)
+            $this->errors[] = 'Character encoding does not match declaration in UNB interchange header';
 
-        return $this->parse($string);
+        return $this->get();
     }
 
     /**
@@ -383,12 +409,13 @@ class Parser
      *
      * @return void
      */
-    public function setStripRegex($regex)
+    public function setStripRegex(string $regex)
     {
         $this->stripChars = $regex;
     }
 
     /**
+     * Get the message type ID.
      * @return string|null
      */
     public function getMessageFormat()
@@ -397,6 +424,7 @@ class Parser
     }
 
     /**
+     * Get the message type release number.
      * @return string|null
      */
     public function getMessageDirectory()
@@ -439,7 +467,7 @@ class Parser
      */
     private function resetUNB()
     {
-        $this->encoding = 'UNOB';
+        $this->syntaxID = 'UNOB';
         $this->unbChecked = false;
     }
 
