@@ -63,9 +63,11 @@ final class AnalyserTest extends TestCase
 
     public function testProcess()
     {
-        $parser = new Parser(__DIR__ . '/../files/example.edi');
-        $parsed = $parser->get();
+        $parser = new Parser();
+        $parser->load(__DIR__ . '/../files/example.edi');
         $segments = $parser->getRawSegments();
+        $parser->parse();
+        $parsed = $parser->get();
         static::assertCount(15, $parsed);
         $result = (new Analyser())->process($parsed, $segments);
 
@@ -74,9 +76,11 @@ final class AnalyserTest extends TestCase
 
     public function testProcessWrapped()
     {
-        $parser = new Parser(__DIR__ . '/../files/example_wrapped.edi');
-        $parsed = $parser->get();
+        $parser = new Parser();
+        $parser->load(__DIR__ . '/../files/example_wrapped.edi');
         $segments = $parser->getRawSegments();
+        $parser->parse();
+        $parsed = $parser->get();
         static::assertCount(15, $parsed);
         $result = (new Analyser())->process($parsed, $segments);
         static::assertSame(399, \strlen($result));

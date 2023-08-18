@@ -63,15 +63,15 @@ class Reader
     }
 
     /**
-     * @param string $url url to edi file, path to edi file or EDI message
-     *
+     * @param string $location URL or path to EDI file/message
      * @return bool
      */
-    public function load(string $url): bool
+    public function load(string $location): bool
     {
-        $this->parsedfile = (new Parser($url))->get();
+        $parser = new Parser();
+        $parser->load($location)->parse();
 
-        return $this->preValidate();
+        return $this->setParsedFile($parser->get());
     }
 
     /**

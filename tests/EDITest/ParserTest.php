@@ -16,36 +16,40 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
         $p = new Parser();
         $p->setStripRegex("/[\x{0001}-\x{001F}\x{0080}-\x{00C0}]/");
         $string = "LOC+11+ITGOA'MEA+WT++KGM:9040'";
-        $test = $p->loadString($string);
+        $p->loadString($string)->parse();
 
         $expected = [['LOC', '11', 'ITGOA'], ['MEA', 'WT', '', ['KGM', '9040']]];
-        static::assertSame($expected, $test);
+        static::assertSame($expected, $p->get());
     }
 
     public function testMessageUnwrap()
     {
         $p = new Parser();
         $string = "LOC+11+ITGOA'MEA+WT++KGM:9040'";
-        $test = $p->loadString($string);
+        $p->loadString($string)->parse();
 
         $expected = [['LOC', '11', 'ITGOA'], ['MEA', 'WT', '', ['KGM', '9040']]];
-        static::assertSame($expected, $test);
+        static::assertSame($expected, $p->get());
     }
 
     public function testArrayUnwrap()
     {
         $arr = ["LOC+11+ITGOA'MEA+WT++KGM:9040'"];
-        $test = (new Parser($arr))->get();
+        $p = new Parser();
+        $p->loadArray($arr)->parse();
+
         $expected = [['LOC', '11', 'ITGOA'], ['MEA', 'WT', '', ['KGM', '9040']]];
-        static::assertSame($expected, $test);
+        static::assertSame($expected, $p->get());
     }
 
     public function testGetRawSegments()
     {
         $txt = "LOC+11+ITGOA'MEA+WT++KGM:9040'";
-        $test = (new Parser($txt))->getRawSegments();
+        $p = new Parser();
+        $p->loadString($txt);
+
         $expected = ["LOC+11+ITGOA'", "MEA+WT++KGM:9040'"];
-        static::assertSame($expected, $test);
+        static::assertSame($expected, $p->getRawSegments());
     }
 
     public function testParseSimple()
@@ -53,23 +57,26 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
         $p = new Parser();
         $array = ["LOC+9+VNSGN'", "LOC+11+ITGOA'", "MEA+WT++KGM:9040'"];
         $expected = [['LOC', '9', 'VNSGN'], ['LOC', '11', 'ITGOA'], ['MEA', 'WT', '', ['KGM', '9040']]];
-        $result = $p->parse($array);
-        static::assertSame($expected, $result);
+        $p->loadArray($array)->parse();
+        static::assertSame($expected, $p->get());
     }
 
     public function testEscapedSegment()
     {
         $string = "EQD+CX??DU12?+3456+2?:0'";
         $expected = [['EQD', 'CX?DU12+3456', '2:0']];
-        $result = (new Parser($string))->get();
-        static::assertSame($expected, $result);
+        $p = new Parser();
+        $p->loadString($string)->parse();
+        static::assertSame($expected, $p->get());
     }
 
     /** @dataProvider multipleEscapedSegmentsProvider */
     public function testMultipleEscapedSegments($string, $expected)
     {
-        $result = (new Parser($string))->get();
-        static::assertSame($expected, $result);
+        $p = new Parser();
+        $p->loadString($string)->parse();
+
+        static::assertSame($expected, $p->get());
     }
 
     public static function multipleEscapedSegmentsProvider()
@@ -99,11 +106,15 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
         $errors = [];
         $string = \file_get_contents(__DIR__ . '/../files/example_order_ok.edi');
         for ($i = 0; $i < 100; ++$i) { // keep for simple performance tests
-            $errors = (new Parser($string))->errors();
+            $p = new Parser();
+            $p->loadString($string)->parse();
+            $errors = $p->errors();
         }
         static::assertSame([], $errors);
 
-        $data = \json_encode((new Parser($string))->get());
+        $p = new Parser();
+        $p->loadString($string)->parse();
+        $data = \json_encode($p->get());
         static::assertStringContainsString('Sup 1:10', $data);
         static::assertStringNotContainsString('Konzentrat:o', $data);
         static::assertStringContainsString('"Rindfleischsuppe Konzentrat","o', $data);
@@ -112,7 +123,9 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
     public function testFileError()
     {
         $string = \file_get_contents(__DIR__ . '/../files/example_order_error.edi');
-        $errors = (new Parser($string))->errors();
+        $p = new Parser();
+        $p->loadString($string)->parse();
+        $errors = $p->errors();
         static::assertSame(
             [
                 0 => 'There\'s a character not escaped with ? in the data; string :::H-Vollmilch 3,5%  ?*?*Marke?*?*:1l Tertra mit Drehverschluss',
@@ -125,9 +138,10 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
     {
         $string = "EQD+CèèèXDU12?+3456+2?:0'";
         $expected = [['EQD', 'CXDU12+3456', '2:0']];
-        $p = new Parser($string);
+        $p = new Parser();
+        $p->loadString($string)->parse();
         $result = $p->get();
-        $experror = "There's a not printable character on line 1: EQD+CèèèXDU12?+3456+2?:0'";
+        $experror = "Non-printable character on line 1: EQD+CèèèXDU12?+3456+2?:0'";
         $error = $p->errors();
         static::assertSame($expected, $result);
         static::assertContains($experror, $error);
@@ -137,7 +151,8 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
     {
         $string = "EQD+CX?DU12?+3456+2?:0'";
         $expected = [['EQD', 'CX?DU12+3456', '2:0']];
-        $p = new Parser($string);
+        $p = new Parser();
+        $p->loadString($string)->parse();
         $result = $p->get();
         $experror = "There's a character not escaped with ? in the data; string CX?DU12?+3456";
         $error = $p->errors();
@@ -147,9 +162,9 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
 
     public function testSegmentWithMultipleSingleQuotes()
     {
-        $string = ["EQD+CX'DU12?+3456+2?:0'", "EQD+CXDU12?+3456+2?:0'"];
+        $strings = ["EQD+CX'DU12?+3456+2?:0'", "EQD+CXDU12?+3456+2?:0'"];
         $p = new Parser();
-        $p->parse($string);
+        $p->loadArray($strings)->parse();
         $experror = "There's a ' not escaped in the data; string EQD+CX'DU12?+3456+2?:0";
         $error = $p->errors();
         static::assertContains($experror, $error);
@@ -158,33 +173,42 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
     public function testArrayInputNoErrors()
     {
         $arr = ["LOC+9+VNSGN'", "LOC+11+ITGOA'"];
-        $result = (new Parser($arr))->errors();
+        $p = new Parser();
+        $p->loadArray($arr)->parse();
+        $result = $p->errors();
         static::assertEmpty($result);
     }
 
     public function testArrayInputEmptyLine()
     {
         $arr = ["LOC+9+VNSGN'", '', "LOC+11+ITGOA'"];
-        $result = (new Parser($arr))->errors();
+        $p = new Parser();
+        $p->loadArray($arr)->parse();
+        $result = $p->errors();
         static::assertEmpty($result);
     }
 
     public function testLoadFile()
     {
-        $result = (new Parser(__DIR__ . '/../files/example.edi'))->errors();
+        $p = new Parser();
+        $p->load(__DIR__ . '/../files/example.edi')->parse();
+        $result = $p->errors();
         static::assertEmpty($result);
     }
 
     public function testLoadWrappedFile()
     {
-        $result = (new Parser(__DIR__ . '/../files/example_wrapped.edi'))->errors();
+        $p = new Parser();
+        $p->load(__DIR__ . '/../files/example_wrapped.edi')->parse();
+        $result = $p->errors();
         static::assertEmpty($result);
     }
 
     public function testUNHWithoutMessageType()
     {
         $arr = ['UNH+123', "LOC+9+VNSGN'", "LOC+11+ITGOA'"];
-        $p = new Parser($arr);
+        $p = new Parser();
+        $p->loadArray($arr)->parse();
         static::assertNull($p->getMessageFormat());
         static::assertNull($p->getMessageDirectory());
     }
@@ -192,7 +216,8 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
     public function testUNHData()
     {
         $arr = ["UNH+1452515553811+COARRI:D:95B:UN:ITG13'"];
-        $p = new Parser($arr);
+        $p = new Parser();
+        $p->loadArray($arr)->parse();
         static::assertSame('COARRI', $p->getMessageFormat());
         static::assertSame('95B', $p->getMessageDirectory());
     }
@@ -200,14 +225,17 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
     public function testUNHDataOnlyFormat()
     {
         $arr = ["UNH+1452515553811+COARRI'"];
-        $p = new Parser($arr);
+        $p = new Parser();
+        $p->loadArray($arr)->parse();
         static::assertSame('COARRI', $p->getMessageFormat());
         static::assertNull($p->getMessageDirectory());
     }
 
     public function testUNAString()
     {
-        $result = (new Parser(["UNA:+.? '", 'UNH+123', "LOC+9+VNSGN'"]))->errors();
+        $p = new Parser();
+        $p->loadArray(["UNA:+.? '", 'UNH+123', "LOC+9+VNSGN'"])->parse();
+        $result = $p->errors();
         static::assertEmpty($result);
     }
 
@@ -224,7 +252,8 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
     public function testReleaseCharacter()
     {
         $p = new Parser();
-        $loaded = $p->load(__DIR__ . '/../files/example_release_character.edi');
+        $p->load(__DIR__ . '/../files/example_release_character.edi')->parse();
+        $loaded = $p->get();
         $result = $p->errors();
         static::assertEmpty($result);
 

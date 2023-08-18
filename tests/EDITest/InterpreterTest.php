@@ -13,7 +13,8 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
 {
     public function testCOARRI()
     {
-        $parser = new Parser(__DIR__ . '/../files/D95BCOARRI.edi');
+        $parser = new Parser();
+        $parser->load(__DIR__ . '/../files/D95BCOARRI.edi')->parse();
 
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
@@ -31,7 +32,8 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
 
     public function testServiceSegments()
     {
-        $parser = new Parser(__DIR__ . '/../files/D95BCOARRI.edi');
+        $parser = new Parser();
+        $parser->load(__DIR__ . '/../files/D95BCOARRI.edi')->parse();
 
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
@@ -50,7 +52,8 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
 
     public function testBAPLIE()
     {
-        $parser = new Parser(__DIR__ . '/../files/D95BBAPLIE.edi');
+        $parser = new Parser();
+        $parser->load(__DIR__ . '/../files/D95BBAPLIE.edi')->parse();
 
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
@@ -70,7 +73,8 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
 
     public function testDESADV()
     {
-        $parser = new Parser(__DIR__ . '/../files/D96ADESADV.edi');
+        $parser = new Parser();
+        $parser->load(__DIR__ . '/../files/D96ADESADV.edi')->parse();
 
         $mapping = new \EDI\Mapping\MappingProvider('D96A');
         $analyser = new Analyser();
@@ -99,7 +103,8 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
     public function testMissingUNTUNZ()
     {
         $edi = "UNB+UNOA:2+LBCTI:01+OOCLIES:ZZ+160414:0307+1865'UNH+1907+BAPLIE:D:95B:UN:SMDG20'BGM++391651645'";
-        $parser = new Parser($edi);
+        $parser = new Parser();
+        $parser->loadString($edi)->parse();
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
@@ -119,8 +124,8 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
 
     public function testOrderError()
     {
-        $edi = \file_get_contents(__DIR__ . '/../files/example_order_error.edi');
-        $parser = new Parser($edi);
+        $parser = new Parser();
+        $parser->load(__DIR__ . '/../files/example_order_error.edi')->parse();
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
@@ -166,7 +171,8 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
     public function testOrderOk()
     {
         $edi = \file_get_contents(__DIR__ . '/../files/example_order_ok.edi');
-        $parser = new Parser($edi);
+        $parser = new Parser();
+        $parser->loadString($edi)->parse();
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
@@ -202,7 +208,8 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
     public function testMissingUNBUNH()
     {
         $edi = "UNT+30+1907'UNZ+1+1865'";
-        $parser = new Parser($edi);
+        $parser = new Parser();
+        $parser->loadString($edi)->parse();
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
@@ -223,7 +230,8 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
     public function testTooManyElements()
     {
         $edi = "UNB+UNOA:2+LBCTI:01+OOCLIES:ZZ:AA:DD+160414:0307+1865'UNZ+1+1865+TEST+TEST'";
-        $parser = new Parser($edi);
+        $parser = new Parser();
+        $parser->loadString($edi)->parse();
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());
@@ -239,8 +247,8 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
 
     public function testIdInsteadOfName()
     {
-        $edi = \file_get_contents(__DIR__ . '/../files/D96ADESADV.edi');
-        $parser = new Parser($edi);
+        $parser = new Parser();
+        $parser->load(__DIR__ . '/../files/D96ADESADV.edi')->parse();
         $mapping = new \EDI\Mapping\MappingProvider($parser->getMessageDirectory());
         $analyser = new Analyser();
         $segs = $analyser->loadSegmentsXml($mapping->getSegments());

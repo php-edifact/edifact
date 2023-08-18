@@ -131,61 +131,19 @@ class Parser
      */
     private $unbChecked;
 
-    /**
-     * Parser constructor.
-     *
-     * @param string|string[]|null $url
-     */
-    public function __construct($url = null)
+    public function __construct()
     {
-        if ($this->unaChecked !== false) {
-            $this->resetUNA();
-        }
-
-        if ($this->unbChecked !== false) {
-            $this->resetUNB();
-        }
-
-        if ($url === null) {
-            return;
-        }
-
-        if (\is_array($url)) {
-            //
-            // Object constructed with an array as argument
-            //
-            if (\count($url) === 1) {
-                $url = $this->unwrap($url[0]);
-            }
-            $this->rawSegments = $url;
-            /** @noinspection UnusedFunctionResultInspection */
-            $this->parse($url);
-        } elseif (\file_exists($url)) {
-            //
-            // Object constructed with a path to a file as argument
-            //
-            /** @noinspection UnusedFunctionResultInspection */
-            $this->load($url);
-        } else {
-            //
-            // Object constructed with a string as argument
-            //
-            /** @noinspection UnusedFunctionResultInspection */
-            $this->loadString($url);
-        }
+        $this->resetUNA();
+        $this->resetUNB();
     }
 
     /**
-     * Parse EDI array
-     *
-     * @param array $lines
-     *
-     * @return array
+     * Parse EDI array.
      */
-    public function parse(array &$lines): array
+    public function parse(): void
     {
         $i = 0;
-        foreach ($lines as &$line) {
+        foreach ($this->rawSegments as $line) {
             ++$i;
 
             // Null byte and carriage return removal. (CR+LF)
@@ -197,7 +155,7 @@ class Parser
             $line_bytes = \strlen($line);
 
             if ($line_bytes !== \strlen($lineTrim)) {
-                $this->errors[] = "There's a non-printable character on line " . $i . ': ' . $lineTrim;
+                $this->errors[] = "Non-printable character on line " . $i . ': ' . $lineTrim;
             }
 
             if ($line_bytes < 2) {
@@ -232,8 +190,6 @@ class Parser
                     break;
             }
         }
-
-        return $this->get();
     }
 
     /**
@@ -365,42 +321,47 @@ class Parser
         return $this->rawSegments;
     }
 
-    /**
-     * Load the message from file.
-     *
-     * @param string $url
-     *
-     * @return array|false
-     */
-    public function load(string $url)
+	/**
+	 * Load the message from file.
+	 * @param string $location Either a local file path or a URL
+	 * @return self
+	 */
+    public function load(string $location): self
     {
-        $file = \file_get_contents($url);
-        if ($file === false)
+        $contents = \file_get_contents($location);
+        if ($contents === false)
             throw new \RuntimeException("File could not be retrieved");
 
-        $this->loadString($file);
+        $this->loadString($contents);
 
-        return $this->get();
-    }
+        return $this;
+	}
 
-    /**
-     * Load the message from a string.
-     *
-     * @param string $string
-     *
-     * @return array
-     */
-    public function loadString(string &$string)
+	/**
+	 * Load the message from a string.
+	 * @param string $txt
+	 * @return self
+	 */
+    public function loadString(string &$txt): self
     {
-        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-        $string = $this->unwrap($string);
-        $this->rawSegments = $string;
-        $this->parse($string);
-        if ($this->checkEncoding() === false)
-            $this->errors[] = 'Character encoding does not match declaration in UNB interchange header';
+	    $this->rawSegments = $this->unwrap($txt);
 
-        return $this->get();
+        return $this;
     }
+
+	/**
+     * Load the message from an array of strings.
+     * @param array $lines
+     * @return self
+	 */
+	public function loadArray(array $lines): self
+	{
+        $this->rawSegments = $lines;
+        if (\count($lines) === 1) {
+			$this->loadString($lines[0]);
+		}
+        return $this;
+	}
 
     /**
      * Change the default regex used for stripping invalid characters.
