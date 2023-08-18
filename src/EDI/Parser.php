@@ -293,6 +293,9 @@ class Parser
      */
     public function get(): array
     {
+        if (empty($this->parsedfile)) {
+            $this->parse();
+        }
         return $this->parsedfile;
     }
 
@@ -326,7 +329,7 @@ class Parser
 	 * @param string $txt
 	 * @return self
 	 */
-    public function loadString(string &$txt): self
+    public function loadString(string $txt): self
     {
 	    $this->rawSegments = $this->unwrap($txt);
 

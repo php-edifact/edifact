@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace EDI;
 
 /**
- * EDIFACT Messages Parser
+ * EDIFACT Messages Analyser
  * (c)2016 Uldis Nelsons
  */
 class Analyser
