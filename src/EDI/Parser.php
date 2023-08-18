@@ -137,7 +137,7 @@ class Parser
     public function parse(): void
     {
         $i = 0;
-        foreach ($this->rawSegments as $line) {
+        foreach ($this->getRawSegments() as $line) {
             ++$i;
 
             // Null byte and carriage return removal. (CR+LF)
@@ -250,6 +250,8 @@ class Parser
         if (\count($line) < 3) {
             return;
         }
+
+        $this->messageNumber = $line[1];
 
         $lineElement = $line[2];
         if (!\is_array($lineElement)) {
