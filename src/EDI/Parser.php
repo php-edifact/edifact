@@ -11,9 +11,9 @@ namespace EDI;
 class Parser
 {
     /**
-     * @var array|string[]|null
+     * @var array|string[]
      */
-    private $rawSegments;
+    private $rawSegments = [];
 
     /**
      * @var array
@@ -36,67 +36,67 @@ class Parser
     private static $DELIMITER = '/';
 
     /**
-     * @var string|null : component separator character (default \:)
+     * @var string Component separator character
      */
-    private $sepComp;
+    private $sepComp = "\:";
 
     /**
-     * @var string|null : component separator character (default :)
+     * @var string Component separator character
      */
-    private $sepUnescapedComp;
+    private $sepUnescapedComp = ':';
 
     /**
-     * @var string|null : data separator character (default \+)
+     * @var string Data separator character
      */
-    private $sepData;
+    private $sepData = "\+";
 
     /**
-     * @var string|null : dec separator character (no use but here) (default .)
+     * @var string Dec separator character (no use but here)
      */
-    private $sepDec;
+    private $sepDec = '.';
 
     /**
-     * @var string|null : release character (default \?)
+     * @var string Release character
      */
-    private $symbRel;
+    private $symbRel = "\?";
 
     /**
-     * @var string|null (default ?)
+     * @var string (default ?)
      */
-    private $symbUnescapedRel;
+    private $symbUnescapedRel = '?';
 
     /**
-     * @var string|null : repetition character (no use but here) (default *)
+     * @var string Repetition character (no use but here)
      */
-    private $symbRep;
+    private $symbRep = '*';
 
     /**
-     * @var string|null : end character (default ')
+     * @var string End character
      */
-    private $symbEnd;
+    private $symbEnd = "'";
 
     /**
-     * @var string|null : safe string (default §SS§)
+     * @var string Safe string
      */
-    private $stringSafe;
+    private $stringSafe = '§SS§';
 
     /**
-     * @var string|null Syntax identifier (default UNOB)
+     * @var string|null Syntax identifier
      */
-    private $syntaxID;
+    private $syntaxID = 'UNOB';
 
     /**
-     * @var string|null : message format from UNH
+     * @var string|null Message format from UNH
      */
     private $messageFormat;
 
     /**
-     * @var string : message directory
+     * @var string Message directory
      */
     private $messageDirectory;
 
     /**
-     * @var string : message number
+     * @var string Message number
      */
     private $messageNumber;
 
@@ -122,20 +122,14 @@ class Parser
     ];
 
     /**
-     * @var bool : TRUE when UNA's characters are known, FALSE when they are not. NULL means no initialization
+     * @var bool TRUE when UNA characters are known.
      */
-    private $unaChecked;
+    private $unaChecked = false;
 
     /**
-     * @var bool : TRUE when UNB encoding is known, FALSE when it's not. NULL means no initialization
+     * @var bool TRUE when UNB encoding is known.
      */
-    private $unbChecked;
-
-    public function __construct()
-    {
-        $this->resetUNA();
-        $this->resetUNB();
-    }
+    private $unbChecked = false;
 
     /**
      * Parse EDI array.
@@ -193,10 +187,8 @@ class Parser
     }
 
     /**
-     * Read UNA's characters definition
-     *
-     * @param string $line : UNA definition line (without UNA tag). Example : :+.? '
-     *
+     * Read UNA's characters definition.
+     * @param string $line UNA definition line (without UNA tag). Example : :+.? '
      * @return void
      */
     public function analyseUNA(string $line)
@@ -226,10 +218,8 @@ class Parser
     }
 
     /**
-     * UNB line analysis
-     *
+     * UNB line analysis.
      * @param string|string[] $line UNB definition line (without UNB tag). Example UNOA:2
-     *
      * @return void
      */
     public function analyseUNB($line): void
@@ -251,10 +241,8 @@ class Parser
     }
 
     /**
-     * Identify message type
-     *
+     * Identify message type.
      * @param array<mixed|string> $line UNH segment
-     *
      * @return void
      */
     public function analyseUNH(array $line): void
@@ -276,7 +264,6 @@ class Parser
 
     /**
      * Check if the encoding of the text actually matches the one declared by the UNB syntax identifier.
-     *
      * @return bool
      * @throws \RuntimeException
      */
@@ -292,8 +279,7 @@ class Parser
     }
 
     /**
-     * Get errors
-     *
+     * Get errors.
      * @return array
      */
     public function errors(): array
@@ -302,8 +288,7 @@ class Parser
     }
 
     /**
-     * Get parsed lines/segments
-     *
+     * Get parsed lines/segments.
      * @return array
      */
     public function get(): array
@@ -312,11 +297,10 @@ class Parser
     }
 
     /**
-     * Get raw segments array
-     *
-     * @return array|string[]|null
+     * Get raw segments array.
+     * @return array|string[]
      */
-    public function getRawSegments()
+    public function getRawSegments(): array
     {
         return $this->rawSegments;
     }
@@ -365,9 +349,7 @@ class Parser
 
     /**
      * Change the default regex used for stripping invalid characters.
-     *
      * @param string $regex
-     *
      * @return void
      */
     public function setStripRegex(string $regex)
@@ -401,42 +383,9 @@ class Parser
         return $this->messageNumber;
     }
 
-
     /**
-     * Reset UNA's characters definition
-     *
-     * @return void
-     */
-    private function resetUNA()
-    {
-        $this->sepComp = "\:";
-        $this->sepUnescapedComp = ':';
-        $this->sepData = "\+";
-        $this->sepDec = '.'; // See later if a preg_quote is needed
-        $this->symbRel = "\?";
-        $this->symbUnescapedRel = '?';
-        $this->symbRep = '*'; // See later if a preg_quote is needed
-        $this->symbEnd = "'";
-        $this->stringSafe = '§SS§';
-        $this->unaChecked = false;
-    }
-
-    /**
-     * Reset UNB's encoding definition
-     *
-     * @return void
-     */
-    private function resetUNB()
-    {
-        $this->syntaxID = 'UNOB';
-        $this->unbChecked = false;
-    }
-
-    /**
-     * Unwrap string splitting rows on terminator (if not escaped)
-     *
+     * Unwrap string splitting rows on terminator (if not escaped).
      * @param string $string
-     *
      * @return string[]
      */
     private function unwrap(string &$string): array
@@ -497,10 +446,8 @@ class Parser
     }
 
     /**
-     * Segments
-     *
+     * Split segment.
      * @param string $str
-     *
      * @return array|string[]
      */
     private function splitSegment(string &$str): array
@@ -572,10 +519,8 @@ class Parser
     }
 
     /**
-     * Composite data element
-     *
+     * Composite data element.
      * @param string $str
-     *
      * @return mixed
      */
     private function splitData(string &$str)
