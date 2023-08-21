@@ -134,7 +134,7 @@ class Parser
     /**
      * Parse EDI array.
      */
-    public function parse(): void
+    public function parse(): self
     {
         $i = 0;
         foreach ($this->getRawSegments() as $line) {
@@ -184,6 +184,7 @@ class Parser
                     break;
             }
         }
+        return $this;
     }
 
     /**
@@ -333,6 +334,8 @@ class Parser
 	 */
     public function loadString(string $txt): self
     {
+        $this->resetUNA();
+        $this->resetUNB();
 	    $this->rawSegments = $this->unwrap($txt);
 
         return $this;
@@ -345,6 +348,8 @@ class Parser
 	 */
 	public function loadArray(array $lines): self
 	{
+        $this->resetUNA();
+        $this->resetUNB();
         $this->rawSegments = $lines;
         if (\count($lines) === 1) {
 			$this->loadString($lines[0]);
@@ -386,6 +391,34 @@ class Parser
     public function getMessageNumber()
     {
         return $this->messageNumber;
+    }
+
+    /**
+     * Reset UNA character definition to defaults.
+     * @return void
+     */
+    private function resetUNA(): void
+    {
+        $this->sepComp = "\:";
+        $this->sepUnescapedComp = ':';
+        $this->sepData = "\+";
+        $this->sepDec = '.'; // See later if a preg_quote is needed
+        $this->symbRel = "\?";
+        $this->symbUnescapedRel = '?';
+        $this->symbRep = '*'; // See later if a preg_quote is needed
+        $this->symbEnd = "'";
+        $this->stringSafe = '§SS§';
+        $this->unaChecked = false;
+    }
+
+    /**
+     * Reset UNB encoding definition to defaults.
+     * @return void
+     */
+    private function resetUNB(): void
+    {
+        $this->syntaxID = 'UNOB';
+        $this->unbChecked = false;
     }
 
     /**

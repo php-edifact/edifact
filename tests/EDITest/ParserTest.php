@@ -218,6 +218,7 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
         $arr = ["UNH+1452515553811+COARRI:D:95B:UN:ITG13'"];
         $p = new Parser();
         $p->loadArray($arr)->parse();
+        static::assertSame('1452515553811', $p->getMessageNumber());
         static::assertSame('COARRI', $p->getMessageFormat());
         static::assertSame('95B', $p->getMessageDirectory());
     }
