@@ -9,29 +9,20 @@ It's provided in a Composer package:
 
 `composer require sabas/edifact`
 
-The mapping xml files are provided in a separate package:
+The mapping XML files are provided in a separate package:
 
 `composer require php-edifact/edifact-mapping`
 
 EDI\Parser
 ------------------
-Given an edi message checks the syntax, outputs errors and returns the message as a multidimensional array.
+Given an EDI message checks the syntax, outputs errors and returns the message as a multidimensional array.
 
 **INPUT**
 ```php
-$c = new Parser($x);
-```
-Where `$x` could be:
-* a url
-* a string (wrapped message)
-* an array of strings (a segment per entry)
-
-OR
-
- ```php
-$c = new Parser();
-$c->load($file);
-$c->loadString($string);
+$p = new EDI\Parser();
+$p->load($location);     // a local path to a file or a URL (if file_get_contents() allows for remote access)
+$p->loadString($string); // a full message (single line text)
+$p->loadArray($array);   // an array of strings (one segment per entry)
 ```
 
 **OUTPUT**
@@ -52,18 +43,18 @@ Given a multidimensional array (formatted as the output of the parser), returns 
 
 **INPUT**
 ```php
-$c = new Encoder($x, $wrap = true);
+$c = new EDI\Encoder($x, $compact = true);
 ```
 `$x` is a multidimensional array where first dimension is the EDI segment, second contains elements:
 * single value
 * array (representing composite elements)
 
-`$wrap` is a boolean, if you need a segment per line. Set to false to disable wrapping
+`$compact` is a boolean, if you need a segment per line. Set to false to enable wrapped lines.
 
 OR
 ```php
-$c = new Encoder();
-$c->encode($array, $wrap);
+$c = new EDI\Encoder();
+$c->encode($array, false);
 ```
 
 **OUTPUT**
@@ -73,15 +64,16 @@ $c->get(); // returns String
 
 EDI\Analyser
 ------------------
-Create from EDI file readable structured text with comments from `segments.xml`.
+Create human-readable, structured text with comments from `segments.xml`.
 Requires the EDI\Mapping package.
 
 ```php
-        $parser = new Parser($file);
-        $parsed = $parser->get();
+        $parser = new EDI\Parser();
+        $parser->load($file);
         $segments = $parser->getRawSegments();
-        $analyser = new Analyser();
-        $mapping = new MappingProvider('D95B');
+        $parsed = $parser->get();
+        $analyser = new EDI\Analyser();
+        $mapping = new EDI\MappingProvider('D95B');
         $analyser->loadSegmentsXml($mapping->getSegments());
         $analyser->loadMessageXml($mapping->getMessage('coparn'));
         $analyser->loadCodesXml($mapping->getCodes());
@@ -91,7 +83,7 @@ Requires the EDI\Mapping package.
 ```
 * `$file` is the path to orginal EDI message file
 
-*** Example INPUT 
+### Example INPUT 
 ```text
 UNA:+,? '
 UNB+UNOA:1+MAEU+LVRIXBCT+200813:0816+1412605'
@@ -110,7 +102,7 @@ UNT+12+141260500001'
 UNZ+1+1412605'
 ```
 
-*** Example Output 
+### Example Output 
 ```text
 
 UNA:+,? '
@@ -467,48 +459,39 @@ UNZ - InterchangeTrailer http://www.unece.org/trade/untdid/d95b/trsd/trsdunz.htm
 
 EDI\Reader
 ------------------
-Read from EDI file requested segment element values.
+Read specific segment element values from parsed EDI file.
+Pass the reader a parser with a message already loaded. 
 
 **INPUT**
 ```php
-$r = new Reader($x);
+$p = new EDI\Parser();
+$p->load($x);
+$r = new EDI\Reader($p);
 $sender = $r->readEdiDataValue('UNB', 2);
 $Dt = $r->readUNBDateTimeOfPreperation();
 
 ```
-Where X could be:
-* a url
-* a string (wrapped message)
-* an array of strings (a segment per entry)
-
-OR
-
-```php
-$c = new Parser($x);
-
-$r = new Reader();
-$r->setParsedFile($c->get());
-$sender = $r->readEdiDataValue('UNB', 2);
-$Dt = $r->readUNBDateTimeOfPreperation();
-```
+See section about EDI\Parser above on how to load a file into a parser.
 
 **OUTPUT**
+
 Errors
 ```php
 $c->errors();
 ```
 Array
 ```php
-$c->get();
+$c->getParsedFile();
 ```
 
 EDI\Interpreter
 ---------------
-Organizes the data parsed by EDI/Parser using the xml description of the message and the xml segments.
+Organizes the data parsed by EDI/Parser using the XML description of the message and the XML segments.
 
 **INPUT**
 ```php
-$p = new EDI\Parser($edifile);
+$p = new EDI\Parser();
+$p->load($edifile);
 $edi = $p->get();
 
 $mapping = new EDI\Mapping\MappingProvider('D95B');
@@ -523,12 +506,12 @@ $prep = $interpreter->prepare($edi);
 
 **OUTPUT**
 
-Json
+JSON
 ```php
 $interpreter->getJson()
 ```
 
-Json for interchange service segments (UNB / UNZ)
+JSON for interchange service segments (UNB / UNZ)
 ```php
 $interpreter->getJsonServiceSegments()
 ```
