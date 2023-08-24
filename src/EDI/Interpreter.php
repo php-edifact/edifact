@@ -597,7 +597,6 @@ class Interpreter
             // if segment can be repeated then the flag forces to be an array also
             // if there's only one segment
             if ($maxRepeat > 1 && $this->forceArrayWhenRepeatable) {
-                d('lol', $jsonMessage, $maxRepeat);
                 $array[$jsonMessage['key']] = [$jsonMessage['value']];
             }
         }
