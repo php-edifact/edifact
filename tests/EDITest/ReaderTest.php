@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EDITest;
 
 use EDI\Reader;
+use EDI\Parser;
 
 /**
  * @internal
@@ -13,7 +14,9 @@ final class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     public function testReadEdiDataValue()
     {
-        $r = new Reader(__DIR__ . '/../files/example.edi');
+        $p = new Parser();
+        $p->load(__DIR__ . '/../files/example.edi');
+        $r = new Reader($p);
 
         $sender = $r->readEdiDataValue('UNB', 2);
         static::assertSame('6XPPC', $sender);
@@ -27,37 +30,55 @@ final class ReaderTest extends \PHPUnit\Framework\TestCase
 
     public function testReadUNBDateTimeOfPpreperation()
     {
-        $Dt = (new Reader(__DIR__ . '/../files/example.edi'))->readUNBDateTimeOfPreparation();
+        $p = new Parser();
+        $p->load(__DIR__ . '/../files/example.edi');
+        $r = new Reader($p);
+        $Dt = $r->readUNBDateTimeOfPreparation();
         static::assertSame('2094-01-01 09:50:00', $Dt);
     }
 
     public function testReadUNBDateTimeOfPreperation()
     {
-        $Dt = (new Reader(__DIR__ . '/../files/example.edi'))->readUNBDateTimeOfPreparation();
+        $p = new Parser();
+        $p->load(__DIR__ . '/../files/example.edi');
+        $r = new Reader($p);
+        $Dt = $r->readUNBDateTimeOfPreparation();
         static::assertSame('2094-01-01 09:50:00', $Dt);
     }
 
     public function testReadUNBDateTimeOfPreparation()
     {
-        $Dt = (new Reader(__DIR__ . '/../files/example.edi'))->readUNBDateTimeOfPreparation();
+        $p = new Parser();
+        $p->load(__DIR__ . '/../files/example.edi');
+        $r = new Reader($p);
+        $Dt = $r->readUNBDateTimeOfPreparation();
         static::assertSame('2094-01-01 09:50:00', $Dt);
     }
 
     public function testReadUNHmessageType()
     {
-        $messageType = (new Reader(__DIR__ . '/../files/example.edi'))->readUNHmessageType();
+        $p = new Parser();
+        $p->load(__DIR__ . '/../files/example.edi');
+        $r = new Reader($p);
+        $messageType = $r->readUNHmessageType();
         static::assertSame('PAORES', $messageType);
     }
 
     public function testReadUNHmessageNumber()
     {
-        $messageNumber = (new Reader(__DIR__ . '/../files/example.edi'))->readUNHmessageNumber();
+        $p = new Parser();
+        $p->load(__DIR__ . '/../files/example.edi');
+        $r = new Reader($p);
+        $messageNumber = $r->readUNHmessageNumber();
         static::assertSame('1', $messageNumber);
     }
 
     public function testpreValidate()
     {
-        $errors = (new Reader(__DIR__ . '/../files/exampleMulti.edi'))->errors();
+        $p = new Parser();
+        $p->load(__DIR__ . '/../files/exampleMulti.edi');
+        $r = new Reader($p);
+        $errors = $r->errors();
         static::assertArrayHasKey(0, $errors);
 
         static::assertSame('File has multiple messages', $errors[0]);
@@ -69,11 +90,15 @@ final class ReaderTest extends \PHPUnit\Framework\TestCase
         $eddies = Reader::splitMultiMessage($multiEdi);
         static::assertCount(2, $eddies);
 
-        $r = new Reader($eddies[0]);
+        $p = new Parser();
+        $p->loadString($eddies[0]);
+        $r = new Reader($p);
         $messageType = $r->readUNHmessageType();
         static::assertSame('PAORES', $messageType);
 
-        $r = new Reader($eddies[1]);
+        $p = new Parser();
+        $p->loadString($eddies[1]);
+        $r = new Reader($p);
         $messageType = $r->readUNHmessageType();
         static::assertSame('PAORES', $messageType);
     }

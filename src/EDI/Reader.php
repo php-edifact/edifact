@@ -11,9 +11,9 @@ namespace EDI;
 class Reader
 {
     /**
-     * @var array parsed EDI file
+     * @var Parser Holding parsed EDI file
      */
-    private $parsedfile;
+    private $parser;
 
     /**
      * @var array<int,string>
@@ -22,14 +22,12 @@ class Reader
 
     /**
      * Reader constructor.
-     *
-     * @param string $url url or path ur EDI message
+     * @param Parser $parser With a message already loaded.
      */
-    public function __construct(string $url = null)
+    public function __construct(Parser $parser)
     {
-        if (isset($url)) {
-            $this->load($url);
-        }
+        $this->parser = $parser;
+        $this->preValidate();
     }
 
     /**
@@ -53,37 +51,12 @@ class Reader
     }
 
     /**
-     * Returns the parsed file contained within.
-     *
+     * Returns the parsed message.
      * @returns array
      */
     public function getParsedFile(): array
     {
-        return $this->parsedfile;
-    }
-
-    /**
-     * @param string $url url to edi file, path to edi file or EDI message
-     *
-     * @return bool
-     */
-    public function load(string $url): bool
-    {
-        $this->parsedfile = (new Parser($url))->get();
-
-        return $this->preValidate();
-    }
-
-    /**
-     * @param array $parsed_file
-     *
-     * @return bool
-     */
-    public function setParsedFile(array $parsed_file): bool
-    {
-        $this->parsedfile = $parsed_file;
-
-        return $this->preValidate();
+        return $this->parser->get();
     }
 
     /**
@@ -95,7 +68,7 @@ class Reader
     {
         $this->errors = [];
 
-        if (!\is_array($this->parsedfile)) {
+        if (!\is_array($this->getParsedFile())) {
             $this->errors[] = 'Incorrect format parsed file';
 
             return false;
@@ -217,7 +190,7 @@ class Reader
         }
 
         // search segments which conform to filter
-        foreach ($this->parsedfile as $edi_row) {
+        foreach ($this->getParsedFile() as $edi_row) {
             if ($edi_row[0] == $segment_name) {
                 if ($filter_elements) {
                     foreach ($filter_elements as $el_id => $el_value) {
@@ -448,7 +421,7 @@ class Reader
         $group = [];
         $position = 'before_search';
 
-        foreach ($this->parsedfile as $edi_row) {
+        foreach ($this->getParsedFile() as $edi_row) {
             // search before group segment
             if ($position == 'before_search' && $edi_row[0] == $before) {
                 $position = 'before_is';

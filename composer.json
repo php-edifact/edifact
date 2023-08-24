@@ -28,6 +28,7 @@
     "require": {
         "php": "~8",
         "ext-json": "*",
+        "ext-mbstring": "*",
         "ext-simplexml": "*"
     },
     "require-dev": {
