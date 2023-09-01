@@ -65,7 +65,7 @@ $reader = new EDI\Reader($parser);
 $groups = $reader->groupsExtract('INV');
 
 foreach ($groups as $record) {
-    $parser->loadArray($record);
+    $parser->loadArray($record, false);
     $r = EDI\Reader($parser);
     $records[] = [
         'storageLocation' => $r->readEdiDataValue(['LOC', ['2.0' => 'YA']], 2, 3),

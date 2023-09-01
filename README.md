@@ -477,11 +477,11 @@ See section about EDI\Parser above on how to load a file into a parser.
 
 Errors
 ```php
-$c->errors();
+$r->errors();
 ```
 Array
 ```php
-$c->getParsedFile();
+$r->getParsedFile();
 ```
 
 EDI\Interpreter
