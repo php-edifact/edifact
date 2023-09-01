@@ -42,6 +42,16 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
         static::assertSame($expected, $p->get());
     }
 
+    public function testArrayParsed()
+    {
+        $arr = [['LOC', '11', 'ITGOA'], ['MEA', 'WT', '', ['KGM', '9040']]];
+        $p = new Parser();
+        $p->loadArray($arr,false)->parse();
+
+        $expected = [['LOC', '11', 'ITGOA'], ['MEA', 'WT', '', ['KGM', '9040']]];
+        static::assertSame($expected, $p->get());
+    }
+
     public function testGetRawSegments()
     {
         $txt = "LOC+11+ITGOA'MEA+WT++KGM:9040'";

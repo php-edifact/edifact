@@ -492,13 +492,13 @@ class Reader
     }
 
     /**
-     * Get groups from message when last segment is unknown but you know the barrier
-     * useful for invoices by default.
+     * Get groups from message when last segment is unknown but you know the barrier.
+     * Useful for invoices by default.
      *
      * @param string                  $start   first segment start a new group
      * @param array<array-key,string> $barrier barrier segment (NOT in group)
      *
-     * @return array<mixed>
+     * @return array Containing parsed lines
      */
     public function groupsExtract(string $start = 'LIN', array $barrier = ['UNS']): array
     {
@@ -511,8 +511,7 @@ class Reader
             $segment = $edi_row[0];
             if (
                 $position == 'group_is'
-                &&
-                (
+                && (
                     $segment == $start
                     ||
                     \in_array($segment, $barrier, true)

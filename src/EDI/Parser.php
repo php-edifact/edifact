@@ -341,19 +341,26 @@ class Parser
         return $this;
     }
 
-	/**
-     * Load the message from an array of strings.
+    /**
+     * Load a raw or parsed message from an array of strings.
      * @param array $lines
+     * @param bool  $raw If the data hasn't been parsed yet
      * @return self
-	 */
-	public function loadArray(array $lines): self
+     */
+    public function loadArray(array $lines, bool $raw = true): self
 	{
-        $this->resetUNA();
-        $this->resetUNB();
-        $this->rawSegments = $lines;
-        if (\count($lines) === 1) {
-			$this->loadString($lines[0]);
-		}
+        if($raw) {
+            $this->resetUNA();
+            $this->resetUNB();
+            $this->rawSegments = $lines;
+            if (\count($lines) === 1) {
+                $this->loadString($lines[0]);
+            }
+        } else {
+            $this->rawSegments = [];
+            $this->parsedfile = $lines;
+        }
+
         return $this;
 	}
 
