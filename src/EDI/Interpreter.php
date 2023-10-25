@@ -21,6 +21,7 @@ class Interpreter
         'TOOMANYELEMENTS' => 'This segment has more data elements than expected',
         'MISSINGINTERCHANGEDELIMITER' => 'The file has at least one UNB or UNZ missing',
         'MISSINGMESSAGEDELIMITER' => 'The message has at least one UNH or UNT missing',
+        'TOOMANYSEGMENTS' => 'The message has some additional segments beyond the maximum repetition allowed',
     ];
 
     /**
@@ -535,6 +536,16 @@ class Interpreter
 
                 return;
             }
+        }
+
+        // if additional segments are detected we are violating the maxrepeat attribute
+        while (isset($message[$segmentIdx]) && \call_user_func($this->comparisonFunction, $message[$segmentIdx], $elm)) {
+            $errors[] = [
+                'text' => $this->messageTextConf['TOOMANYSEGMENTS'],
+                'position' => $segmentIdx,
+                'segmentId' => (string) $elm['id'],
+            ];
+            $segmentIdx++;
         }
     }
 
