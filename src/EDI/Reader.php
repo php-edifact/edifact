@@ -22,6 +22,7 @@ class Reader
 
     /**
      * Reader constructor.
+     *
      * @param Parser $parser With a message already loaded.
      */
     public function __construct(Parser $parser)
@@ -52,6 +53,7 @@ class Reader
 
     /**
      * Returns the parsed message.
+     *
      * @returns array
      */
     public function getParsedFile(): array
@@ -61,14 +63,12 @@ class Reader
 
     /**
      * Do initial validation
-     *
-     * @return bool
      */
     public function preValidate(): bool
     {
         $this->errors = [];
 
-        if (!\is_array($this->getParsedFile())) {
+        if (! \is_array($this->getParsedFile())) {
             $this->errors[] = 'Incorrect format parsed file';
 
             return false;
@@ -76,7 +76,7 @@ class Reader
 
         $r = $this->readUNHmessageNumber();
         if (
-            !$r
+            ! $r
             &&
             (
                 $this->errors !== []
@@ -96,7 +96,6 @@ class Reader
     /**
      * Split multi messages to separate messages
      *
-     * @param string $ediMessage
      *
      * @return array<mixed>
      */
@@ -155,9 +154,7 @@ class Reader
      * read required value. if no found, registered error
      *
      * @param array<mixed>|string $filter segment filter by segment name and values
-     * @param int                 $l1
      * @param false|int           $l2
-     *
      * @return string|null
      */
     public function readEdiDataValueReq($filter, int $l1, $l2 = false)
@@ -175,7 +172,6 @@ class Reader
      * @param int          $l1        first level item number (start by 1)
      * @param false|int    $l2        second level item number (start by 0)
      * @param bool         $required  if required, but no exist, register error
-     *
      * @return string|null
      */
     public function readEdiDataValue($filter, int $l1, $l2 = false, bool $required = false)
@@ -226,14 +222,14 @@ class Reader
                     }
                 }
                 $segment = $edi_row;
-                ++$segment_count;
+                $segment_count++;
             }
         }
 
         // no segment found
-        if (!$segment) {
+        if (! $segment) {
             if ($required) {
-                $this->errors[] = 'Segment "' . $segment_name . '" no exist';
+                $this->errors[] = 'Segment "'.$segment_name.'" no exist';
             }
 
             return null;
@@ -241,15 +237,15 @@ class Reader
 
         // found more than one segment - error
         if ($segment_count > 1) {
-            $this->errors[] = 'Segment "' . $segment_name . '" is ambiguous';
+            $this->errors[] = 'Segment "'.$segment_name.'" is ambiguous';
 
             return null;
         }
 
         // validate elements
-        if (!isset($segment[$l1])) {
+        if (! isset($segment[$l1])) {
             if ($required) {
-                $this->errors[] = 'Segment value "' . $segment_name . '[' . $l1 . ']" no exist';
+                $this->errors[] = 'Segment value "'.$segment_name.'['.$l1.']" no exist';
             }
 
             return null;
@@ -261,9 +257,9 @@ class Reader
         }
 
         // requested second level element, but not exist
-        if (!\is_array($segment[$l1]) || !isset($segment[$l1][$l2])) {
+        if (! \is_array($segment[$l1]) || ! isset($segment[$l1][$l2])) {
             if ($required) {
-                $this->errors[] = 'Segment value "' . $segment_name . '[' . $l1 . '][' . $l2 . ']" no exist';
+                $this->errors[] = 'Segment value "'.$segment_name.'['.$l1.']['.$l2.']" no exist';
             }
 
             return null;
@@ -277,18 +273,22 @@ class Reader
      * read date from DTM segment period qualifier - codelist 2005
      *
      * @param int $PeriodQualifier period qualifier (codelist/2005)
-     *
      * @return string|null YYYY-MM-DD HH:MM:SS
      */
     public function readEdiSegmentDTM($PeriodQualifier)
     {
-        $date = $this->readEdiDataValue(['DTM', ['1.0' => $PeriodQualifier]], 1, 1);
-        $format = $this->readEdiDataValue(['DTM', ['1.0' => $PeriodQualifier]], 1, 2);
+        $date = $this->readEdiDataValue([
+            'DTM', [
+                '1.0' => $PeriodQualifier,
+            ]], 1, 1);
+        $format = $this->readEdiDataValue([
+            'DTM', [
+                '1.0' => $PeriodQualifier,
+            ]], 1, 2);
         if (empty($date)) {
             return $date;
         }
         switch ($format) {
-
             case 203: //CCYYMMDDHHMM
                 return \preg_replace('#(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)#', '$1-$2-$3 $4:$5:00', $date);
 
@@ -329,10 +329,10 @@ class Reader
     {
         // separate date (YYMMDD) and time (HHMM)
         $date = $this->readEdiDataValue('UNB', 4, 0);
-        if (!empty($date)) {
+        if (! empty($date)) {
             $time = $this->readEdiDataValue('UNB', 4, 1);
             if ($time !== null) {
-                $time = (string) \preg_replace('#(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)#', '20$1-$2-$3 $4:$5:00', $date . $time);
+                $time = (string) \preg_replace('#(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)#', '20$1-$2-$3 $4:$5:00', $date.$time);
             }
 
             return $time;
@@ -361,17 +361,22 @@ class Reader
      * read transport identification number
      *
      * @param mixed $transportStageQualifier
-     *
      * @return string|null
      */
     public function readTDTtransportIdentification($transportStageQualifier)
     {
-        $transportIdentification = $this->readEdiDataValue(['TDT', ['1' => $transportStageQualifier]], 8, 0);
-        if (!empty($transportIdentification)) {
+        $transportIdentification = $this->readEdiDataValue([
+            'TDT', [
+                '1' => $transportStageQualifier,
+            ]], 8, 0);
+        if (! empty($transportIdentification)) {
             return $transportIdentification;
         }
 
-        return $this->readEdiDataValue(['TDT', ['1' => $transportStageQualifier]], 8);
+        return $this->readEdiDataValue([
+            'TDT', [
+                '1' => $transportStageQualifier,
+            ]], 8);
     }
 
     /**
@@ -411,7 +416,6 @@ class Reader
      * @param string $start  first segment of group
      * @param string $end    last segment of group
      * @param string $after  segment after groups
-     *
      * @return array<mixed>|false
      */
     public function readGroups(string $before, string $start, string $end, string $after)
@@ -482,8 +486,8 @@ class Reader
                 break;
             }
 
-            $this->errors[] = 'Reading group ' . $before . '/' . $start . '/' . $end . '/' . $after
-                              . '. Error on position: ' . $position;
+            $this->errors[] = 'Reading group '.$before.'/'.$start.'/'.$end.'/'.$after
+                              .'. Error on position: '.$position;
 
             return false;
         }
@@ -497,7 +501,6 @@ class Reader
      *
      * @param string                  $start   first segment start a new group
      * @param array<array-key,string> $barrier barrier segment (NOT in group)
-     *
      * @return array Containing parsed lines
      */
     public function groupsExtract(string $start = 'LIN', array $barrier = ['UNS']): array
@@ -541,7 +544,6 @@ class Reader
      * unwrap string splitting rows on terminator (if not escaped)
      *
      * @param string $string
-     *
      * @return \Generator<string>
      */
     private static function unwrap($string)
@@ -553,7 +555,7 @@ class Reader
 
         foreach ($array as &$line) {
             $line = \preg_replace('#[\x00\r\n]#', '', $line);
-            $temp = $line . "'";
+            $temp = $line."'";
             if ($temp !== "'") {
                 yield $temp;
             }

@@ -24,19 +24,19 @@ class Analyser
      * @var array<mixed>
      */
     private $jsonedi;
+
     /**
      * @var array
      */
     private $codes;
 
-    public function setXml($segments, $codes) {
+    public function setXml($segments, $codes)
+    {
         $this->segments = $segments;
         $this->codes = $codes;
     }
 
     /**
-     * @param string $message_xml_file
-     *
      * @return array|false
      */
     public function loadMessageXml(string $message_xml_file)
@@ -57,7 +57,6 @@ class Analyser
     /**
      * get all data element codes
      *
-     * @param string $codesXml
      *
      * @return array|false
      */
@@ -99,8 +98,6 @@ class Analyser
      * composite_data_element same as in XML
      * For single message, it's vailable also in (new EDI\Mapping\MappingProvider($version))->loadSegmentsXml()
      *
-     * @param string $segmentXmlFile
-     * @param bool $discardOldSegments
      *
      * @return array|false
      */
@@ -134,7 +131,7 @@ class Analyser
             $segment = [];
             $segment['attributes'] = $this->readAttributesArray($segmentNode);
             $details = $this->readXmlNodes($segmentNode);
-            if (!empty($details)) {
+            if (! empty($details)) {
                 $segment['details'] = $details;
             }
             $this->segments[$qualifier] = $segment;
@@ -147,13 +144,14 @@ class Analyser
      * Load segment definitions from multiple files
      *
      * @see Analyser::loadSegmentsXml()
+     *
      * @param string[] $segmentXmlFiles
      * @return array|false
      */
     public function loadMultiSegmentsXml(array $segmentXmlFiles)
     {
         foreach ($segmentXmlFiles as $xmlFile) {
-            if (!$result = $this->loadSegmentsXml($xmlFile, false)) {
+            if (! $result = $this->loadSegmentsXml($xmlFile, false)) {
                 return $result;
             }
         }
@@ -166,7 +164,6 @@ class Analyser
      *
      * @param array      $data        by EDI\Parser:parse() created array from plain EDI message
      * @param array|null $rawSegments (optional) List of raw segments from EDI\Parser::getRawSegments
-     *
      * @return string file
      */
     public function process(array $data, array $rawSegments = null): string
@@ -185,25 +182,27 @@ class Analyser
                 $attributes = $this->segments[$id]['attributes'];
                 $details_desc = $this->segments[$id]['details'];
 
-                $idHeader = $id . ' - ' . $attributes['name'];
-                if($this->directory && $id !== 'UNB') {
-                    $idHeader .= ' https://service.unece.org/trade/untdid/' . strtolower($this->directory) . '/trsd/trsd' . strtolower($id) . '.htm';
+                $idHeader = $id.' - '.$attributes['name'];
+                if ($this->directory && $id !== 'UNB') {
+                    $idHeader .= ' https://service.unece.org/trade/untdid/'.strtolower($this->directory).'/trsd/trsd'.strtolower($id).'.htm';
                 }
                 $r[] = $idHeader;
-                $r[] = '  (' . \wordwrap($attributes['desc'], 75, \PHP_EOL . '  ') . ')';
+                $r[] = '  ('.\wordwrap($attributes['desc'], 75, \PHP_EOL.'  ').')';
 
-                $jsonelements = ['segmentCode' => $id];
+                $jsonelements = [
+                    'segmentCode' => $id,
+                ];
                 foreach ($segment as $idx => $detail) {
                     $n = $idx - 1;
-                    if ($idx == 0 || !isset($details_desc[$n])) {
+                    if ($idx == 0 || ! isset($details_desc[$n])) {
                         continue;
                     }
                     $d_desc_attr = $details_desc[$n]['attributes'];
-                    $l1 = '      ' . $d_desc_attr['id'] . ' - ' . $d_desc_attr['name'];
-                    $l2 = '      ' . \wordwrap($d_desc_attr['desc'], 71, \PHP_EOL . '      ');
+                    $l1 = '      '.$d_desc_attr['id'].' - '.$d_desc_attr['name'];
+                    $l2 = '      '.\wordwrap($d_desc_attr['desc'], 71, \PHP_EOL.'      ');
 
                     if (\is_array($detail)) {
-                        $r[] = '  [' . $n . '] ' . \implode(',', $detail);
+                        $r[] = '  ['.$n.'] '.\implode(',', $detail);
                         $r[] = $l1;
                         $r[] = $l2;
 
@@ -214,25 +213,25 @@ class Analyser
                             foreach ($detail as $d_n => $d_detail) {
                                 $d_sub_desc_attr = $sub_details_desc[$d_n]['attributes'];
                                 $codeElementId = $d_sub_desc_attr['id'];
-                                $line = '    [' . $d_n . '] ' . $d_detail;
-                                if(isset($this->codes[(int)$codeElementId][$d_detail])){
-                                    $line .= ' - ' . \wordwrap($this->codes[$codeElementId][$d_detail], 69, \PHP_EOL . '        ');
+                                $line = '    ['.$d_n.'] '.$d_detail;
+                                if (isset($this->codes[(int) $codeElementId][$d_detail])) {
+                                    $line .= ' - '.\wordwrap($this->codes[$codeElementId][$d_detail], 69, \PHP_EOL.'        ');
                                 }
                                 $r[] = $line;
 
-                                $r[] = '        id: ' . $codeElementId . ' - ' . $d_sub_desc_attr['name'];
-                                $r[] = '        ' . \wordwrap($d_sub_desc_attr['desc'], 69, \PHP_EOL . '        ');
-                                $r[] = '        type: ' . $d_sub_desc_attr['type'];
+                                $r[] = '        id: '.$codeElementId.' - '.$d_sub_desc_attr['name'];
+                                $r[] = '        '.\wordwrap($d_sub_desc_attr['desc'], 69, \PHP_EOL.'        ');
+                                $r[] = '        type: '.$d_sub_desc_attr['type'];
 
                                 $jsoncomposite[$d_sub_desc_attr['name']] = $d_detail;
                                 if (isset($d_sub_desc_attr['maxlength'])) {
-                                    $r[] = '        maxlen: ' . $d_sub_desc_attr['maxlength'];
+                                    $r[] = '        maxlen: '.$d_sub_desc_attr['maxlength'];
                                 }
                                 if (isset($d_sub_desc_attr['required'])) {
-                                    $r[] = '        required: ' . $d_sub_desc_attr['required'];
+                                    $r[] = '        required: '.$d_sub_desc_attr['required'];
                                 }
                                 if (isset($d_sub_desc_attr['length'])) {
-                                    $r[] = '        length: ' . $d_sub_desc_attr['length'];
+                                    $r[] = '        length: '.$d_sub_desc_attr['length'];
                                 }
 
                                 // check for skipped data
@@ -256,16 +255,16 @@ class Analyser
                         $jsonelements[$d_desc_attr['name']] = $jsoncomposite;
                     } else {
                         $codeElementId = $d_desc_attr['id'];
-                        $line = '  [' . $n . '] ' . $detail;
-                        if(isset($this->codes[(int)$codeElementId][$detail])){
-						  /*
-                           * for retrieving code element description when first element of the segment
-						   * is a data element and not a composite one. Ex: NAD segment.
-                           * We rewrite also l1 line for adding 'id:' prefix before data element id.
-                           * It's just a cosmetic fix
-                           */
-                          $line .= ' - ' . \wordwrap($this->codes[$codeElementId][$detail], 71, \PHP_EOL . '        ');
-                          $l1 = '      id: ' . $d_desc_attr['id'] . ' - ' . $d_desc_attr['name'];
+                        $line = '  ['.$n.'] '.$detail;
+                        if (isset($this->codes[(int) $codeElementId][$detail])) {
+                            /*
+                             * for retrieving code element description when first element of the segment
+                             * is a data element and not a composite one. Ex: NAD segment.
+                             * We rewrite also l1 line for adding 'id:' prefix before data element id.
+                             * It's just a cosmetic fix
+                             */
+                            $line .= ' - '.\wordwrap($this->codes[$codeElementId][$detail], 71, \PHP_EOL.'        ');
+                            $l1 = '      id: '.$d_desc_attr['id'].' - '.$d_desc_attr['name'];
                         }
                         $r[] = $line;
                         $r[] = $l1;
@@ -296,17 +295,13 @@ class Analyser
 
     /**
      * read default values in given message xml
-     *
-     * @param \SimpleXMLElement $message
-     *
-     * @return array
      */
     protected function readMessageDefaults(\SimpleXMLElement $message): array
     {
         // init
         $defaults = [];
 
-        /* @var \SimpleXMLElement $defaultValueNode */
+        /** @var \SimpleXMLElement $defaultValueNode */
         foreach ($message->defaults[0] ?? [] as $defaultValueNode) {
             $attributes = $defaultValueNode->attributes();
             $id = (string) $attributes->id;
@@ -318,10 +313,6 @@ class Analyser
 
     /**
      * read message segments and groups
-     *
-     * @param \SimpleXMLElement $element
-     *
-     * @return array
      */
     protected function readXmlNodes(\SimpleXMLElement $element): array
     {
@@ -334,7 +325,7 @@ class Analyser
             $arrayElement['type'] = $name;
             $arrayElement['attributes'] = $this->readAttributesArray($node);
             $details = $this->readXmlNodes($node);
-            if (!empty($details)) {
+            if (! empty($details)) {
                 $arrayElement['details'] = $details;
             }
             $arrayElements[] = $arrayElement;
@@ -345,10 +336,6 @@ class Analyser
 
     /**
      * return an xml elements attributes in as array
-     *
-     * @param \SimpleXMLElement $element
-     *
-     * @return array
      */
     protected function readAttributesArray(\SimpleXMLElement $element): array
     {

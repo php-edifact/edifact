@@ -81,8 +81,6 @@ class Encoder
      * @param array[] $array
      * @param bool    $compact All segments on a single line?
      * @param bool    $filterKeys
-     *
-     * @return string
      */
     public function encode(array $array, $compact = true, $filterKeys = false): string
     {
@@ -93,13 +91,13 @@ class Encoder
         $count = \count($array);
         $k = 0;
         foreach ($array as $row) {
-            ++$k;
+            $k++;
             if ($filterKeys) {
                 unset($row['segmentIdx']);
             }
             $row = \array_values($row);
             $edistring .= $this->encodeSegment($row);
-            if (!$compact && $k < $count) {
+            if (! $compact && $k < $count) {
                 $edistring .= "\n";
             }
         }
@@ -108,11 +106,6 @@ class Encoder
         return $edistring;
     }
 
-    /**
-     * @param array $row
-     *
-     * @return string
-     */
     public function encodeSegment(array $row): string
     {
         // init
@@ -155,34 +148,25 @@ class Encoder
         return $str;
     }
 
-    /**
-     * @return string
-     */
     public function get(): string
     {
         if ($this->UNAActive) {
-            $una = 'UNA' . $this->sepComp .
-                   $this->sepData .
-                   $this->sepDec .
-                   $this->symbRel .
-                   $this->symbRep .
+            $una = 'UNA'.$this->sepComp.
+                   $this->sepData.
+                   $this->sepDec.
+                   $this->symbRel.
+                   $this->symbRep.
                    $this->symbEnd;
             if ($this->compact === false) {
                 $una .= "\n";
             }
 
-            return $una . $this->output;
+            return $una.$this->output;
         }
 
         return $this->output;
     }
 
-    /**
-     * @param string $chars
-     * @param bool   $user_call
-     *
-     * @return bool
-     */
     public function setUNA(string $chars, bool $user_call = true): bool
     {
         if (\strlen($chars) == 6) {
@@ -225,8 +209,6 @@ class Encoder
 
     /**
      * @param int|string $str
-     *
-     * @return string
      */
     private function escapeValue(&$str): string
     {
@@ -237,10 +219,10 @@ class Encoder
             $this->symbEnd,
         ];
         $replace = [
-            $this->symbRel . $this->symbRel,
-            $this->symbRel . $this->sepComp,
-            $this->symbRel . $this->sepData,
-            $this->symbRel . $this->symbEnd,
+            $this->symbRel.$this->symbRel,
+            $this->symbRel.$this->sepComp,
+            $this->symbRel.$this->sepData,
+            $this->symbRel.$this->symbEnd,
         ];
 
         return \str_replace($search, $replace, (string) $str);
