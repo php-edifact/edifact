@@ -107,8 +107,8 @@ class Interpreter
      * Split multiple messages and process
      *
      * @param string     $xmlMsg                        Path to XML Message representation
-     * @param array      $xmlSeg                        Segments processed by EDI\Analyser::loadSegmentsXml
-     * @param array      $xmlSvc                        Service segments processed by EDI\Analyser::loadSegmentsXml
+     * @param array      $xmlSeg                        Segments processed by EDI\Analyser::loadSegmentsXml or EDI\Mapping\MappingProvider
+     * @param array      $xmlSvc                        Service segments processed by EDI\Analyser::loadSegmentsXml or EDI\Mapping\MappingProvider
      * @param array|null $messageTextConf               Personalisation of error messages
      */
     public function __construct(string $xmlMsg, array $xmlSeg, array $xmlSvc, array $messageTextConf = null)
@@ -116,12 +116,12 @@ class Interpreter
         // simplexml_load_file: This can be affected by a PHP bug #62577 (https://bugs.php.net/bug.php?id=62577)
         $xmlData = \file_get_contents($xmlMsg);
         if ($xmlData === false) {
-            throw new \InvalidArgumentException('file_get_contents for "'.$xmlMsg.'" faild');
+            throw new \InvalidArgumentException('file_get_contents for "'.$xmlMsg.'" failed');
         }
 
         $xmlMsgTmp = \simplexml_load_string($xmlData);
         if ($xmlMsgTmp === false) {
-            throw new \InvalidArgumentException('simplexml_load_string for "'.$xmlMsg.'" faild');
+            throw new \InvalidArgumentException('simplexml_load_string for "'.$xmlMsg.'" failed');
         }
 
         $this->xmlMsg = $xmlMsgTmp;
@@ -270,6 +270,16 @@ class Interpreter
     public function getEdiGroups()
     {
         return $this->ediGroups;
+    }
+
+    /**
+     * Set EDI groups.
+     *
+     * @return array
+     */
+    public function setEdiGroups($groups)
+    {
+        $this->ediGroups = $groups;
     }
 
     /**
@@ -708,5 +718,36 @@ class Interpreter
         }
 
         return $processed;
+    }
+
+    public function rebuildArray()
+    {
+        if ($this->codes !== null) {
+            throw new \LogicException('Run the Interpreter without calling setCodes()');
+        }
+
+        return $this->recursionReconstruct($this->ediGroups);
+
+    }
+
+    private function recursionReconstruct($tempArr)
+    {
+        $reconstructArr = [];
+        if (is_array($tempArr)) {
+            foreach ($tempArr as $idx => $arr) {
+                if (! isset($arr['segmentIdx'])) {
+                    $recurseArr = $this->recursionReconstruct($arr);
+                    foreach ($recurseArr as $k => $i) {
+                        $reconstructArr[$k] = $i;
+                    }
+                } else {
+                    $idx=$arr['segmentIdx'];
+                    unset($arr['segmentIdx']);
+                    unset($arr['segmentGroup']);
+                    $reconstructArr[$idx] = $arr;
+                }
+            }
+        }
+        return $reconstructArr;
     }
 }
