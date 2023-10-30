@@ -22,6 +22,7 @@ class Interpreter
         'MISSINGINTERCHANGEDELIMITER' => 'The file has at least one UNB or UNZ missing',
         'MISSINGMESSAGEDELIMITER' => 'The message has at least one UNH or UNT missing',
         'TOOMANYSEGMENTS' => 'The message has some additional segments beyond the maximum repetition allowed',
+        'TOOMANYGROUPS' => 'The message has some additional groups beyond the maximum repetition allowed',
     ];
 
     /**
@@ -483,6 +484,27 @@ class Interpreter
                 }
             }
 
+            $this->currentGroup = $elm['id']->__toString();
+
+            foreach ($elm->children() as $elm2) {
+                if ($elm2->getName() == 'group') {
+                    $this->processXmlGroup($elm2, $message, $segmentIdx, $grouptemp, $errors);
+                } else {
+                    $this->processXmlSegment($elm2, $message, $segmentIdx, $grouptemp, $errors);
+                }
+                $groupVisited = true;
+            }
+
+            $newGroup[] = $grouptemp;
+        }
+
+        // if additional groups are detected we are violating the maxrepeat attribute
+        while (isset($message[$segmentIdx]) && \call_user_func($this->comparisonFunction, $message[$segmentIdx], $elm->children()[0])) {
+            $errors[] = [
+                'text' => $this->messageTextConf['TOOMANYGROUPS'],
+                'position' => $segmentIdx,
+                'segmentId' => (string) $elm['id'],
+            ];
             $this->currentGroup = $elm['id']->__toString();
 
             foreach ($elm->children() as $elm2) {
