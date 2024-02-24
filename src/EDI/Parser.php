@@ -132,6 +132,11 @@ class Parser
     private $unbChecked = false;
 
     /**
+     * Optionally disable workarounds
+     */
+    private $strict = false;
+
+    /**
      * Parse EDI array.
      */
     public function parse(): self
@@ -291,6 +296,14 @@ class Parser
     public function errors(): array
     {
         return $this->errors;
+    }
+
+    /**
+     * Set Strict
+     */
+    public function isStrict($strict)
+    {
+        $this->strict = $strict;
     }
 
     /**
@@ -460,13 +473,18 @@ class Parser
                 )
             );
         }
-
-        if (preg_match_all("/[A-Z0-9]+[\r\n]+/i", $string, $matches, PREG_OFFSET_CAPTURE) > 0) {
+        if (preg_match_all("/[A-Z0-9]+(?:\?'|$)[\r\n]+/i", $string, $matches, PREG_OFFSET_CAPTURE) > 0) {
             $this->errors[] = 'This file contains some segments without terminators';
         }
 
+        $terminatorRegex = '/(([^'.$this->symbRel.']'.$this->symbRel.'{2})+|[^'.$this->symbRel.'])'.$this->symbEnd.'|[\r\n]+/';
+
+        if ($this->strict) {
+            $terminatorRegex = '/(([^'.$this->symbRel.']'.$this->symbRel.'{2})+|[^'.$this->symbRel.'])'.$this->symbEnd.'/';
+        }
+
         $string = (string) \preg_replace(
-            '/(([^'.$this->symbRel.']'.$this->symbRel.'{2})+|[^'.$this->symbRel.'])'.$this->symbEnd.'|[\r\n]+/',
+            $terminatorRegex,
             '$1'.$this->stringSafe,
             $string
         );

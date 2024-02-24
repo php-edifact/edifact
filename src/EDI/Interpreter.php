@@ -23,6 +23,7 @@ class Interpreter
         'MISSINGMESSAGEDELIMITER' => 'The message has at least one UNH or UNT missing',
         'TOOMANYSEGMENTS' => 'The message has some additional segments beyond the maximum repetition allowed',
         'TOOMANYGROUPS' => 'The message has some additional groups beyond the maximum repetition allowed',
+        'SPURIOUSSEGMENT' => 'This segment is spurious'
     ];
 
     /**
@@ -43,6 +44,11 @@ class Interpreter
      * @var bool
      */
     private $patchFiles = true;
+
+    /**
+     * @var bool
+     */
+    private $segmentGroup = true;
 
     /**
      * @var bool
@@ -95,6 +101,11 @@ class Interpreter
     private $comparisonFunction;
 
     /**
+     * @var callable
+     */
+    private $replacementFunction;
+
+    /**
      * @var string
      */
     private $outputKey = 'name';
@@ -144,6 +155,17 @@ class Interpreter
     public function togglePatching(bool $flag)
     {
         $this->patchFiles = $flag;
+        return $this;
+    }
+
+
+    /**
+     * @return void
+     */
+    public function toggleSegmentGroup(bool $flag)
+    {
+        $this->segmentGroup = $flag;
+        return $this;
     }
 
     /**
@@ -152,6 +174,7 @@ class Interpreter
     public function forceArrayWhenRepeatable(bool $flag)
     {
         $this->forceArrayWhenRepeatable = $flag;
+        return $this;
     }
 
     /**
@@ -163,6 +186,7 @@ class Interpreter
     public function setMessageTextConf(array $messageTextConf)
     {
         $this->messageTextConf = \array_replace($this->messageTextConf, $messageTextConf);
+        return $this;
     }
 
     /**
@@ -174,6 +198,7 @@ class Interpreter
     public function setSegmentTemplates(array $segmentTemplates)
     {
         $this->segmentTemplates = $segmentTemplates;
+        return $this;
     }
 
     /**
@@ -185,6 +210,7 @@ class Interpreter
     public function setGroupTemplates(array $groupTemplates)
     {
         $this->groupTemplates = $groupTemplates;
+        return $this;
     }
 
     /**
@@ -196,10 +222,11 @@ class Interpreter
     public function setCodes(array $codes)
     {
         $this->codes = $codes;
+        return $this;
     }
 
     /**
-     * Split multiple messages and process
+     * Function that implements how to compare a message segment and its definition
      *
      * @param callable $func A function accepting two arguments, first is the segment array, then the element definition
      * @return void
@@ -207,6 +234,19 @@ class Interpreter
     public function setComparisonFunction(callable $func)
     {
         $this->comparisonFunction = $func;
+        return $this;
+    }
+
+    /**
+     * Function that replaces a segment
+     *
+     * @param callable $func A function accepting two arguments, first is the segment array, then the element definition
+     * @return void
+     */
+    public function setReplacementFunction(callable $func)
+    {
+        $this->replacementFunction = $func;
+        return $this;
     }
 
     /**
@@ -222,6 +262,7 @@ class Interpreter
         } else {
             $this->outputKey = 'name';
         }
+        return $this;
     }
 
     /**
@@ -475,7 +516,7 @@ class Interpreter
                     }
 
                     $errors[] = [
-                        'text' => $this->messageTextConf['MISSINGREQUIREDGROUP'].' '.($fixed ? '(patched)' : ''),
+                        'text' => $this->messageTextConf['MISSINGREQUIREDGROUP'].' '.($fixed ? ' (patched)' : ''),
                         'position' => $segmentIdx,
                         'segmentId' => $elmType,
                     ];
@@ -543,15 +584,56 @@ class Interpreter
                 $segmentVisited = true;
                 $this->doAddArray($array, $jsonMessage, (int) $elm['maxrepeat']);
                 $segmentIdx++;
+            } else if ($this->replacementFunction !== null && $replacementSegment = \call_user_func($this->replacementFunction, $message[$segmentIdx], $elm)) {
+                //the function shall return false, true or a new segment
+                $fixed = false;
+
+                if ($elm['replacewith'] !== null) {
+                    $elmType = (string) $elm['replacewith'];
+                } else {
+                    $elmType = (string) $elm['id'];
+                }
+
+                if ($this->patchFiles && $replacementSegment === true && isset($this->segmentTemplates[$elmType])) {
+                    $jsonMessage = $this->processSegment($this->segmentTemplates[$elmType], $this->xmlSeg, $segmentIdx, $errors);
+                    $fixed = true;
+                    $this->doAddArray($array, $jsonMessage, (int) $elm['maxrepeat']);
+                }
+
+                if ($this->patchFiles && $replacementSegment !== true) {
+                    $jsonMessage = $this->processSegment($replacementSegment, $this->xmlSeg, $segmentIdx, $errors);
+                    $fixed = true;
+                    $this->doAddArray($array, $jsonMessage, (int) $elm['maxrepeat']);
+                }
+
+                $errors[] = [
+                    'text' => $this->messageTextConf['MISSINGREQUIREDSEGMENT'].' '.($fixed ? ' (replaced)' : ''),
+                    'position' => $segmentIdx,
+                    'segmentId' => (string) $elm['id'],
+                ];
+                $segmentIdx++;
+                continue;
             } else {
                 if (! $segmentVisited && isset($elm['required'])) {
-                    $fixed = false;
+                    $segmentVisited = true;
+                    if (\call_user_func($this->comparisonFunction, $message[$segmentIdx+1], $elm)) {
+                        $errors[] = [
+                            'text' => $this->messageTextConf['SPURIOUSSEGMENT'].($this->patchFiles ? ' (skipped)' : ''),
+                            'position' => $segmentIdx,
+                            'segmentId' => (string) $message[$segmentIdx][0],
+                        ];
+                        $segmentIdx++; //just move the index
+                        $i--; //but don't count as repetition
+                        continue;
+                    }
 
                     if ($elm['replacewith'] !== null) {
                         $elmType = (string) $elm['replacewith'];
                     } else {
                         $elmType = (string) $elm['id'];
                     }
+
+                    $fixed = false;
 
                     if ($this->patchFiles && isset($this->segmentTemplates[$elmType])) {
                         $jsonMessage = $this->processSegment($this->segmentTemplates[$elmType], $this->xmlSeg, $segmentIdx, $errors);
@@ -560,10 +642,11 @@ class Interpreter
                     }
 
                     $errors[] = [
-                        'text' => $this->messageTextConf['MISSINGREQUIREDSEGMENT'].' '.($fixed ? '(patched)' : ''),
+                        'text' => $this->messageTextConf['MISSINGREQUIREDSEGMENT'].' '.($fixed ? ' (patched)' : ''),
                         'position' => $segmentIdx,
                         'segmentId' => (string) $elm['id'],
                     ];
+
                 }
 
                 return;
@@ -571,13 +654,19 @@ class Interpreter
         }
 
         // if additional segments are detected we are violating the maxrepeat attribute
-        while (isset($message[$segmentIdx]) && \call_user_func($this->comparisonFunction, $message[$segmentIdx], $elm)) {
+        $loopMove = 0;
+        while (isset($message[$segmentIdx]) && \call_user_func($this->comparisonFunction, $message[$segmentIdx+$loopMove], $elm)) {
             $errors[] = [
-                'text' => $this->messageTextConf['TOOMANYSEGMENTS'],
+                'text' => $this->messageTextConf['TOOMANYSEGMENTS'].($this->patchFiles ? ' (skipped)' : ''),
                 'position' => $segmentIdx,
                 'segmentId' => (string) $elm['id'],
             ];
-            $segmentIdx++;
+
+            if ($this->patchFiles) {
+                $segmentIdx++;
+            } else {
+                $loopMove++; //we move to the next segment only for this loop if the patching isn't active
+            }
         }
     }
 
@@ -627,9 +716,13 @@ class Interpreter
 
             $jsonelements = [
                 'segmentIdx' => $segmentIdx,
-                'segmentCode' => $id,
-                'segmentGroup' => $this->currentGroup,
+                'segmentCode' => $id
             ];
+
+            if ($this->segmentGroup) {
+                $jsonelements['segmentGroup'] = $this->currentGroup;
+            }
+
             foreach ($segment as $idx => $detail) {
                 $n = $idx - 1;
                 if ($idx == 0) {
@@ -765,7 +858,9 @@ class Interpreter
                 } else {
                     $idx=$arr['segmentIdx'];
                     unset($arr['segmentIdx']);
-                    unset($arr['segmentGroup']);
+                    if ($this->segmentGroup) {
+                        unset($arr['segmentGroup']);
+                    }
                     $reconstructArr[$idx] = $arr;
                 }
             }
