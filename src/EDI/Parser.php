@@ -284,7 +284,7 @@ class Parser
         }
 
         if (! isset(self::$charsets[$this->syntaxID])) {
-            throw new \RuntimeException('Unsupported syntax identifier');
+            throw new \RuntimeException('Unsupported syntax identifier: ' . $this->syntaxID);
         }
 
         return mb_check_encoding($this->parsedfile, self::$charsets[$this->syntaxID]);
