@@ -479,6 +479,8 @@ class Interpreter
         if ($segmentIdx != \count($message)) {
             $errors[] = [
                 'text' => $this->messageTextConf['NOTCONFORMANT'],
+                'position' => $segmentIdx,
+                'segmentId' => $message[$segmentIdx][0],
             ];
         }
 
