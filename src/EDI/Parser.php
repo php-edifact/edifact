@@ -335,6 +335,14 @@ class Parser
      */
     public function getCharset(): string
     {
+        if (empty($this->parsedfile)) {
+            throw new \RuntimeException('No text has been parsed yet');
+        }
+
+        if (! isset(self::$charsets[$this->syntaxID])) {
+            throw new \RuntimeException('Unsupported syntax identifier: ' . $this->syntaxID);
+        }
+
         return self::$charsets[$this->syntaxID];
     }
 
