@@ -284,7 +284,7 @@ class Parser
         }
 
         if (! isset(self::$charsets[$this->syntaxID])) {
-            throw new \RuntimeException('Unsupported syntax identifier');
+            throw new \RuntimeException('Unsupported syntax identifier: ' . $this->syntaxID);
         }
 
         return mb_check_encoding($this->parsedfile, self::$charsets[$this->syntaxID]);
@@ -326,6 +326,24 @@ class Parser
     public function getRawSegments(): array
     {
         return $this->rawSegments;
+    }
+
+    /**
+     * Get character encoding extracted from UNB header
+     *
+     * @return string
+     */
+    public function getCharset(): string
+    {
+        if (empty($this->parsedfile)) {
+            throw new \RuntimeException('No text has been parsed yet');
+        }
+
+        if (! isset(self::$charsets[$this->syntaxID])) {
+            throw new \RuntimeException('Unsupported syntax identifier: ' . $this->syntaxID);
+        }
+
+        return self::$charsets[$this->syntaxID];
     }
 
     /**
