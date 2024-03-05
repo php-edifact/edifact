@@ -329,6 +329,16 @@ class Parser
     }
 
     /**
+     * Get character encoding extracted from UNB header
+     *
+     * @return string
+     */
+    public function getCharset(): string
+    {
+        return self::$charsets[$this->syntaxID];
+    }
+
+    /**
      * Load the message from file.
      *
      * @param string $location Either a local file path or a URL
