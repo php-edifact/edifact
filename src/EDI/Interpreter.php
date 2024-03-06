@@ -116,6 +116,11 @@ class Interpreter
     private $currentGroup = '';
 
     /**
+     * @var string
+     */
+    private $currentGroupHeader = '';
+
+    /**
      * Split multiple messages and process
      *
      * @param string     $xmlMsg                        Path to XML Message representation
@@ -502,6 +507,9 @@ class Interpreter
         $groupVisited = false;
         $newGroup = [];
 
+        $this->currentGroupHeader = $message[$segmentIdx][0];
+        $this->currentGroup = $elm['id']->__toString();
+
         for ($g = 0; $g < $elm['maxrepeat']; $g++) {
             $grouptemp = [];
             if ($message[$segmentIdx][0] != $elm->children()[0]['id']) {
@@ -526,8 +534,6 @@ class Interpreter
                     break;
                 }
             }
-
-            $this->currentGroup = $elm['id']->__toString();
 
             foreach ($elm->children() as $elm2) {
                 if ($elm2->getName() == 'group') {
@@ -561,6 +567,9 @@ class Interpreter
 
             $newGroup[] = $grouptemp;
         }
+
+        $this->currentGroupHeader = '';
+        $this->currentGroup = '';
 
         if (\count($newGroup) === 0) {
             return;
@@ -657,7 +666,11 @@ class Interpreter
 
         // if additional segments are detected we are violating the maxrepeat attribute
         $loopMove = 0;
-        while (isset($message[$segmentIdx]) && \call_user_func($this->comparisonFunction, $message[$segmentIdx+$loopMove], $elm)) {
+        while (
+            isset($message[$segmentIdx]) &&
+            \call_user_func($this->comparisonFunction, $message[$segmentIdx+$loopMove], $elm) &&
+            (string)$elm['id'] !== $this->currentGroupHeader
+            ) {
             $errors[] = [
                 'text' => $this->messageTextConf['TOOMANYSEGMENTS'].($this->patchFiles ? ' (skipped)' : ''),
                 'position' => $segmentIdx,
