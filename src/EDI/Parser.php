@@ -132,9 +132,9 @@ class Parser
     private $unbChecked = false;
 
     /**
-     * Optionally disable workarounds
+     * Optionally disable workarounds.
      */
-    private $strict = false;
+    private bool $strict = false;
 
     /**
      * Parse EDI array.
@@ -299,9 +299,9 @@ class Parser
     }
 
     /**
-     * Set Strict
+     * (Un)Set strict parsing.
      */
-    public function isStrict($strict)
+    public function setStrict(bool $strict):void
     {
         $this->strict = $strict;
     }
