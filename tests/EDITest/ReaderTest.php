@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace EDITest;
 
-use EDI\Reader;
 use EDI\Parser;
+use EDI\Reader;
 
 /**
  * @internal
@@ -102,4 +102,47 @@ final class ReaderTest extends \PHPUnit\Framework\TestCase
         $messageType = $r->readUNHmessageType();
         static::assertSame('PAORES', $messageType);
     }
+
+    public function testReadsMultiSegmentsByOffset()
+    {
+        $p = new Parser();
+        $p->setStrict(true);
+        $p->load(__DIR__ . '/../files/example_multiline.edi');
+        $r = new Reader($p);
+
+        $lines = [];
+        for ($i = 0; $i < 10; $i++) {
+            $line = $r->readEdiDataValue(['FTX', [1 => 'AAI']], 4, false, false, $i);
+            if ($line !== null) {
+                $lines[] = $line;
+            }
+        }
+
+        self::assertSame(
+            [
+                0 => [
+                    0 => 'PLS ENSURE TO TAKE OUR APPROVAL PRIOR STUFFING ANY NON HAZ CHEMICA',
+                    1 => 'LS',
+                ],
+                1 => [
+                    0 => 'THE SHIPPER SHALL NOT BE RESPONSIBLE FOR ANY COSTS/DELAYS OCCUR',
+                    1 => 'DUE TO INTERVENTION OF CUSTOMS.',
+                ],
+
+            ],
+            $lines
+        );
+    }
+
+    public function testAddsErrorOnMissingRequiredOffest()
+    {
+        $p = new Parser();
+        $p->setStrict(true);
+        $p->load(__DIR__ . '/../files/example_multiline.edi');
+        $r = new Reader($p);
+        $line = $r->readEdiDataValue(['FTX', [1 => 'AAI']], 4, false, true, 99);
+        self::assertSame(['Segment "FTX" does not exist at offset "99"'], $r->errors());
+        self::assertNull($line);
+    }
+
 }

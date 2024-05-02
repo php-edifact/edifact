@@ -174,10 +174,9 @@ class Reader
      * @param bool         $required  if required, but no exist, register error
      * @return string|null
      */
-    public function readEdiDataValue($filter, int $l1, $l2 = false, bool $required = false)
+    public function readEdiDataValue($filter, int $l1, $l2 = false, bool $required = false, int $offset = null)
     {
-        $segment = false;
-        $segment_count = 0;
+        $found_segments = [];
         $segment_name = $filter;
         $filter_elements = false;
         if (\is_array($filter)) {
@@ -221,24 +220,23 @@ class Reader
                         continue;
                     }
                 }
-                $segment = $edi_row;
-                $segment_count++;
+                $found_segments[] = $edi_row;
             }
         }
 
-        // no segment found
-        if (! $segment) {
-            if ($required) {
-                $this->errors[] = 'Segment "'.$segment_name.'" no exist';
+        try {
+            if ($offset !== null) {
+                $segment = $this->getOffsetSegmentFromResult($found_segments, $offset, $required, $segment_name);
+            } else {
+                $segment = $this->getSegmentFromResult($found_segments, $required, $segment_name);
             }
+        } catch (ReaderException $e) {
+            $this->errors[] = $e->getMessage();
 
             return null;
         }
 
-        // found more than one segment - error
-        if ($segment_count > 1) {
-            $this->errors[] = 'Segment "'.$segment_name.'" is ambiguous';
-
+        if ($segment === false) {
             return null;
         }
 
@@ -560,5 +558,46 @@ class Reader
                 yield $temp;
             }
         }
+    }
+
+    /**
+     * @param array $matchingSegments
+     * @param int   $offset
+     * @param bool  $required
+     * @param mixed $segment_name
+     *
+     * @return false|mixed
+     */
+    private function getOffsetSegmentFromResult(array $matchingSegments, int $offset, bool $required, mixed $segment_name): mixed
+    {
+        if (isset($matchingSegments[$offset])) {
+            return $matchingSegments[$offset];
+        }
+
+        if ($required) {
+            throw new ReaderException('Segment "' . $segment_name . '" does not exist at offset "' . $offset . '"');
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array $matchingSegments
+     * @param mixed $segment_name
+     *
+     * @return false|mixed
+     */
+    private function getSegmentFromResult(array $matchingSegments, bool $required, mixed $segment_name): mixed
+    {
+        // found more than one segment - error
+        if (count($matchingSegments) > 1) {
+            throw new ReaderException('Segment "' . $segment_name . '" is ambiguous');
+        }
+
+        if ($required && !isset($matchingSegments[0])) {
+            throw new ReaderException('Segment "' . $segment_name . '" no exist');
+        }
+
+        return $matchingSegments[0] ?? false;
     }
 }
