@@ -507,7 +507,7 @@ class Interpreter
         $groupVisited = false;
         $newGroup = [];
 
-        $this->currentGroupHeader = $message[$segmentIdx][0];
+        $this->currentGroupHeader = $elm->children()[0]['id']->__toString();
         $this->currentGroup = $elm['id']->__toString();
 
         for ($g = 0; $g < $elm['maxrepeat']; $g++) {
@@ -538,6 +538,8 @@ class Interpreter
             foreach ($elm->children() as $elm2) {
                 if ($elm2->getName() == 'group') {
                     $this->processXmlGroup($elm2, $message, $segmentIdx, $grouptemp, $errors);
+                    $this->currentGroupHeader = $elm->children()[0]['id']->__toString();
+                    $this->currentGroup = $elm['id']->__toString();
                 } else {
                     $this->processXmlSegment($elm2, $message, $segmentIdx, $grouptemp, $errors);
                 }
@@ -559,6 +561,8 @@ class Interpreter
             foreach ($elm->children() as $elm2) {
                 if ($elm2->getName() == 'group') {
                     $this->processXmlGroup($elm2, $message, $segmentIdx, $grouptemp, $errors);
+                    $this->currentGroupHeader = $elm->children()[0]['id']->__toString();
+                    $this->currentGroup = $elm['id']->__toString();
                 } else {
                     $this->processXmlSegment($elm2, $message, $segmentIdx, $grouptemp, $errors);
                 }
