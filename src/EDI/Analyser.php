@@ -220,7 +220,9 @@ class Analyser
                                 $r[] = $line;
 
                                 $r[] = '        id: '.$codeElementId.' - '.$d_sub_desc_attr['name'];
-                                $r[] = '        '.\wordwrap($d_sub_desc_attr['desc'], 69, \PHP_EOL.'        ');
+                                if (isset($d_sub_desc_attr['desc'])) {
+                                    $r[] = '        '.\wordwrap($d_sub_desc_attr['desc'], 69, \PHP_EOL.'        ');
+                                }
                                 $r[] = '        type: '.$d_sub_desc_attr['type'];
 
                                 if (isset($jsoncomposite[$d_sub_desc_attr['name']])) {
