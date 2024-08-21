@@ -66,7 +66,7 @@ $groups = $reader->groupsExtract('INV');
 
 foreach ($groups as $record) {
     $parser->loadArray($record, false);
-    $r = EDI\Reader($parser);
+    $r = new EDI\Reader($parser);
     $records[] = [
         'storageLocation' => $r->readEdiDataValue(['LOC', ['2.0' => 'YA']], 2, 3),
         'bookingDate' => $r->readEdiSegmentDTM(179),
