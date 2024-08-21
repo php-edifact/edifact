@@ -469,7 +469,7 @@ $p = new EDI\Parser();
 $p->load($x);
 $r = new EDI\Reader($p);
 $sender = $r->readEdiDataValue('UNB', 2);
-$Dt = $r->readUNBDateTimeOfPreperation();
+$Dt = $r->readUNBDateTimeOfPreparation();
 
 ```
 See section about EDI\Parser above on how to load a file into a parser.
