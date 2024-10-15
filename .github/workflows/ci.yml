@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    types: 
+      - opened
+      - synchronize
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Cache Composer dependencies
+      uses: actions/cache@v3
+      with:
+        path: /tmp/composer-cache
+        key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+    - uses: php-actions/composer@v6
+    - name: PHPUnit tests
+      run: ./vendor/bin/phpunit
+
