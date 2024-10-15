@@ -227,7 +227,7 @@
         "messageTrailer": {
             "segmentIdx": 20,
             "segmentCode": "UNT",
-            "segmentGroup": "SG16",
+            "segmentGroup": "",
             "numberOfSegmentsInTheMessage": "21",
             "messageReferenceNumber": "142"
         }

@@ -631,7 +631,7 @@ class Interpreter
             } else {
                 if (! $segmentVisited && isset($elm['required'])) {
                     $segmentVisited = true;
-                    if (\call_user_func($this->comparisonFunction, $message[$segmentIdx+1], $elm)) {
+                    if (isset($message[$segmentIdx+1]) && \call_user_func($this->comparisonFunction, $message[$segmentIdx+1], $elm)) {
                         $errors[] = [
                             'text' => $this->messageTextConf['SPURIOUSSEGMENT'].($this->patchFiles ? ' (skipped)' : ''),
                             'position' => $segmentIdx,
