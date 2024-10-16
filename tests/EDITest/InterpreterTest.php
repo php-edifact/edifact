@@ -91,8 +91,8 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
             'JSON does not match expected output'
         );
 
-        static::assertSame(3598, \strlen($interpreter->getJson()));
-        static::assertSame(9383, \strlen($interpreter->getJson(true)));
+        static::assertSame(3594, \strlen($interpreter->getJson()));
+        static::assertSame(9379, \strlen($interpreter->getJson(true)));
 
         static::assertCount(2, $interpreter->getMessages());
         static::assertCount(0, $interpreter->getErrors());

@@ -291,4 +291,13 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
 
         static::assertSame($loaded[15][2], 'FIELD 1.1?:FIELD 1.2');
     }
+
+    public function testUtf8EncodedSourceAndOutput()
+    {
+        $p = new Parser();
+        $p->load(__DIR__ . '/../files/example_utf8.edi');
+        $p->setSourceEncoding('UTF-8');
+        $loaded = $p->get('UTF-8');
+        static::assertSame($loaded[11][3][3], 'MUNCIË THE MIDDLE');
+    }
 }

@@ -100,6 +100,8 @@ class Parser
      */
     private $messageNumber;
 
+    private ?string $sourceEncoding = null;
+
     /**
      * @var array<string,string>
      */
@@ -141,8 +143,13 @@ class Parser
      */
     public function parse(): self
     {
+        $rawSegments = $this->getRawSegments();
+        if ($this->sourceEncoding && isset(self::$charsets[$this->syntaxID]) && self::$charsets[$this->syntaxID] !== $this->sourceEncoding) {
+            $rawSegments = $this->convertEncoding($this->rawSegments, $this->sourceEncoding, self::$charsets[$this->syntaxID]);
+        }
+
         $i = 0;
-        foreach ($this->getRawSegments() as $line) {
+        foreach ($rawSegments as $line) {
             $i++;
 
             // Null byte and carriage return removal. (CR+LF)
@@ -310,16 +317,38 @@ class Parser
         $this->strict = $strict;
     }
 
+    public function setSourceEncoding(string $sourceEncoding): void
+    {
+        $this->sourceEncoding = $sourceEncoding;
+    }
+
     /**
      * Get parsed lines/segments.
      */
-    public function get(): array
+    public function get(?string $encoding = null): array
     {
         if (empty($this->parsedfile)) {
             $this->parse();
         }
-
-        return $this->parsedfile;
+    
+        if (null === $encoding) {
+            return $this->parsedfile;
+        }
+    
+        return $this->convertEncoding($this->parsedfile, self::$charsets[$this->syntaxID], $encoding);
+    }
+    
+    private function convertEncoding($data, string $from, string $to)
+    {
+        if (is_array($data)) {
+            foreach ($data as $k => $v) {
+                $data[$k] = $this->convertEncoding($v, $from, $to);
+            }
+        } elseif (is_string($data)) {
+            $data = function_exists('iconv') ? iconv($from, $to . '//TRANSLIT', $data) : mb_convert_encoding($data, $to, $from);
+        }
+    
+        return $data;
     }
 
     /**
