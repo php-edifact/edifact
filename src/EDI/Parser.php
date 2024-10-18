@@ -505,18 +505,18 @@ class Parser
             );
         }
 
+        $unbRegex = sprintf(
+            '/^(UNA[^%1$s]+%1$s\W?\W?)?UNB%2$s(?<syntax_identifier>\w{4})%3$s/m',
+            $this->symbEnd,
+            $this->sepData,
+            $this->sepComp,
+        );
         if (
             ! $this->unbChecked
-            &&
-            \strpos($string, 'UNB') === 0
+            && false !== preg_match($unbRegex, $string, $unbMatches)
+            && isset($unbMatches['syntax_identifier'])
         ) {
-            $this->analyseUNB(
-                (string) \preg_replace(
-                    "#^UNB\+#",
-                    '',
-                    \substr($string, 0, 8)
-                )
-            );
+            $this->analyseUNB($unbMatches['syntax_identifier']);
         }
         if (preg_match_all("/[A-Z0-9]+(?:\?'|$)[\r\n]+/i", $string, $matches, PREG_OFFSET_CAPTURE) > 0) {
             $this->errors[] = 'This file contains some segments without terminators';

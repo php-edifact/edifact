@@ -208,10 +208,13 @@ final class ParserTest extends \PHPUnit\Framework\TestCase
 
     public function testLoadWrappedFile()
     {
-        $p = new Parser();
-        $p->load(__DIR__ . '/../files/example_wrapped.edi')->parse();
-        $result = $p->errors();
+        $parser = new Parser();
+        $parser->load(__DIR__ . '/../files/example_wrapped.edi');
+        $syntaxId = $parser->getSyntaxIdentifier();
+        $parser->parse();
+        $result = $parser->errors();
         static::assertEmpty($result);
+        static::assertSame('IATB', $syntaxId);
     }
 
     public function testUNHWithoutMessageType()

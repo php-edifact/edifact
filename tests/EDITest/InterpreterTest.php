@@ -53,7 +53,9 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
     public function testBAPLIE()
     {
         $parser = new Parser();
-        $parser->load(__DIR__ . '/../files/D95BBAPLIE.edi')->parse();
+        $parser->load(__DIR__ . '/../files/D95BBAPLIE.edi');
+        $syntaxId = $parser->getSyntaxIdentifier();
+        $parser->parse();
 
         $mapping = new \EDI\Mapping\MappingProvider('D95B');
         $analyser = new Analyser();
@@ -67,6 +69,7 @@ final class InterpreterTest extends \PHPUnit\Framework\TestCase
         static::assertCount(2, $interpreter->getMessages());
         static::assertCount(0, $interpreter->getErrors());
         static::assertCount(2, $interpreter->getServiceSegments());
+        static::assertSame('UNOA', $syntaxId);
 
         static::assertSame([], $interpreter->getErrors());
     }
