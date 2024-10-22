@@ -33,7 +33,7 @@
     },
     "require-dev": {
         "php-edifact/edifact-mapping": "dev-master",
-        "phpunit/phpunit": "~9.0",
+        "phpunit/phpunit": "~11.0",
         "symplify/easy-coding-standard": "^12.0"
     },
     "autoload": {
