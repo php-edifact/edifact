@@ -561,11 +561,6 @@ class Reader
     }
 
     /**
-     * @param array $matchingSegments
-     * @param int   $offset
-     * @param bool  $required
-     * @param mixed $segment_name
-     *
      * @return false|mixed
      */
     private function getOffsetSegmentFromResult(array $matchingSegments, int $offset, bool $required, mixed $segment_name): mixed
@@ -575,27 +570,24 @@ class Reader
         }
 
         if ($required) {
-            throw new ReaderException('Segment "' . $segment_name . '" does not exist at offset "' . $offset . '"');
+            throw new ReaderException('Segment "'.$segment_name.'" does not exist at offset "'.$offset.'"');
         }
 
         return false;
     }
 
     /**
-     * @param array $matchingSegments
-     * @param mixed $segment_name
-     *
      * @return false|mixed
      */
     private function getSegmentFromResult(array $matchingSegments, bool $required, mixed $segment_name): mixed
     {
         // found more than one segment - error
         if (count($matchingSegments) > 1) {
-            throw new ReaderException('Segment "' . $segment_name . '" is ambiguous');
+            throw new ReaderException('Segment "'.$segment_name.'" is ambiguous');
         }
 
-        if ($required && !isset($matchingSegments[0])) {
-            throw new ReaderException('Segment "' . $segment_name . '" no exist');
+        if ($required && ! isset($matchingSegments[0])) {
+            throw new ReaderException('Segment "'.$segment_name.'" no exist');
         }
 
         return $matchingSegments[0] ?? false;

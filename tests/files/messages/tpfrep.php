@@ -1,4 +1,5 @@
 <?php
+
 return
 [
     'defaults' => [
@@ -9,109 +10,109 @@ return
     ],
     'segments' => [
         0 => [
-            'type'       => 'segment',
+            'type' => 'segment',
             'attributes' => [
-                'id'        => 'UNH',
+                'id' => 'UNH',
                 'maxrepeat' => '1',
-                'required'  => 'true',
+                'required' => 'true',
             ],
         ],
         1 => [
-            'type'       => 'segment',
+            'type' => 'segment',
             'attributes' => [
-                'id'        => 'BGM',
+                'id' => 'BGM',
                 'maxrepeat' => '1',
-                'required'  => 'true',
+                'required' => 'true',
             ],
         ],
         2 => [
-            'type'       => 'segment',
+            'type' => 'segment',
             'attributes' => [
-                'id'        => 'DTM',
+                'id' => 'DTM',
                 'maxrepeat' => '1',
             ],
         ],
         3 => [
-            'type'       => 'group',
+            'type' => 'group',
             'attributes' => [
-                'id'        => 'SG1',
+                'id' => 'SG1',
                 'maxrepeat' => '1',
-                'required'  => 'true',
+                'required' => 'true',
             ],
             'details' => [
                 0 => [
-                    'type'       => 'segment',
+                    'type' => 'segment',
                     'attributes' => [
-                        'id'        => 'TDT',
+                        'id' => 'TDT',
                         'maxrepeat' => '1',
-                        'required'  => 'true',
+                        'required' => 'true',
                     ],
                 ],
                 1 => [
-                    'type'       => 'segment',
+                    'type' => 'segment',
                     'attributes' => [
-                        'id'        => 'LOC',
+                        'id' => 'LOC',
                         'maxrepeat' => '1',
-                        'required'  => 'true',
+                        'required' => 'true',
                     ],
                 ],
                 2 => [
-                    'type'       => 'segment',
+                    'type' => 'segment',
                     'attributes' => [
-                        'id'        => 'DTM',
+                        'id' => 'DTM',
                         'maxrepeat' => '9',
                     ],
                 ],
                 3 => [
-                    'type'       => 'segment',
+                    'type' => 'segment',
                     'attributes' => [
-                        'id'        => 'RFF',
+                        'id' => 'RFF',
                         'maxrepeat' => '9',
                     ],
                 ],
             ],
         ],
         4 => [
-            'type'       => 'group',
+            'type' => 'group',
             'attributes' => [
-                'id'        => 'SG2',
+                'id' => 'SG2',
                 'maxrepeat' => '99',
             ],
             'details' => [
                 0 => [
-                    'type'       => 'segment',
+                    'type' => 'segment',
                     'attributes' => [
-                        'id'        => 'EQD',
+                        'id' => 'EQD',
                         'maxrepeat' => '1',
-                        'required'  => 'true',
+                        'required' => 'true',
                     ],
                 ],
                 1 => [
-                    'type'       => 'segment',
+                    'type' => 'segment',
                     'attributes' => [
-                        'id'        => 'CNT',
+                        'id' => 'CNT',
                         'maxrepeat' => '99',
                     ],
                 ],
                 2 => [
-                    'type'       => 'group',
+                    'type' => 'group',
                     'attributes' => [
-                        'id'        => 'SG3',
+                        'id' => 'SG3',
                         'maxrepeat' => '999',
                     ],
                     'details' => [
                         0 => [
-                            'type'       => 'segment',
+                            'type' => 'segment',
                             'attributes' => [
-                                'id'        => 'DTM',
+                                'id' => 'DTM',
                                 'maxrepeat' => '1',
-                                'required'  => 'true',
+                                'required' => 'true',
                             ],
                         ],
                         1 => [
-                            'type'       => 'segment',
+                            'type' => 'segment',
                             'attributes' => [
-                                'id'        => 'FTX',
+                                'id' => 'FTX',
                                 'maxrepeat' => '9',
                             ],
                         ],
@@ -120,11 +121,11 @@ return
             ],
         ],
         5 => [
-            'type'       => 'segment',
+            'type' => 'segment',
             'attributes' => [
-                'id'        => 'UNT',
+                'id' => 'UNT',
                 'maxrepeat' => '1',
-                'required'  => 'true',
+                'required' => 'true',
             ],
         ],
     ],

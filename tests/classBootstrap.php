@@ -11,7 +11,7 @@ class Bootstrap
     {
         $dir = __DIR__;
         $previousDir = '.';
-        while (!\is_dir($dir . '/' . $path)) {
+        while (! \is_dir($dir.'/'.$path)) {
             $dir = \dirname($dir);
             if ($previousDir === $dir) {
                 return false;
@@ -19,20 +19,20 @@ class Bootstrap
             $previousDir = $dir;
         }
 
-        return $dir . '/' . $path;
+        return $dir.'/'.$path;
     }
 
     protected static function initAutoloader()
     {
         $vendorPath = static::findParentPath('vendor');
-        if (\file_exists($vendorPath . '/autoload.php')) {
-            include $vendorPath . '/autoload.php';
+        if (\file_exists($vendorPath.'/autoload.php')) {
+            include $vendorPath.'/autoload.php';
         }
         \spl_autoload_register(
             function ($className) {
                 $path = \str_replace('\\', '/', $className);
-                if (\file_exists(__DIR__ . '/../src/' . $path . '.php')) {
-                    include_once __DIR__ . '/../src/' . $path . '.php';
+                if (\file_exists(__DIR__.'/../src/'.$path.'.php')) {
+                    include_once __DIR__.'/../src/'.$path.'.php';
                 }
             }
         );

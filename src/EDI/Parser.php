@@ -291,12 +291,13 @@ class Parser
             throw new \LogicException('No text has been parsed yet');
         }
         if (! isset(self::$charsets[$this->syntaxID])) {
-            throw new \RuntimeException('Unsupported syntax identifier: ' . $this->syntaxID);
+            throw new \RuntimeException('Unsupported syntax identifier: '.$this->syntaxID);
         }
 
         $check = mb_check_encoding($this->parsedfile, self::$charsets[$this->syntaxID]);
-        if(!$check)
+        if (! $check) {
             $this->errors[] = 'Character encoding does not match declaration in UNB interchange header';
+        }
 
         return $check;
     }
@@ -312,7 +313,7 @@ class Parser
     /**
      * (Un)Set strict parsing.
      */
-    public function setStrict(bool $strict):void
+    public function setStrict(bool $strict): void
     {
         $this->strict = $strict;
     }
@@ -330,14 +331,14 @@ class Parser
         if (empty($this->parsedfile)) {
             $this->parse();
         }
-    
+
         if (null === $encoding) {
             return $this->parsedfile;
         }
-    
+
         return $this->convertEncoding($this->parsedfile, self::$charsets[$this->syntaxID], $encoding);
     }
-    
+
     private function convertEncoding($data, string $from, string $to)
     {
         if (is_array($data)) {
@@ -345,9 +346,9 @@ class Parser
                 $data[$k] = $this->convertEncoding($v, $from, $to);
             }
         } elseif (is_string($data)) {
-            $data = function_exists('iconv') ? iconv($from, $to . '//TRANSLIT', $data) : mb_convert_encoding($data, $to, $from);
+            $data = function_exists('iconv') ? iconv($from, $to.'//TRANSLIT', $data) : mb_convert_encoding($data, $to, $from);
         }
-    
+
         return $data;
     }
 
@@ -365,7 +366,6 @@ class Parser
      * Get syntax identifier from the UNB header.
      * Does not necessarily mean that the text is actually encoded as such.
      *
-     * @return string
      * @throws \RuntimeException
      */
     public function getSyntaxIdentifier(): string
@@ -380,7 +380,7 @@ class Parser
      */
     public function load(string $location): self
     {
-        $contents = \file_get_contents($location);
+        $contents = file_get_contents($location);
         if ($contents === false) {
             throw new \RuntimeException('File could not be retrieved');
         }

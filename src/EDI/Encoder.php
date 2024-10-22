@@ -80,9 +80,8 @@ class Encoder
     /**
      * @param array[] $array
      * @param bool    $compact All segments on a single line?
-     * @param bool    $filterKeys
      */
-    public function encode(array $array, $compact = true, $filterKeys = false): string
+    public function encode(array $array, $compact = true): string
     {
         $this->originalArray = $array;
         $this->compact = $compact;
@@ -92,9 +91,6 @@ class Encoder
         $k = 0;
         foreach ($array as $row) {
             $k++;
-            if ($filterKeys) {
-                unset($row['segmentIdx']);
-            }
             $row = \array_values($row);
             $edistring .= $this->encodeSegment($row);
             if (! $compact && $k < $count) {

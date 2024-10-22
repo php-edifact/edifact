@@ -23,7 +23,7 @@ class Interpreter
         'MISSINGMESSAGEDELIMITER' => 'The message has at least one UNH or UNT missing',
         'TOOMANYSEGMENTS' => 'The message has some additional segments beyond the maximum repetition allowed',
         'TOOMANYGROUPS' => 'The message has some additional groups beyond the maximum repetition allowed',
-        'SPURIOUSSEGMENT' => 'This segment is spurious'
+        'SPURIOUSSEGMENT' => 'This segment is spurious',
     ];
 
     /**
@@ -160,9 +160,9 @@ class Interpreter
     public function togglePatching(bool $flag)
     {
         $this->patchFiles = $flag;
+
         return $this;
     }
-
 
     /**
      * @return void
@@ -170,6 +170,7 @@ class Interpreter
     public function toggleSegmentGroup(bool $flag)
     {
         $this->segmentGroup = $flag;
+
         return $this;
     }
 
@@ -179,6 +180,7 @@ class Interpreter
     public function forceArrayWhenRepeatable(bool $flag)
     {
         $this->forceArrayWhenRepeatable = $flag;
+
         return $this;
     }
 
@@ -191,6 +193,7 @@ class Interpreter
     public function setMessageTextConf(array $messageTextConf)
     {
         $this->messageTextConf = \array_replace($this->messageTextConf, $messageTextConf);
+
         return $this;
     }
 
@@ -203,6 +206,7 @@ class Interpreter
     public function setSegmentTemplates(array $segmentTemplates)
     {
         $this->segmentTemplates = $segmentTemplates;
+
         return $this;
     }
 
@@ -215,6 +219,7 @@ class Interpreter
     public function setGroupTemplates(array $groupTemplates)
     {
         $this->groupTemplates = $groupTemplates;
+
         return $this;
     }
 
@@ -227,6 +232,7 @@ class Interpreter
     public function setCodes(array $codes)
     {
         $this->codes = $codes;
+
         return $this;
     }
 
@@ -239,6 +245,7 @@ class Interpreter
     public function setComparisonFunction(callable $func)
     {
         $this->comparisonFunction = $func;
+
         return $this;
     }
 
@@ -251,6 +258,7 @@ class Interpreter
     public function setReplacementFunction(callable $func)
     {
         $this->replacementFunction = $func;
+
         return $this;
     }
 
@@ -267,6 +275,7 @@ class Interpreter
         } else {
             $this->outputKey = 'name';
         }
+
         return $this;
     }
 
@@ -599,7 +608,7 @@ class Interpreter
                 $segmentVisited = true;
                 $this->doAddArray($array, $jsonMessage, (int) $elm['maxrepeat']);
                 $segmentIdx++;
-            } else if ($this->replacementFunction !== null && $replacementSegment = \call_user_func($this->replacementFunction, $message[$segmentIdx], $elm)) {
+            } elseif ($this->replacementFunction !== null && $replacementSegment = \call_user_func($this->replacementFunction, $message[$segmentIdx], $elm)) {
                 //the function shall return false, true or a new segment
                 $fixed = false;
 
@@ -627,11 +636,12 @@ class Interpreter
                     'segmentId' => (string) $elm['id'],
                 ];
                 $segmentIdx++;
+
                 continue;
             } else {
                 if (! $segmentVisited && isset($elm['required'])) {
                     $segmentVisited = true;
-                    if (isset($message[$segmentIdx+1]) && \call_user_func($this->comparisonFunction, $message[$segmentIdx+1], $elm)) {
+                    if (isset($message[$segmentIdx + 1]) && \call_user_func($this->comparisonFunction, $message[$segmentIdx + 1], $elm)) {
                         $errors[] = [
                             'text' => $this->messageTextConf['SPURIOUSSEGMENT'].($this->patchFiles ? ' (skipped)' : ''),
                             'position' => $segmentIdx,
@@ -639,6 +649,7 @@ class Interpreter
                         ];
                         $segmentIdx++; //just move the index
                         $i--; //but don't count as repetition
+
                         continue;
                     }
 
@@ -672,8 +683,8 @@ class Interpreter
         $loopMove = 0;
         while (
             isset($message[$segmentIdx]) &&
-            \call_user_func($this->comparisonFunction, $message[$segmentIdx+$loopMove], $elm) &&
-            (string)$elm['id'] !== $this->currentGroupHeader
+            \call_user_func($this->comparisonFunction, $message[$segmentIdx + $loopMove], $elm) &&
+            (string) $elm['id'] !== $this->currentGroupHeader
             ) {
             $errors[] = [
                 'text' => $this->messageTextConf['TOOMANYSEGMENTS'].($this->patchFiles ? ' (skipped)' : ''),
@@ -735,7 +746,7 @@ class Interpreter
 
             $jsonelements = [
                 'segmentIdx' => $segmentIdx,
-                'segmentCode' => $id
+                'segmentCode' => $id,
             ];
 
             if ($this->segmentGroup) {
@@ -783,7 +794,9 @@ class Interpreter
                             }
 
                             $d_sub_desc_attr = $sub_details_desc[$d_n]['attributes'];
-
+                            //print_r($d_sub_desc_attr);
+                            //print_r($d_detail);
+                            //die();
                             if ($this->codes !== null && isset($this->codes[$d_sub_desc_attr['id']]) && is_array($this->codes[$d_sub_desc_attr['id']])) { //if codes is set enable translation of the value
                                 if (isset($this->codes[$d_sub_desc_attr['id']][$d_detail])) {
                                     $d_detail = $this->codes[$d_sub_desc_attr['id']][$d_detail];
@@ -859,9 +872,19 @@ class Interpreter
         if ($this->codes !== null) {
             throw new \LogicException('Run the Interpreter without calling setCodes()');
         }
+        $unh = $this->serviceSeg['interchangeHeader'];
+        unset($unh['segmentIdx']);
+        unset($unh['segmentGroup']);
+        $unz = $this->serviceSeg['interchangeTrailer'];
+        unset($unz['segmentIdx']);
+        unset($unz['segmentGroup']);
 
-        return $this->recursionReconstruct($this->ediGroups);
+        $rebuilt = $this->recursionReconstruct($this->ediGroups);
 
+        array_unshift($rebuilt, $unh);
+        $rebuilt[] = $unz;
+
+        return $rebuilt;
     }
 
     private function recursionReconstruct($tempArr)
@@ -875,7 +898,7 @@ class Interpreter
                         $reconstructArr[$k] = $i;
                     }
                 } else {
-                    $idx=$arr['segmentIdx'];
+                    $idx = $arr['segmentIdx'];
                     unset($arr['segmentIdx']);
                     if ($this->segmentGroup) {
                         unset($arr['segmentGroup']);
@@ -884,6 +907,7 @@ class Interpreter
                 }
             }
         }
+
         return $reconstructArr;
     }
 }
