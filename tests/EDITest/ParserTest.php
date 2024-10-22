@@ -12,7 +12,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 final class ParserTest extends \PHPUnit\Framework\TestCase
 {
-    use \phpmock\phpunit\PHPMock;
 
     public function testCustomStripRegex()
     {
