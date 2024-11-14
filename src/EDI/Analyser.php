@@ -226,7 +226,14 @@ class Analyser
                                 $r[] = '        type: '.$d_sub_desc_attr['type'];
 
                                 if (isset($jsoncomposite[$d_sub_desc_attr['name']])) {
-                                    $jsoncomposite[$d_sub_desc_attr['name']] .= $d_detail;
+                                    if (is_array($jsoncomposite[$d_sub_desc_attr['name']])) {
+                                        $jsoncomposite[$d_sub_desc_attr['name']][] = $d_detail;
+                                    } else {
+                                        $jsoncomposite[$d_sub_desc_attr['name']] = [
+                                            $jsoncomposite[$d_sub_desc_attr['name']],
+                                            $d_detail
+                                        ];
+                                    }
                                 } else {
                                     $jsoncomposite[$d_sub_desc_attr['name']] = $d_detail;
                                 }
