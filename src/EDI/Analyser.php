@@ -225,7 +225,18 @@ class Analyser
                                 }
                                 $r[] = '        type: '.$d_sub_desc_attr['type'];
 
-                                $jsoncomposite[$d_sub_desc_attr['name']][] = $d_detail;
+                                if (isset($jsoncomposite[$d_sub_desc_attr['name']])) {
+                                    if (is_array($jsoncomposite[$d_sub_desc_attr['name']])) {
+                                        $jsoncomposite[$d_sub_desc_attr['name']][] = $d_detail;
+                                    } else {
+                                        $jsoncomposite[$d_sub_desc_attr['name']] = [
+                                            $jsoncomposite[$d_sub_desc_attr['name']],
+                                            $d_detail
+                                        ];
+                                    }
+                                } else {
+                                    $jsoncomposite[$d_sub_desc_attr['name']] = $d_detail;
+                                }
 
                                 if (isset($d_sub_desc_attr['maxlength'])) {
                                     $r[] = '        maxlen: '.$d_sub_desc_attr['maxlength'];
