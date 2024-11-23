@@ -172,9 +172,10 @@ class Reader
      * @param int          $l1        first level item number (start by 1)
      * @param false|int    $l2        second level item number (start by 0)
      * @param bool         $required  if required, but no exist, register error
+     * @param int|null     $offset    if multiple segments found, get segment by offset
      * @return string|null
      */
-    public function readEdiDataValue($filter, int $l1, $l2 = false, bool $required = false, int $offset = null)
+    public function readEdiDataValue($filter, int $l1, $l2 = false, bool $required = false, ?int $offset = null)
     {
         $found_segments = [];
         $segment_name = $filter;

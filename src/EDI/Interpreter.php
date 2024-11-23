@@ -91,9 +91,9 @@ class Interpreter
     private $serviceSeg;
 
     /**
-     * @var array
+     * @var array|null
      */
-    private $codes;
+    private $codes = null;
 
     /**
      * @var callable
@@ -126,9 +126,9 @@ class Interpreter
      * @param string     $xmlMsg                        Path to XML Message representation
      * @param array      $xmlSeg                        Segments processed by EDI\Analyser::loadSegmentsXml or EDI\Mapping\MappingProvider
      * @param array      $xmlSvc                        Service segments processed by EDI\Analyser::loadSegmentsXml or EDI\Mapping\MappingProvider
-     * @param array|null $messageTextConf               Personalisation of error messages
+     * @param array|null $messageTextConf               Personalization of error messages
      */
-    public function __construct(string $xmlMsg, array $xmlSeg, array $xmlSvc, array $messageTextConf = null)
+    public function __construct(string $xmlMsg, array $xmlSeg, array $xmlSvc, ?array $messageTextConf = null)
     {
         // simplexml_load_file: This can be affected by a PHP bug #62577 (https://bugs.php.net/bug.php?id=62577)
         $xmlData = \file_get_contents($xmlMsg);
@@ -735,7 +735,7 @@ class Interpreter
      *
      * @param int|null   $segmentIdx
      */
-    private function processSegment(array &$segment, array &$xmlMap, $segmentIdx, array &$errors = null): array
+    private function processSegment(array &$segment, array &$xmlMap, $segmentIdx, ?array &$errors = null): array
     {
         $id = $segment[0];
 
