@@ -166,7 +166,7 @@ class Analyser
      * @param array|null $rawSegments (optional) List of raw segments from EDI\Parser::getRawSegments
      * @return string file
      */
-    public function process(array $data, array $rawSegments = null): string
+    public function process(array $data, ?array $rawSegments = null): string
     {
         $r = [];
         foreach ($data as $nrow => $segment) {
