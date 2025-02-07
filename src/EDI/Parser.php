@@ -157,9 +157,7 @@ class Parser
 
             // Basic sanitization, remove non-printable chars.
             $lineTrim = \trim($line);
-            if (mb_detect_encoding($line, mb_list_encodings()) !== 'UTF-8') {
-                $line = (string) \preg_replace($this->stripChars, '', $lineTrim);
-            }
+            $line = (string) \preg_replace($this->stripChars, '', $lineTrim);
             $line_bytes = \strlen($line);
 
             if ($line_bytes !== \strlen($lineTrim)) {
