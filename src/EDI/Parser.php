@@ -168,18 +168,18 @@ class Parser
     public function analyseUNA($line)
     {
         $line = substr($line, 0, 6);
-        if (isset($line{0})) {
-            $this->sepComp = preg_quote($line{0}, self::$DELIMITER);
-            if (isset($line{1})) {
-                $this->sepData = preg_quote($line{1}, self::$DELIMITER);
-                if (isset($line{2})) {
-                    $this->sepDec = $line{2}; // See later if a preg_quote is needed
-                    if (isset($line{3})) {
-                        $this->symbRel = preg_quote($line{3}, self::$DELIMITER);
-                        if (isset($line{4})) {
-                            $this->symbRep = $line{4}; // See later if a preg_quote is needed
-                            if (isset($line{5})) {
-                                $this->symbEnd = preg_quote($line{5}, self::$DELIMITER);
+        if (isset($line[0])) {
+            $this->sepComp = preg_quote($line[0], self::$DELIMITER);
+            if (isset($line[1])) {
+                $this->sepData = preg_quote($line[1], self::$DELIMITER);
+                if (isset($line[2])) {
+                    $this->sepDec = $line[2]; // See later if a preg_quote is needed
+                    if (isset($line[3])) {
+                        $this->symbRel = preg_quote($line[3], self::$DELIMITER);
+                        if (isset($line[4])) {
+                            $this->symbRep = $line[4]; // See later if a preg_quote is needed
+                            if (isset($line[5])) {
+                                $this->symbEnd = preg_quote($line[5], self::$DELIMITER);
                             }
                         }
                     }
