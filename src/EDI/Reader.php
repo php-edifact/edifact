@@ -197,7 +197,7 @@ class Reader
      * @param  bool    $satisfyFirst    return first found Element
      * @return string/null
      */
-    public function readEdiDataValue($filter, $l1, $l2 = false, $required = false,$satisfyFirst=false)
+    public function readEdiDataValue($filter, $l1, $l2 = false, $required = false, $satisfyFirst=false)
     {
 
         //interpret filter arameters
@@ -242,7 +242,7 @@ class Reader
                 $segment_count ++;
 
                 // Cancel traversing and return first Element found
-                if (($filter_ok === true || !$filter_elements) && $satisfyFirst) {
+                if (((isset($filter_ok) && $filter_ok === true) || !$filter_elements) && $satisfyFirst) {
                     break;
                 }
             }
