@@ -41,5 +41,8 @@
         "psr-4": {
             "EDI\\": "src/EDI/"
         }
-    }
+    },
+  "require": {
+    "ext-mbstring": "*"
+  }
 }

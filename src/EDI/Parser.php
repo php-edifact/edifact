@@ -297,6 +297,12 @@ class Parser
     public function load($url)
     {
         $file = file_get_contents($url);
+
+        if (!mb_check_encoding($file, 'UTF-8')) {
+            echo "The file is not encoded in UTF-8\n";
+            //$file = mb_convert_encoding($file, 'UTF-8', 'ISO-8859-2');
+        }
+
         return $this->loadString($file);
     }
 
