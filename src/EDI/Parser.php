@@ -56,7 +56,7 @@ class Parser
         "UNOA" => "/[\x01-\x1F\x80-\xFF]/", // not as restrictive as it should be
         "UNOB" => "/[\x01-\x1F\x80-\xFF]/",
         "UNOC" => "/[\x01-\x1F\x7F-\x9F]/",
-       // "UNOW" => "/[\x01-\x1F\x7F-\x9F]/",
+        "UNOW" => "/[\x01-\x1F\x7F-\x9F]/",
     ];
 
     /**
