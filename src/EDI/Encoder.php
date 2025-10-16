@@ -1,117 +1,150 @@
 <?php
-/**
- * EDIFACT Messages Encoder
- * (c)2016 Stefano Sabatini
- */
+
+declare(strict_types=1);
 
 namespace EDI;
 
+/**
+ * EDIFACT Messages Encoder
+ * (c) 2018 Stefano Sabatini
+ */
 class Encoder
 {
-
+    /**
+     * @var string
+     */
     private $output = '';
-    private $UNAActive = false; // disable by default to preserve backward compatibility
+
+    /**
+     * @var bool
+     */
+    private $UNAActive = false; // disabled by default to preserve backward compatibility
+
+    /**
+     * @var array
+     */
     private $originalArray = [];
 
     /**
-     * @var string : component separator character (default :)
+     * @var bool When false adds a new line after each segment
+     */
+    private $compact = true;
+
+    /**
+     * @var string Component separator character (default :)
      */
     private $sepComp;
 
     /**
-     * @var string : data separator character (default +)
+     * @var string Data separator character (default +)
      */
     private $sepData;
 
     /**
-     * @var string : dec separator character (no use but here) (default .)
+     * @var string Dec separator character (no use but here) (default .)
      */
     private $sepDec;
 
     /**
-     * @var string : release character (default ?)
+     * @var string Release character (default ?)
      */
     private $symbRel;
 
     /**
-     * @var string : repetition character (no use but here) (default space)
+     * @var string Repetition character (no use but here) (default space)
      */
     private $symbRep;
 
     /**
-     * @var string : end character (default ')
+     * @var string End character (default ')
      */
     private $symbEnd;
 
-    public function __construct($array = null, $wrap = true)
+    /**
+     * Encoder constructor.
+     *
+     * @param array|null $array
+     * @param bool       $compact
+     */
+    public function __construct($array = null, $compact = true)
     {
         $this->setUNA(":+.? '", false);
         if ($array === null) {
             return;
         }
-        $this->encode($array, $wrap);
+
+        /** @noinspection UnusedFunctionResultInspection */
+        $this->encode($array, $compact);
     }
 
-    public function encode($arr, $wrap = true)
+    /**
+     * @param array[] $array
+     * @param bool    $compact All segments on a single line?
+     */
+    public function encode(array $array, $compact = true): string
     {
-        $this->originalArray = $arr;
+        $this->originalArray = $array;
+        $this->compact = $compact;
+
         $edistring = '';
-        $count = count($arr);
+        $count = \count($array);
         $k = 0;
-        foreach ($arr as $row) {
+        foreach ($array as $row) {
             $k++;
-            $row = array_values($row);
+            $row = \array_values($row);
             $edistring .= $this->encodeSegment($row);
-            if (!$wrap && $k < $count) {
+            if (! $compact && $k < $count) {
                 $edistring .= "\n";
             }
         }
         $this->output = $edistring;
+
         return $edistring;
     }
 
-    public function encodeSegment($row)
+    public function encodeSegment(array $row): string
     {
+        // init
         $str = '';
-        $t = count($row);
-        for ($i = 0; $i < $t; $i++) {
-            $elm = '';
-            if (!is_array($row[$i])) {
-                $elm = $this->escapeValue($row[$i]);
-            } else {
-                foreach ($row[$i] as &$temp) {
-                    $temp = $this->escapeValue($temp);
+        $t = \count($row);
+
+        /** @noinspection AlterInForeachInspection */
+        foreach ($row as $i => &$iValue) {
+            if (\is_array($iValue)) {
+                if (
+                    \count($iValue) === 1
+                    &&
+                    \is_array(\reset($iValue))
+                ) {
+                    $iValue = \array_pop($iValue);
                 }
-                $elm = implode($this->sepComp, $row[$i]);
+
+                /** @noinspection NotOptimalIfConditionsInspection */
+                if (\is_array($iValue)) {
+                    foreach ($iValue as &$temp) {
+                        $temp = $this->escapeValue($temp);
+                    }
+                    unset($temp);
+                }
+
+                $elm = \implode($this->sepComp, $iValue);
+            } else {
+                $elm = $this->escapeValue($iValue);
             }
+
             $str .= $elm;
             if ($i == $t - 1) {
                 break;
             }
             $str .= $this->sepData;
         }
+
         $str .= $this->symbEnd;
+
         return $str;
     }
 
-    private function escapeValue($str)
-    {
-        $search = [
-            $this->sepComp,
-            $this->sepData,
-            $this->symbRel,
-            $this->symbEnd
-        ];
-        $replace = [
-            $this->symbRel . $this->sepComp,
-            $this->symbRel . $this->sepData,
-            $this->symbRel . $this->symbRel,
-            $this->symbRel . $this->symbEnd
-        ];
-        return str_replace($search, $replace, $str);
-    }
-
-    public function get()
+    public function get(): string
     {
         if ($this->UNAActive) {
             return "UNA" . $this->sepComp .
@@ -123,36 +156,68 @@ class Encoder
         } else {
             return $this->output;
         }
+
+        return $this->output;
     }
 
-    public function setUNA($chars, $user_call = true)
+    public function setUNA(string $chars, bool $user_call = true): bool
     {
-        if (is_string($chars) && strlen($chars) == 6) {
+        if (\strlen($chars) == 6) {
             $this->sepComp = $chars[0];
             $this->sepData = $chars[1];
             $this->sepDec = $chars[2];
             $this->symbRel = $chars[3];
             $this->symbRep = $chars[4];
             $this->symbEnd = $chars[5];
+
             if ($user_call) {
                 $this->enableUNA();
             }
+
             if ($this->output != '') {
                 $this->output = $this->encode($this->originalArray);
             }
+
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
+    /**
+     * @return void
+     */
     public function enableUNA()
     {
         $this->UNAActive = true;
     }
 
+    /**
+     * @return void
+     */
     public function disableUNA()
     {
         $this->UNAActive = false;
+    }
+
+    /**
+     * @param int|string $str
+     */
+    private function escapeValue(&$str): string
+    {
+        $search = [
+            $this->symbRel,
+            $this->sepComp,
+            $this->sepData,
+            $this->symbEnd,
+        ];
+        $replace = [
+            $this->symbRel.$this->symbRel,
+            $this->symbRel.$this->sepComp,
+            $this->symbRel.$this->sepData,
+            $this->symbRel.$this->symbEnd,
+        ];
+
+        return \str_replace($search, $replace, (string) $str);
     }
 }

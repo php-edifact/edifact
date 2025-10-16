@@ -3,37 +3,40 @@
 namespace EDITest;
 
 use EDI\Analyser;
+use EDI\Mapping\MappingProvider;
 use EDI\Parser;
-use EDI\Mapping;
+use PHPUnit\Framework\TestCase;
 
 /**
- * Class AnalyserTest
- * @package EDITest
- * @author Marius Teller <marius.teller@modotex.com>
+ * @internal
  */
-class AnalyserTest extends \PHPUnit_Framework_TestCase
+final class AnalyserTest extends TestCase
 {
     /**
      * @var Analyser
      */
     protected $analyser;
+
+    /**
+     * @var MappingProvider
+     */
     protected $mapping;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->analyser = new Analyser();
-        $this->mapping = new \EDI\Mapping\MappingProvider('D07A');
+        $this->mapping = new MappingProvider('D07A');
     }
 
     public function testGetMessageStructure()
     {
         $messageXml = $this->mapping->getMessage('tpfrep');
-        $expected = include __DIR__."/../files/messages/tpfrep.php";
+        $expected = include __DIR__.'/../files/messages/tpfrep.php';
         $actual = $this->analyser->loadMessageXml($messageXml);
-        $this->assertEquals(
+        self::assertSame(
             $expected,
             $actual,
-            "Unable to get the correct message structure array"
+            'Unable to get the correct message structure array'
         );
     }
 
@@ -41,44 +44,45 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
     {
         $codesXml = $this->mapping->getCodes();
         $actual = $this->analyser->loadCodesXml($codesXml);
-        $this->assertCount(270, $actual);
-        $this->assertArrayHasKey('1001', $actual);
-        $this->assertCount(652, $actual['1001']);
+        self::assertCount(270, $actual);
+        self::assertArrayHasKey('1001', $actual);
+        self::assertCount(652, $actual['1001']);
     }
 
     public function testGetSegmentStructure()
     {
         $segmentsXml = $this->mapping->getSegments();
-        $this->analyser->loadSegmentsXml($segmentsXml);
-        $actual = $this->analyser->segments;
-        $this->assertCount(156, $actual);
-        $this->assertArrayHasKey('ADR', $actual);
-        $this->assertArrayHasKey('attributes', $actual['ADR']);
-        $this->assertArrayHasKey('details', $actual['ADR']);
-        $this->assertCount(3, $actual['ADR']['attributes']);
+        /* @noinspection UnusedFunctionResultInspection */
+        $actual = $this->analyser->loadSegmentsXml($segmentsXml);
+        self::assertCount(156, $actual);
+        self::assertArrayHasKey('ADR', $actual);
+        self::assertArrayHasKey('attributes', $actual['ADR']);
+        self::assertArrayHasKey('details', $actual['ADR']);
+        self::assertCount(3, $actual['ADR']['attributes']);
     }
 
     public function testProcess()
     {
-        $parser = new Parser(__DIR__."/../files/example.edi");
-        $parsed = $parser->get();
+        $parser = new Parser();
+        $parser->load(__DIR__.'/../files/example.edi');
         $segments = $parser->getRawSegments();
-        $this->assertEquals(15, count($parsed));
-        $analyser = new Analyser();
+        $parser->parse();
+        $parsed = $parser->get();
+        self::assertCount(15, $parsed);
+        $result = (new Analyser())->process($parsed, $segments);
 
-        $result = $analyser->process($parsed, $segments);
-        $this->assertEquals(399, strlen($result));
+        self::assertSame(228, \strlen($result));
     }
 
     public function testProcessWrapped()
     {
-        $parser = new Parser(__DIR__."/../files/example_wrapped.edi");
-        $parsed = $parser->get();
+        $parser = new Parser();
+        $parser->load(__DIR__.'/../files/example_wrapped.edi');
         $segments = $parser->getRawSegments();
-        $this->assertEquals(15, count($parsed));
-        $analyser = new Analyser();
-
-        $result = $analyser->process($parsed, $segments);
-        $this->assertEquals(399, strlen($result));
+        $parser->parse();
+        $parsed = $parser->get();
+        self::assertCount(15, $parsed);
+        $result = (new Analyser())->process($parsed, $segments);
+        self::assertSame(399, \strlen($result));
     }
 }

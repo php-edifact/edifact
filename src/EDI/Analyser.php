@@ -1,260 +1,363 @@
 <?php
-/**
- * EDIFACT Messages Parser
- * (c)2016 Uldis Nelsons
- */
+
+declare(strict_types=1);
 
 namespace EDI;
 
+/**
+ * EDIFACT Messages Analyser
+ * (c)2016 Uldis Nelsons
+ */
 class Analyser
 {
-
+    /**
+     * @var array<mixed>
+     */
     public $segments;
+
+    /**
+     * @var string
+     */
+    public $directory;
+
+    /**
+     * @var array<mixed>
+     */
     private $jsonedi;
 
     /**
-     * @param string $message_xml_file
-     * @return array
+     * @var array
      */
-    public function loadMessageXml($message_xml_file)
+    private $codes;
+
+    public function setXml($segments, $codes)
     {
-        $messageXmlString = file_get_contents($message_xml_file);
+        $this->segments = $segments;
+        $this->codes = $codes;
+    }
+
+    /**
+     * @return array|false
+     */
+    public function loadMessageXml(string $message_xml_file)
+    {
+        $messageXmlString = \file_get_contents($message_xml_file);
+        if ($messageXmlString === false) {
+            return false;
+        }
+
         $messageXml = new \SimpleXMLIterator($messageXmlString);
-        unset($messageXmlString);
-        $message = [
-        "defaults" => $this->readMessageDefaults($messageXml),
-        "segments" => $this->readXmlNodes($messageXml),
+
+        return [
+            'defaults' => $this->readMessageDefaults($messageXml),
+            'segments' => $this->readXmlNodes($messageXml),
         ];
-        unset($messageXml);
-        return $message;
     }
-
-    /**
-     * read default values in given message xml
-     * @param \SimpleXmlElement $message
-     * @return array
-     */
-    protected function readMessageDefaults(\SimpleXmlElement $message)
-    {
-        $defaults = array();
-        $defaultsNode = isset($message->defaults[0]) ? $message->defaults[0] : array();
-        /**
-         * @var \SimpleXMLElement $defaultValueNode
-         */
-        foreach ($defaultsNode as $defaultValueNode) {
-            $attributes = $defaultValueNode->attributes();
-            $id = (string) $attributes->id;
-            $value = (string) $attributes->value;
-            $defaults[$id] = $value;
-        }
-        return $defaults;
-    }
-
-    /**
-     * read message segments and groups
-     * @param \SimpleXmlElement $element
-     * @return array
-     */
-    protected function readXmlNodes(\SimpleXmlElement $element)
-    {
-        $arrayElements = [];
-        foreach ($element as $name => $node) {
-            if ($name == "defaults") {
-                continue;
-            }
-            $arrayElement = [];
-            $arrayElement["type"] = $name;
-            $arrayElement["attributes"] = $this->readAttributesArray($node);
-            $details = $this->readXmlNodes($node);
-            if (!empty($details)) {
-                $arrayElement["details"] = $details;
-            }
-            $arrayElements[] = $arrayElement;
-        }
-        return $arrayElements;
-    }
-
-    /**
-     * return an xml elements attributes in as array
-     * @param \SimpleXmlElement $element
-     * @return array
-     */
-    protected function readAttributesArray(\SimpleXmlElement $element)
-    {
-        $attributes = [];
-        foreach ($element->attributes() as $attrName => $attr) {
-            $attributes[$attrName] = (string) $attr;
-        }
-        return $attributes;
-    }
-
 
     /**
      * get all data element codes
-     * @param string $codesXml
-     * @return array
+     *
+     *
+     * @return array|false
      */
-    public function loadCodesXml($codesXml)
+    public function loadCodesXml(string $codesXml)
     {
-        $codesXmlString = file_get_contents($codesXml);
+        $codesXmlString = \file_get_contents($codesXml);
+        if ($codesXmlString === false) {
+            return false;
+        }
+
         $codesXml = new \SimpleXMLIterator($codesXmlString);
-        unset($codesXmlString);
-        $codes = [];
-        /**
-         * @var \SimpleXmlIterator $codeCollection
-         */
+        $this->codes = [];
         foreach ($codesXml as $codeCollection) {
-            $id = (string)$codeCollection->attributes()->id;
-            $codes[$id] = [];
-            /**
-             * @var \SimpleXmlIterator $codeNode
-             */
+            \assert($codeCollection instanceof \SimpleXMLIterator);
+
+            $codeCollectionAttributes = $codeCollection->attributes();
+            if ($codeCollectionAttributes === null) {
+                continue;
+            }
+
+            $id = (string) $codeCollectionAttributes->id;
+            $this->codes[$id] = [];
             foreach ($codeCollection as $codeNode) {
+                \assert($codeNode instanceof \SimpleXMLIterator);
+
                 $codeAttributes = $codeNode->attributes();
-                $code = (string)$codeAttributes->id;
-                $desc = (string)$codeAttributes->desc;
-                $codes[$id][$code] = $desc;
+                if ($codeAttributes !== null) {
+                    $code = (string) $codeAttributes->id;
+                    $this->codes[$id][$code] = (string) $codeAttributes->desc;
+                }
             }
         }
-        unset($codesXml);
-        return $codes;
+
+        return $this->codes;
     }
 
     /**
      * convert segment definition from XML to array. Sequence of data_elements and
      * composite_data_element same as in XML
-     * @param string $segment_xml_file
-     * @return array
+     * For single message, it's vailable also in (new EDI\Mapping\MappingProvider($version))->loadSegmentsXml()
+     *
+     *
+     * @return array|false
      */
-    public function loadSegmentsXml($segment_xml_file)
+    public function loadSegmentsXml(string $segmentXmlFile, bool $discardOldSegments = true)
     {
+        if ($discardOldSegments) {
+            $this->segments = [];
+        }
 
-        $segments_xml = file_get_contents($segment_xml_file);
+        $segmentsXml = \file_get_contents($segmentXmlFile);
+        if ($segmentsXml === false) {
+            return false;
+        }
 
-        $xml = simplexml_load_string($segments_xml);
-        unset($segments_xml);
-        $this->segments = array();
+        $xml = \simplexml_load_string($segmentsXml);
+        if ($xml === false) {
+            return false;
+        }
+        // free memory
+        unset($segmentsXml);
 
-        /**
-         * @var \SimpleXmlElement $segmentNode
-         */
         foreach ($xml as $segmentNode) {
-            $qualifier = (string)$segmentNode->attributes()->id;
+            \assert($segmentNode instanceof \SimpleXMLElement);
+
+            $segmentNodeAttributes = $segmentNode->attributes();
+            if ($segmentNodeAttributes === null) {
+                continue;
+            }
+
+            $qualifier = (string) $segmentNodeAttributes->id;
             $segment = [];
-            $segment["attributes"] = $this->readAttributesArray($segmentNode);
+            $segment['attributes'] = $this->readAttributesArray($segmentNode);
             $details = $this->readXmlNodes($segmentNode);
-            if (!empty($details)) {
-                $segment["details"] = $details;
+            if (! empty($details)) {
+                $segment['details'] = $details;
             }
             $this->segments[$qualifier] = $segment;
         }
+
+        return $this->segments;
+    }
+
+    /**
+     * Load segment definitions from multiple files
+     *
+     * @see Analyser::loadSegmentsXml()
+     *
+     * @param string[] $segmentXmlFiles
+     * @return array|false
+     */
+    public function loadMultiSegmentsXml(array $segmentXmlFiles)
+    {
+        foreach ($segmentXmlFiles as $xmlFile) {
+            if (! $result = $this->loadSegmentsXml($xmlFile, false)) {
+                return $result;
+            }
+        }
+
         return $this->segments;
     }
 
     /**
      * create readable EDI MESSAGE with comments
-     * @param array $data by EDI\Parser:parse() created array from plain EDI message
-     * @param array $rawSegments (optional) List of raw segments from EDI\Parser::getRawSegments
+     *
+     * @param array      $data        by EDI\Parser:parse() created array from plain EDI message
+     * @param array|null $rawSegments (optional) List of raw segments from EDI\Parser::getRawSegments
      * @return string file
      */
-    public function process($data, $rawSegments = null)
+    public function process(array $data, ?array $rawSegments = null): string
     {
-        $r = array();
+        $r = [];
         foreach ($data as $nrow => $segment) {
-
             $id = $segment[0];
 
             $r[] = '';
             $jsonsegment = [];
-            if (isset($rawSegments, $rawSegments[$nrow])) {
-                $r[] = trim($rawSegments[$nrow]);
+            if (isset($rawSegments[$nrow])) {
+                $r[] = \trim($rawSegments[$nrow]);
             }
 
             if (isset($this->segments[$id])) {
-
                 $attributes = $this->segments[$id]['attributes'];
                 $details_desc = $this->segments[$id]['details'];
 
-                $r[] = $id . ' - ' . $attributes['name'];
-                $r[] = '  (' . wordwrap($attributes['desc'], 75, PHP_EOL.'  ') . ')';
+                $idHeader = $id.' - '.$attributes['name'];
+                if ($this->directory && $id !== 'UNB') {
+                    $idHeader .= ' https://service.unece.org/trade/untdid/'.strtolower($this->directory).'/trsd/trsd'.strtolower($id).'.htm';
+                }
+                $r[] = $idHeader;
+                $r[] = '  ('.\wordwrap($attributes['desc'], 75, \PHP_EOL.'  ').')';
 
-                $jsonelements = ["segmentCode" => $id];
+                $jsonelements = [
+                    'segmentCode' => $id,
+                ];
                 foreach ($segment as $idx => $detail) {
-                    $n = $idx-1;
-                    if ($idx == 0 || !isset($details_desc[$n])) {
+                    $n = $idx - 1;
+                    if ($idx == 0 || ! isset($details_desc[$n])) {
                         continue;
                     }
-                    $d_desc_attr =  $details_desc[$n]['attributes'];
-                    $l1 = '      ' . $d_desc_attr['id'] . ' - ' . $d_desc_attr['name'];
-                    $l2 = '      ' . wordwrap($d_desc_attr['desc'], 71, PHP_EOL.'      ');
+                    $d_desc_attr = $details_desc[$n]['attributes'];
+                    $l1 = '      '.$d_desc_attr['id'].' - '.$d_desc_attr['name'];
+                    $l2 = '      '.\wordwrap($d_desc_attr['desc'], 71, \PHP_EOL.'      ');
 
-                    if (!is_array($detail)) {
-                        $r[] = '  [' . $n . '] ' . $detail;
-                        $r[] = $l1;
-                        $r[] = $l2;
-                        $jsonelements[$d_desc_attr['name']] = $detail;
-                    } else {
-                        $r[] = '  [' . $n . '] ' . implode(',', $detail);
+                    if (\is_array($detail)) {
+                        $r[] = '  ['.$n.'] '.\implode(',', $detail);
                         $r[] = $l1;
                         $r[] = $l2;
 
                         $jsoncomposite = [];
                         if (isset($details_desc[$n]['details'])) {
-                            $sub_details_desc =  $details_desc[$n]['details'];
+                            $sub_details_desc = $details_desc[$n]['details'];
 
                             foreach ($detail as $d_n => $d_detail) {
-                                $d_sub_desc_attr =  $sub_details_desc[$d_n]['attributes'];
-                                $r[] = '    [' . $d_n . '] ' . $d_detail;
-                                $r[] = '        id: ' . $d_sub_desc_attr['id'] . ' - ' . $d_sub_desc_attr['name'];
-                                $r[] = '        ' . wordwrap($d_sub_desc_attr['desc'], 69, PHP_EOL.'        ');
-                                $r[] = '        type: ' . $d_sub_desc_attr['type'];
+                                $d_sub_desc_attr = $sub_details_desc[$d_n]['attributes'];
+                                $codeElementId = $d_sub_desc_attr['id'];
+                                $line = '    ['.$d_n.'] '.$d_detail;
+                                if (isset($this->codes[(int) $codeElementId][$d_detail])) {
+                                    $line .= ' - '.\wordwrap($this->codes[$codeElementId][$d_detail], 69, \PHP_EOL.'        ');
+                                }
+                                $r[] = $line;
 
-                                $jsoncomposite[$d_sub_desc_attr['name']] = $d_detail;
+                                $r[] = '        id: '.$codeElementId.' - '.$d_sub_desc_attr['name'];
+                                if (isset($d_sub_desc_attr['desc'])) {
+                                    $r[] = '        '.\wordwrap($d_sub_desc_attr['desc'], 69, \PHP_EOL.'        ');
+                                }
+                                $r[] = '        type: '.$d_sub_desc_attr['type'];
+
+                                if (isset($jsoncomposite[$d_sub_desc_attr['name']])) {
+                                    if (is_array($jsoncomposite[$d_sub_desc_attr['name']])) {
+                                        $jsoncomposite[$d_sub_desc_attr['name']][] = $d_detail;
+                                    } else {
+                                        $jsoncomposite[$d_sub_desc_attr['name']] = [
+                                            $jsoncomposite[$d_sub_desc_attr['name']],
+                                            $d_detail
+                                        ];
+                                    }
+                                } else {
+                                    $jsoncomposite[$d_sub_desc_attr['name']] = $d_detail;
+                                }
+
                                 if (isset($d_sub_desc_attr['maxlength'])) {
-                                    $r[] = '        maxlen: ' . $d_sub_desc_attr['maxlength'];
+                                    $r[] = '        maxlen: '.$d_sub_desc_attr['maxlength'];
                                 }
                                 if (isset($d_sub_desc_attr['required'])) {
-                                    $r[] = '        required: ' . $d_sub_desc_attr['required'];
+                                    $r[] = '        required: '.$d_sub_desc_attr['required'];
                                 }
                                 if (isset($d_sub_desc_attr['length'])) {
-                                    $r[] = '        length: ' . $d_sub_desc_attr['length'];
+                                    $r[] = '        length: '.$d_sub_desc_attr['length'];
                                 }
 
-                                //check for skipped data
-                                unset($d_sub_desc_attr['id']);
-                                unset($d_sub_desc_attr['name']);
-                                unset($d_sub_desc_attr['desc']);
-                                unset($d_sub_desc_attr['type']);
-                                unset($d_sub_desc_attr['maxlength']);
-                                unset($d_sub_desc_attr['required']);
-                                unset($d_sub_desc_attr['length']);
+                                // check for skipped data
+                                unset(
+                                    $d_sub_desc_attr['id'],
+                                    $d_sub_desc_attr['name'],
+                                    $d_sub_desc_attr['desc'],
+                                    $d_sub_desc_attr['type'],
+                                    $d_sub_desc_attr['maxlength'],
+                                    $d_sub_desc_attr['required'],
+                                    $d_sub_desc_attr['length']
+                                );
+
+                                /*
                                 if (!empty($d_sub_desc_attr)) {
-                                    var_dump($d_sub_desc_attr);
+                                  var_dump($d_sub_desc_attr);
                                 }
-
+                                 */
                             }
                         }
                         $jsonelements[$d_desc_attr['name']] = $jsoncomposite;
-                        //exit;
+                    } else {
+                        $codeElementId = $d_desc_attr['id'];
+                        $line = '  ['.$n.'] '.$detail;
+                        if (isset($this->codes[(int) $codeElementId][$detail])) {
+                            /*
+                             * for retrieving code element description when first element of the segment
+                             * is a data element and not a composite one. Ex: NAD segment.
+                             * We rewrite also l1 line for adding 'id:' prefix before data element id.
+                             * It's just a cosmetic fix
+                             */
+                            $line .= ' - '.\wordwrap($this->codes[$codeElementId][$detail], 71, \PHP_EOL.'        ');
+                            $l1 = '      id: '.$d_desc_attr['id'].' - '.$d_desc_attr['name'];
+                        }
+                        $r[] = $line;
+                        $r[] = $l1;
+                        $r[] = $l2;
+                        $jsonelements[$d_desc_attr['name']] = $detail;
                     }
                 }
                 $jsonsegment[$attributes['name']] = $jsonelements;
             } else {
                 $r[] = $id;
-                $jsonsegment["UnrecognisedType"] = $segment;
+                $jsonsegment['UnrecognisedType'] = $segment;
             }
             $this->jsonedi[] = $jsonsegment;
         }
 
-        return implode(PHP_EOL, $r);
+        return \implode(\PHP_EOL, $r);
     }
 
     /**
      * return the processed EDI in json format
-     * @return string json
+     *
+     * @return false|string
      */
     public function getJson()
     {
-        return json_encode($this->jsonedi);
+        return \json_encode($this->jsonedi);
+    }
+
+    /**
+     * read default values in given message xml
+     */
+    protected function readMessageDefaults(\SimpleXMLElement $message): array
+    {
+        // init
+        $defaults = [];
+
+        /** @var \SimpleXMLElement $defaultValueNode */
+        foreach ($message->defaults[0] ?? [] as $defaultValueNode) {
+            $attributes = $defaultValueNode->attributes();
+            $id = (string) $attributes->id;
+            $defaults[$id] = (string) $attributes->value;
+        }
+
+        return $defaults;
+    }
+
+    /**
+     * read message segments and groups
+     */
+    protected function readXmlNodes(\SimpleXMLElement $element): array
+    {
+        $arrayElements = [];
+        foreach ($element as $name => $node) {
+            if ($name == 'defaults') {
+                continue;
+            }
+            $arrayElement = [];
+            $arrayElement['type'] = $name;
+            $arrayElement['attributes'] = $this->readAttributesArray($node);
+            $details = $this->readXmlNodes($node);
+            if (! empty($details)) {
+                $arrayElement['details'] = $details;
+            }
+            $arrayElements[] = $arrayElement;
+        }
+
+        return $arrayElements;
+    }
+
+    /**
+     * return an xml elements attributes in as array
+     */
+    protected function readAttributesArray(\SimpleXMLElement $element): array
+    {
+        $attributes = [];
+        foreach ($element->attributes() ?? [] as $attrName => $attr) {
+            $attributes[(string) $attrName] = (string) $attr;
+        }
+
+        return $attributes;
     }
 }

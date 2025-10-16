@@ -5,39 +5,76 @@ Load a message and dump a json
 Loading from file:
 ```php
 use EDI\Parser;
-$fn = "example.edi"; //it's a path!
-$p = new EDI\Parser($fn);
+$filePath = "example.edi";
+$p = new EDI\Parser();
+$p->load($filePath)->parse();
+$p->checkEncoding(); // optional
 if (count($p->errors()) > 0) {
 	echo json_encode($p->errors());
 	return;
 }
 echo json_encode($p->get());
 ```
-Same example works for ```$fn``` containing a wrapped string (seg'seg) or an array ([seg,seg])
+To load a single-line string (`"seg'seg"`) use `$p->loadString()`.   
+To load an array of lines (`["seg","seg"]`) use `$p->loadArray()`.
 
 Convert a formatted array to EDIFACT message
 --------------------------------------------
-Loading from a php array:
+Loading from a PHP array:
 ```php
 use EDI\Encoder;
 $arr = []; //array
-$p = new EDI\Encoder($arr, false); //one segment per line
-echo $p->get();
+$enc = new EDI\Encoder($arr, false); //one segment per line
+echo $enc->get();
 ```
 
-Create from EDI file readable file with comments
-------------------------------------------------
+Create human-readable file with comments from EDI file
+------------------------------------------------------
 
 ```php
-$fileName = 'demo.edi';
+$filePath = 'demo.edi';
 $parser = new EDI\Parser();
-$parsed = $parser->load($fileName);
+$parser->load($filePath);
 $segments = $parser->getRawSegments();
 
 $analyser = new EDI\Analyser();
 $analyser->loadSegmentsXml('edifact/src/EDI/Mapping/d95b/segments.xml');
 
-$text = $analyser->process($parsed, $segments);
+$text = $analyser->process($parsed, $parser->get());
+```
+
+EDI data reading from extracted group
+-------------------------------------
+
+As not to have to go through the indexes for extracted groups, just use a reader with a different parser.
+
+E.g. inventory messages (snippet, not a valid EDI message!):
+
+```
+INV+2++1'QTY+156:1000:PCE'QTY+145:3000:PCE'LOC+18+YA:::567'DTM+179:20180509:102'RFF+AAK:TEST'DTM+171:20180509:102'
+INV+1++11'QTY+156:200:PCE'QTY+145:2800:PCE'LOC+18+YA:::567'DTM+179:20180509:102'RFF+ALO:4916165350'DTM+171:20180509:102'
+INV+1++11'QTY+156:200:PCE'QTY+145:2600:PCE'LOC+18+YA:::567'DTM+179:20180509:102'RFF+ALO:4916165351'DTM+171:20180509:102'
+INV+1++11'QTY+156:200:PCE'QTY+145:2400:PCE'LOC+18+YA:::567'DTM+179:20180509:102'RFF+ALO:4916165352'DTM+171:20180509:102'
+INV+1++11'QTY+156:100:PCE'QTY+145:2300:PCE'LOC+18+YA:::567'DTM+179:20180510:102'RFF+ALO:4916165359'DTM+171:20180510:102'
+```
+
+```php
+$parser = new EDI\Parser();
+$parser->load($filePath);
+$reader = new EDI\Reader($parser);
+$groups = $reader->groupsExtract('INV');
+
+foreach ($groups as $record) {
+    $parser->loadArray($record, false);
+    $r = new EDI\Reader($parser);
+    $records[] = [
+        'storageLocation' => $r->readEdiDataValue(['LOC', ['2.0' => 'YA']], 2, 3),
+        'bookingDate' => $r->readEdiSegmentDTM(179),
+        'enteredOn' => $r->readEdiSegmentDTM(171),
+        'quantity' => $r->readEdiDataValue(['QTY', ['1.0' => 156]], 1, 1),
+        'actualStock' => $r->readEdiDataValue(['QTY', ['1.0' => 145]], 1, 1)
+    ];
+}
 ```
 
 Readable EDI file
@@ -88,11 +125,13 @@ UNB - InterchangeHeader
 ```
 
 EDI data element reading
------------------
+------------------------
 
 ```php
-$fileName = 'files/truck_out_176699.edi';
-$reader = new EDI\Reader($fileName);
+$filePath = 'files/truck_out_176699.edi';
+$parser = new EDI\Parser();
+$parser->load($filePath);
+$reader = new EDI\Reader($parser);
 
 $record = [
 	'interchangeSender' => $reader->readEdiDataValue('UNB', 2),
