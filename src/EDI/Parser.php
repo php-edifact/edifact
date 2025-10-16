@@ -8,10 +8,15 @@ namespace EDI;
 
 class Parser
 {
+
+    public $fileEncoding;
+
     private $rawSegments;
     private $parsedfile;
     private $errors;
-    private $stripChars="/[\x01-\x1F\x80-\xFF]/"; //UNOB encoding set
+    //private $stripChars="/[\x01-\x1F\x80-\xFF]/"; //UNOB encoding set
+    // CR/LF und Tab erlauben
+    private $stripChars = '/[\x00-\x1F\x7F]/u';
 
     private static $DELIMITER = "/";
 
@@ -43,6 +48,7 @@ class Parser
      * @var string : encoding (default UNOB)
      */
     private $encoding;
+
     /**
      * @var string : message format from UNH
      */
@@ -56,7 +62,7 @@ class Parser
         "UNOA" => "/[\x01-\x1F\x80-\xFF]/", // not as restrictive as it should be
         "UNOB" => "/[\x01-\x1F\x80-\xFF]/",
         "UNOC" => "/[\x01-\x1F\x7F-\x9F]/",
-        "UNOW" => "/[\x01-\x1F\x7F-\x9F]/",
+        "UNOW" => '/[\x00-\x1F\x7F]/u',
     ];
 
     /**
@@ -297,11 +303,9 @@ class Parser
     public function load($url)
     {
         $file = file_get_contents($url);
+        if ($file===false) return null;
 
-        if (!mb_check_encoding($file, 'UTF-8')) {
-            echo "The file is not encoded in UTF-8\n";
-            //$file = mb_convert_encoding($file, 'UTF-8', 'ISO-8859-2');
-        }
+        $this->fileEncoding = @mb_detect_encoding($file, ['UTF-8', 'ISO-8859-2', 'ISO-8859-1', 'Windows-1250'], true);
 
         return $this->loadString($file);
     }

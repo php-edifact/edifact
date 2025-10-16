@@ -29,7 +29,7 @@ class Interpreter
      *
      * @param string $xmlMsg Path to XML Message representation
      * @param array $xmlSeg Segments processed by EDI\Analyser::loadSegmentsXml
-     * @param string $xmlSvc Service segments processed by EDI\Analyser::loadSegmentsXml
+     * @param array $xmlSvc Service segments processed by EDI\Analyser::loadSegmentsXml
      * @param array $messageTextConf Personalisation of error messages
      */
     public function __construct($xmlMsg, $xmlSeg, $xmlSvc, $messageTextConf = null)
