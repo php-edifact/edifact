@@ -276,7 +276,10 @@ class Parser
         }
 
         $this->messageFormat = $lineElement[0];
-        $this->messageDirectory = $lineElement[2];
+
+        if (isset($lineElement[2])) {
+            $this->messageDirectory = $lineElement[2];
+        }
     }
 
     /**
